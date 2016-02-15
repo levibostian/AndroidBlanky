@@ -1,11 +1,35 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- the colors here are to theme material design elements https://developer.android.com/training/material/theme.html#StatusBar describes all the elements you can customize -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_darker</item>
+        <item name="colorAccent">@color/accent</item> <!-- colors widgets such as button, edittext, checkbox colors -->
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+
+        <item name="colorControlHighlight">@color/primary_lighter</item> <!-- sets color ripple lollipop device and background color of selected state pre lollipop. Set for a lighter or darker shade then colorAccent color -->
+
+        <item name="buttonStyle">@style/ButtonStyle</item>
+        <item name="android:borderlessButtonStyle">@style/BorderlessButtonStyle</item>
+        <item name="android:textViewStyle">@style/TextViewStyle</item>
+    </style>
+
+    <!-- Roboto text font. This is the textview style we have set above in our themes `@style/RobotoTextViewStyle` so now all textviews in the app will use this font size and font family by default. -->
+    <style name="TextViewStyle" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/regular_text_size</item>
+        <!-- <item name="android:textColor">@color/accent</item> don't want because it changes snackbar textcolor to black -->
+    </style>
+
+    <style name="BorderlessButtonStyle" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="colorButtonNormal">@color/primary</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/primary</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>
