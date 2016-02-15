@@ -25,6 +25,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+        development {
+            applicationId "com.levibostian.androidblanky.debug"
+
+            //ext.enableCrashlytics = false
+        }
+
+        production {
+        }
+
+        beta {
+            applicationId "com.levibostian.androidblanky.beta"
+        }
+    }
 }
 
 def dbflow_version = "3.0.0-beta3"
