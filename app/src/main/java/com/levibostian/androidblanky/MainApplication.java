@@ -3,6 +3,7 @@ package com.levibostian.androidblanky;
 import android.app.Application;
 import com.levibostian.androidblanky.module.ApiModule;
 import com.levibostian.androidblanky.module.FragmentModule;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.leakcanary.LeakCanary;
 import dagger.ObjectGraph;
 
@@ -18,6 +19,7 @@ public class MainApplication extends Application {
         super.onCreate();
 
         LeakCanary.install(this);
+        FlowManager.init(this);
 
         sObjectGraph = ObjectGraph.create(getModules().toArray());
     }
