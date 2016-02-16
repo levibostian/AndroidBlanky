@@ -3,14 +3,13 @@ Creating a new blank Android app is a pain and takes time. Creating this blank A
 
 How to use project:  
 
-1. Copy project to a directory of your choice. 
-2. Rename project directory from AndroidBlanky to something else. 
-3. `rm -rf .git/` to remove history for AndroidBlanky and `git init; git config user.email "you@foo.com"; git config user.name "First Last"` to create a new git history. 
-4. Open up project in Studio and all should be golden. Now continue on to below steps to get it compiling and running... 
+1. Copy project to a directory of your choice. (`cp -R AndroidBlanky/ newProjectName/`)
+2. `rm -rf .git/` to remove history for AndroidBlanky and `git init; git config user.email "you@foo.com"; git config user.name "First Last"` to create a new git history. `git add .; git commit -m "Initial commit. Create project from template."` to get new history completed. 
+3. Open up project in Studio and all should be golden. Now continue on to below steps to get it compiling and running... 
 
 Things to do when using this blanky:  
 
-1. Edit namespace of app in manifest file and build.gradle file to not be 'com.levibostian.andoidblanky'
+1. Edit namespace of app in manifest file and build.gradle file to not be 'com.levibostian.andoidblanky'. You will now also need to rename the source code directories. To do this, open up your source code project explorer in Studio (the place where you view your source code tree). Click the drop down arrows to `app/src/main/` and there you will see `com.levibostian.androidblanky`. Click on `com.levibostian.androidblanky` once and then look in the top right corner of the source project project explorer window (the little panel you are playing around with). There is a little gear icon for settings. Click that little gear icon and then click "Compact Empty Middle Packages". What this will do is make `com.levibostian.androidblanky` split up to show each directory individually. Then you can right click on `levibostian` > refactor > rename package (when you rename, it will take a few minutes of Studio frozen. Just wait, it will work.) and also rename `androidblanky` using the same method. (This help came from [this stackoverflow](http://stackoverflow.com/a/27677033/1486374) post.)
 2. Create a file: `app/fabric.properties` and inside of it, put:
 ```
 apiSecret=YOUR_API_SECRET_HERE
