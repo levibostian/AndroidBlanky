@@ -6,18 +6,16 @@ How to use project:
 1. Copy project to a directory of your choice. (`cp -R AndroidBlanky/ newProjectName/`)
 2. `rm -rf .git/` to remove history for AndroidBlanky and `git init; git config user.email "you@foo.com"; git config user.name "First Last"` to create a new git history. `git add .; git commit -m "Initial commit. Create project from template."` to get new history completed. 
 3. Open up project in Studio and all should be golden. Now continue on to below steps to get it compiling and running... 
-
-Things to do when using this blanky:  
-
-1. Edit namespace of app in manifest file and build.gradle file to not be 'com.levibostian.andoidblanky'. You will now also need to rename the source code directories. To do this, open up your source code project explorer in Studio (the place where you view your source code tree). Click the drop down arrows to `app/src/main/` and there you will see `com.levibostian.androidblanky`. Click on `com.levibostian.androidblanky` once and then look in the top right corner of the source project project explorer window (the little panel you are playing around with). There is a little gear icon for settings. Click that little gear icon and then click "Compact Empty Middle Packages". What this will do is make `com.levibostian.androidblanky` split up to show each directory individually. Then you can right click on `levibostian` > refactor > rename package (when you rename, it will take a few minutes of Studio frozen. Just wait, it will work.) and also rename `androidblanky` using the same method. (This help came from [this stackoverflow](http://stackoverflow.com/a/27677033/1486374) post.)
-2. Create a file: `app/fabric.properties` and inside of it, put:
+4. Edit namespace of app in manifest file and build.gradle file to not be 'com.levibostian.andoidblanky'. You will now also need to rename the source code directories. To do this, open up your source code project explorer in Studio (the place where you view your source code tree). Click the drop down arrows to `app/src/main/` and there you will see `com.levibostian.androidblanky`. Click on `com.levibostian.androidblanky` once and then look in the top right corner of the source project project explorer window (the little panel you are playing around with). There is a little gear icon for settings. Click that little gear icon and then click "Compact Empty Middle Packages". What this will do is make `com.levibostian.androidblanky` split up to show each directory individually. Then you can right click on `levibostian` > refactor > rename package (when you rename, it will take a few minutes of Studio frozen. Just wait, it will work.) and also rename `androidblanky` using the same method. (This help came from [this stackoverflow](http://stackoverflow.com/a/27677033/1486374) post.)
+5. Build > Clean Project. Build > Rebuild Project.
+6. Create a file: `app/fabric.properties` and inside of it, put:
 ```
 apiSecret=YOUR_API_SECRET_HERE
 apiKey=YOUR_API_KEY_HERE
 ``` 
 You find these values in your [organization](https://fabric.io/settings/organizations) page on fabric.io. 
-3. Edit database name in `src/main/java/db/Database.java` to be name of your database to build. An example table is created as well, go ahead and edit this table name to work with your database. 
-4. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request. 
+7. Edit database name in `src/main/java/db/Database.java` to be name of your database to build. An example table is created as well, go ahead and edit this table name to work with your database. 
+8. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request. 
 
 When creating build to release to play store:  
 
