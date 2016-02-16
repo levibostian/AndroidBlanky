@@ -1,3 +1,7 @@
+# manually added
+app/fabric.properties
+
+# added by android studio
 *.iml
 .gradle
 /local.properties

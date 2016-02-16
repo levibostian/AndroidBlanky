@@ -1,11 +1,24 @@
 # AndroidBlanky
 Creating a new blank Android app is a pain and takes time. Creating this blank Android project should be the last time I have to do it. 
 
+How to use project:  
+
+1. Copy project to a directory of your choice. 
+2. Rename project directory from AndroidBlanky to something else. 
+3. `rm -rf .git/` to remove history for AndroidBlanky and `git init; git config user.email "you@foo.com"; git config user.name "First Last"` to create a new git history. 
+4. Open up project in Studio and all should be golden. Now continue on to below steps to get it compiling and running... 
+
 Things to do when using this blanky:  
 
 1. Edit namespace of app in manifest file and build.gradle file to not be 'com.levibostian.andoidblanky'
-2. Edit database name in `src/main/java/db/Database.java` to be name of your database to build. An example table is created as well, go ahead and edit this table name to work with your database. 
-3. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request. 
+2. Create a file: `app/fabric.properties` and inside of it, put:
+```
+apiSecret=YOUR_API_SECRET_HERE
+apiKey=YOUR_API_KEY_HERE
+``` 
+You find these values in your [organization](https://fabric.io/settings/organizations) page on fabric.io. 
+3. Edit database name in `src/main/java/db/Database.java` to be name of your database to build. An example table is created as well, go ahead and edit this table name to work with your database. 
+4. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request. 
 
 When creating build to release to play store:  
 
@@ -34,3 +47,4 @@ Things done in this app:
 * Install [easy/secure way](https://github.com/almalkawi/Android-Guide/wiki/Generating-signed-release-APK-using-Gradle) to release app builds to release to store. (Install keystore/alias/password to make build releases)
 * Install some util classes for some easy ways to work with Android SDK. 
 * [Dexcount gradle plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) to display method count every time gradle builds app. 
+* Installed [fabric.io](https://fabric.io) to project to easily add Crashlytics to project. 
