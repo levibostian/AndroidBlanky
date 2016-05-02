@@ -6,7 +6,7 @@ import com.levibostian.androidblanky.util.SharedPreferencesUtil;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, complete = true)
+@Module
 public class UtilModule {
 
     private Context mContext;

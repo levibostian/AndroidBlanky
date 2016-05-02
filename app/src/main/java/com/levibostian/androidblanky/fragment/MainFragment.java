@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.levibostian.androidblanky.MainApplication;
 import com.levibostian.androidblanky.R;
+import com.levibostian.androidblanky.manager.api.BaseApiManager;
+import com.levibostian.androidblanky.manager.api.ReposApiManager;
 import com.levibostian.androidblanky.service.GitHubApi;
 import com.levibostian.androidblanky.util.LogUtil;
 import com.levibostian.androidblanky.vo.RepoVo;
@@ -20,7 +22,7 @@ import java.util.List;
 
 public class MainFragment extends Fragment {
 
-    @Inject GitHubApi mGitHubApi;
+    @Inject ReposApiManager mReposApiManager;
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
@@ -36,17 +38,21 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MainApplication.inject(this);
+        MainApplication.component().inject(this);
 
-        Call<List<RepoVo>> call = mGitHubApi.listRepos("levibostian");
-        call.enqueue(new Callback<List<RepoVo>>() {
+        mReposApiManager.getRepos("curiosityio", new BaseApiManager.ApiResponseCallback<List<RepoVo>>() {
             @Override
-            public void onResponse(Call<List<RepoVo>> call, Response<List<RepoVo>> response) {
-                LogUtil.d("Success. Number repos: " + response.body().size());
+            public void success(List<RepoVo> repos) {
+                LogUtil.d("Success. Number repos: " + repos.size());
             }
 
             @Override
-            public void onFailure(Call<List<RepoVo>> call, Throwable t) {
+            public void apiError(String message) {
+                LogUtil.d("Fail getting repos");
+            }
+
+            @Override
+            public void failure(String message) {
                 LogUtil.d("Fail getting repos");
             }
         });

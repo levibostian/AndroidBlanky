@@ -1,3 +1,13 @@
 <resources>
     <string name="preference_file_key">preferencesFileKey</string>
+    <string name="open_source_licenses">Open Source licenses</string>
+    <string name="about">About</string>
+    <string name="blank" />
+
+    <string-array name="about_list_options">
+        <item>Privacy Policy</item>
+        <item>Terms and Conditions</item>
+        <item>Open Source License</item>
+        <item>About</item>
+    </string-array>
 </resources>

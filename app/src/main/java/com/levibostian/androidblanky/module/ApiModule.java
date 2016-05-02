@@ -4,32 +4,34 @@ import com.levibostian.androidblanky.MainApplication;
 import com.levibostian.androidblanky.service.GitHubApi;
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.JacksonConverterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.Retrofit;
 
 import javax.inject.Singleton;
 
-@Module(library = true, complete = true)
+@Module
 public class ApiModule {
 
     private MainApplication mApplication;
 
-    private static String API_BASE_URL = "https://api.github.com";
+    private final String mApiBaseUrl;
 
     public ApiModule(MainApplication application) {
         mApplication = application;
+
+        mApiBaseUrl = "https://api.github.com";
     }
 
     @Provides
     @Singleton
     Retrofit provideRetrofit() {
         return new Retrofit.Builder()
-                       .baseUrl(API_BASE_URL)
+                       .baseUrl(mApiBaseUrl)
                        .addConverterFactory(JacksonConverterFactory.create()).build();
     }
 
     @Provides
-    public GitHubApi YummlyApi(Retrofit retrofit) {
+    public GitHubApi provideApi(Retrofit retrofit) {
         return retrofit.create(GitHubApi.class);
     }
 

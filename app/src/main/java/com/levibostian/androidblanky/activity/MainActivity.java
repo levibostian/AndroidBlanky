@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 import com.levibostian.androidblanky.R;
 import com.levibostian.androidblanky.fragment.MainFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

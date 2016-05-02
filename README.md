@@ -13,17 +13,16 @@ How to use project:
 apiSecret=YOUR_API_SECRET_HERE
 apiKey=YOUR_API_KEY_HERE
 ``` 
-You find these values in your [organization](https://fabric.io/settings/organizations) page on fabric.io. 
-7. Edit database name in `src/main/java/db/Database.java` to be name of your database to build. An example table is created as well, go ahead and edit this table name to work with your database. 
-8. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request. 
+You find these values in your [organization](https://fabric.io/settings/organizations) page on fabric.io. Also go into your manifest file and put your apiKey in the `<meta-data .. />` designated for fabric.   
+7. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request. 
 
 When creating build to release to play store:  
 
-1. (If you have not creaed a keystore file yet) Run command `keytool -genkey -v -keystore KEYSTORE-NAME.keystore -alias KEYSTORE-ALIAS -keyalg RSA -validity 10000 -storepass PASSWORD1 -keypass PASSWORD2` (replacing KEYSTORE-NAME to name of your app, KEYSTORE-ALIAS to name of your app, PASSWORD1 to a password used for your keypass password and PASSWORD2 to another password for your keypass password) *NOTE: do not lose the file that this command creates. You will not be able to generate another one!*
+1. (If you have not created a keystore file yet) Run command `keytool -genkey -v -keystore KEYSTORE-NAME.keystore -alias KEYSTORE-ALIAS -keyalg RSA -validity 10000 -storepass PASSWORD1 -keypass PASSWORD2` (replacing KEYSTORE-NAME to name of your app, KEYSTORE-ALIAS to name of your app, PASSWORD1 to a password used for your keypass password and PASSWORD2 to another password for your keypass password) *NOTE: do not lose the file that this command creates. You will not be able to generate another one!*
 2. Edit the environment variable to point to the path you are storing the keystore file you made above: `export ANDROID_KEYSTORE=/path/to/keystore/file/created/above`. The default is: `export ANDROID_KEYSTORE=~/.android/debug.keystore` for creating debug builds.
 3. Edit the environment variable for your alias name: `export ANDROID_KEYALIAS=aliasnameyousetwhencreatingalias`. Default is: `export ANDROID_KEYALIAS=androiddebugkey` for creating debug builds.
 4. Go into the `build.gradle` file and uncomment the signingConfigs{} variables. 
-5. `./gradlew assembleRelease`
+5. `./gradlew assembleRelease` This creates the APK files. Go to  `app/build/outputs/apk` to view them all after this command is complete. 
 6. Sign the APK: `jarsigner -verbose -keystore KEYSTORE-PATH APK-PATH-CREATED-ABOVE KEYSTORE-ALIAS`
 7. Verify the signature: `jarsigner –verbose -keystore KEYSTORE-PATH –verify APK-PATH-CREATED-ABOVE`
 8. Zip Align the APK: `zipalign -v 4 UNALIGNED-SIGNED-APK.apk RELEASE_APK-NAME.apk` 
@@ -31,15 +30,16 @@ When creating build to release to play store:
 
 Things done in this app:  
 
-* [Retrofit 2.0 beta](https://github.com/square/retrofit) for JSON API handling.
-* [Dagger](https://github.com/square/Dagger) for dependency injection. 
-* [DBFlow](https://github.com/Raizlabs/DBFlow) for an easy way to work with SQLite databases. 
-* [Glide](https://github.com/bumptech/glide) for easily working with images. 
+* [Retrofit 2.0](https://github.com/square/retrofit) for JSON API handling.
+* [Google Dagger](https://google.github.io/dagger/) for dependency injection. 
+* [Glide](https://github.com/bumptech/glide) for easily working with images.
+* [Realm](https://realm.io/) for the database. Replacement for SQLite for easy way to work with databases.
+* [Realm RecyclerView](https://github.com/curiosityio/Realm-RecyclerView) to work with realm and recyclerviews. 
 * [AndroidViewAnimations](https://github.com/daimajia/AndroidViewAnimations) for easy way to work with animations. 
 * [Android design support library](http://android-developers.blogspot.com/2015/05/android-design-support-library.html).
 * [Android AppCompat library](http://android-developers.blogspot.com/2014/10/appcompat-v21-material-design-for-pre.html). 
 * Replace ActionBar with [Toolbar](http://android-developers.blogspot.com/2014/10/appcompat-v21-material-design-for-pre.html) in MainActivity.
-* [LeakCaneray](https://github.com/square/leakcanary) library to catch memory leaks.
+* [LeakCanary](https://github.com/square/leakcanary) library to catch memory leaks. (currently disabled as not working on Marshmallow)
 * Create debug/beta/production build flavors for Gradle. 
 * Install [easy/secure way](https://github.com/almalkawi/Android-Guide/wiki/Generating-signed-release-APK-using-Gradle) to release app builds to release to store. (Install keystore/alias/password to make build releases)
 * Install some util classes for some easy ways to work with Android SDK. 
