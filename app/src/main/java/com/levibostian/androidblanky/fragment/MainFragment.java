@@ -2,7 +2,6 @@ package com.levibostian.androidblanky.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import retrofit2.Response;
 import javax.inject.Inject;
 import java.util.List;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends BaseFragment {
 
     @Inject ReposApiManager mReposApiManager;
 
@@ -56,6 +55,11 @@ public class MainFragment extends Fragment {
                 LogUtil.d("Fail getting repos");
             }
         });
+    }
+
+    @Override
+    public String getTitle() {
+        return "";
     }
 
     @Nullable

@@ -18,7 +18,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startupFragment() {
-        getSupportFragmentManager().beginTransaction()
+        getFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, MainFragment.newInstance())
                 .commit();
     }
