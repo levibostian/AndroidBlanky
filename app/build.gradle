@@ -86,7 +86,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:design:24.2.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:support-v4:24.2.0'
     compile 'com.android.support:customtabs:24.2.0' // chrome custom tabs
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
