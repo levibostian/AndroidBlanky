@@ -1,9 +1,9 @@
 package com.levibostian.androidblanky.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import com.levibostian.androidblanky.R;
@@ -32,13 +32,11 @@ public abstract class BaseBackButtonActivity extends BaseActivity {
     }
 
     protected void setFragmentInFragmentContainer(Fragment fragment) {
-        getFragmentManager().beginTransaction()
-                            .add(R.id.fragment_container, fragment)
-                            .commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
     }
 
     protected void replaceFragmentInFragmentContainer(Fragment fragment, boolean addToBackStack) {
-        FragmentTransaction fragmentTransaction = getFragmentManager()
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
                                                           .beginTransaction()
                                                           .replace(R.id.fragment_container, fragment);
 
