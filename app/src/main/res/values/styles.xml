@@ -11,6 +11,9 @@
         <item name="colorButtonNormal">@android:color/white</item>
         <item name="android:itemTextAppearance">@style/MenuTextAppearance</item>
 
+        <item name="colorControlNormal">@android:color/white</item> <!-- colors bottom bar for edittexts -->
+        <item name="android:textColorHint">@android:color/white</item> <!-- edittext hint text color -->
+
         <!-- MaterialDesign dialogs library global theming -->
         <item name="md_dark_theme">false</item>
 

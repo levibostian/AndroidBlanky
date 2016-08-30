@@ -14,7 +14,8 @@ apiSecret=YOUR_API_SECRET_HERE
 apiKey=YOUR_API_KEY_HERE
 ``` 
 You find these values in your [organization](https://fabric.io/settings/organizations) page on fabric.io. Also go into your manifest file and put your apiKey in the `<meta-data .. />` designated for fabric.   
-7. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request. 
+7. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request.
+8. In production/strings.xml it says AndroidBlanky. Change name your app name.
 
 When creating build to release to play store:  
 
