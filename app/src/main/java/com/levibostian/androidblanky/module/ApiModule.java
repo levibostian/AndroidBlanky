@@ -4,8 +4,8 @@ import com.levibostian.androidblanky.MainApplication;
 import com.levibostian.androidblanky.service.GitHubApi;
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import javax.inject.Singleton;
 
@@ -26,8 +26,7 @@ public class ApiModule {
     @Singleton
     Retrofit provideRetrofit() {
         return new Retrofit.Builder()
-                       .baseUrl(mApiBaseUrl)
-                       .addConverterFactory(JacksonConverterFactory.create()).build();
+                       .baseUrl(mApiBaseUrl).addConverterFactory(GsonConverterFactory.create()).build();
     }
 
     @Provides

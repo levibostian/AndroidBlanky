@@ -2,11 +2,8 @@ package com.levibostian.androidblanky.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsCallback;
 import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsServiceConnection;
@@ -15,7 +12,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
 import com.levibostian.androidblanky.util.CustomTabsHelper;
 import com.levibostian.androidblanky.util.IntentUtil;
 
@@ -44,23 +40,27 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void warmupChromeCustomTab() {
-        mCustomTabsServiceConnection = new CustomTabsServiceConnection() {
-            @Override
-            public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
-                client.warmup(0);
+        String chromePackageName = CustomTabsHelper.getPackageNameToUse(this);
 
-                mChromeCustomTabsSession = client.newSession(new CustomTabsCallback());
-                if (mPotentialUrlToLaunchChromeCustomTab != null) {
-                    mChromeCustomTabsSession.mayLaunchUrl(Uri.parse(mPotentialUrlToLaunchChromeCustomTab), null, null);
+        if (chromePackageName != null) {
+            mCustomTabsServiceConnection = new CustomTabsServiceConnection() {
+                @Override
+                public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
+                    client.warmup(0);
+
+                    mChromeCustomTabsSession = client.newSession(new CustomTabsCallback());
+                    if (mPotentialUrlToLaunchChromeCustomTab != null) {
+                        mChromeCustomTabsSession.mayLaunchUrl(Uri.parse(mPotentialUrlToLaunchChromeCustomTab), null, null);
+                    }
                 }
-            }
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-            }
-        };
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                }
+            };
 
-        CustomTabsClient.bindCustomTabsService(this, CustomTabsHelper.getPackageNameToUse(this), mCustomTabsServiceConnection);
+            CustomTabsClient.bindCustomTabsService(this, chromePackageName, mCustomTabsServiceConnection);
+        }
     }
 
     @Override

@@ -3,28 +3,23 @@ package com.levibostian.androidblanky;
 import android.app.Application;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
-import com.levibostian.androidblanky.activity.MainActivity;
 import com.levibostian.androidblanky.fragment.MainFragment;
 import com.levibostian.androidblanky.module.ApiModule;
 import com.levibostian.androidblanky.module.DaoModule;
 import com.levibostian.androidblanky.module.ManagerModule;
 import com.levibostian.androidblanky.module.UtilModule;
 import dagger.Component;
-
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 import javax.inject.Singleton;
-import java.util.Arrays;
-import java.util.List;
 
 public class MainApplication extends Application {
 
     @Singleton
     @Component(modules = {ApiModule.class, DaoModule.class, ManagerModule.class, UtilModule.class})
     public interface ApplicationComponent {
-        void inject(MainActivity mainActivity);
         void inject(MainFragment mainFragment);
     }
 
