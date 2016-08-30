@@ -8,11 +8,14 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
+apply plugin: 'android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 apply plugin: 'com.getkeepsafe.dexcount'
@@ -68,6 +71,9 @@ android {
             applicationId "com.levibostian.androidblanky.beta"
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
@@ -98,4 +104,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
