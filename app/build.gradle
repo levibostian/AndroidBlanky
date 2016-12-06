@@ -1,29 +1,21 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
-apply plugin: 'android-apt'
+apply plugin: 'kotlin-kapt'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
     mavenCentral()
 }
 
 apply plugin: 'com.getkeepsafe.dexcount'
 
+// allows developer to set the minSdk via gradle command line during development. API 21+ are faster.
+// so use 21+ during dev, then prod builds will still be built with 16 as don't have command line.
+def minSdk = hasProperty('minSdk') ? minSdk : 16
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
 
     packagingOptions {
         exclude 'META-INF/ASL2.0'
@@ -33,10 +25,10 @@ android {
 
     defaultConfig {
         applicationId "com.levibostian.androidblanky"
-        minSdkVersion 16
-        targetSdkVersion 24
+        minSdkVersion minSdk
+        targetSdkVersion 25
         versionCode 1
-        versionName "0.2.0"
+        versionName "0.1.0"
     }
 
     signingConfigs {
@@ -52,7 +44,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             // NOTE: Uncomment below when buliding for the Play store.
@@ -72,37 +65,39 @@ android {
             applicationId "com.levibostian.androidblanky.beta"
         }
     }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-}
-
-kapt {
-    generateStubs = true
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:design:24.2.0'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:design:25.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.android.support:support-v4:24.2.0'
-    compile 'com.android.support:customtabs:24.2.0' // chrome custom tabs
-    compile 'com.squareup.retrofit2:retrofit:2.0.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-    compile 'com.github.curiosityio:realm-recyclerview:0.9.16' // if planning on using a recyclerview with realm
+    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:customtabs:25.0.1' // chrome custom tabs
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     //compile 'com.pkmmte.view:circularimageview:1.1' // if need a circle imageview.
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.8@aar') {
-        transitive = true
-    }
-    kapt 'com.google.dagger:dagger-compiler:2.4'
-    compile 'com.google.dagger:dagger:2.4'
-    //debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1' // or 1.4-beta1
-    //releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1' // or 1.4-beta1
-    //testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1' // or 1.4-beta1
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
-    }
+    kapt 'com.google.dagger:dagger-compiler:2.8'
+    compile 'com.google.dagger:dagger:2.8'
+
+    compile 'org.greenrobot:eventbus:3.0.0'
+
+    compile('com.github.curiosityio:AndroidViews:0.1.1', {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    })
+    compile 'com.github.curiosityio:AndroidBoilerplate:0.1.0'
+
+    // rxjava
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'com.trello:rxlifecycle:0.8.0'
+    compile 'com.trello:rxlifecycle-android:0.8.0'
+    compile 'com.trello:rxlifecycle-components:0.8.0'
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

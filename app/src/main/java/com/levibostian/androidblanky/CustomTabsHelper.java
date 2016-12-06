@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.util;
+package com.levibostian.androidblanky;
 
 import android.content.Context;
 import android.content.Intent;

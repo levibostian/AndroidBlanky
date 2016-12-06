@@ -18,9 +18,6 @@
         <!-- enable android shared element activity transition animations -->
         <item name="android:windowContentTransitions">true</item>
 
-        <!-- MaterialDesign dialogs library global theming -->
-        <item name="md_dark_theme">false</item>
-
         <item name="colorControlHighlight">@color/primary_lighter</item> <!-- sets color ripple lollipop device and background color of selected state pre lollipop. Set for a lighter or darker shade then colorAccent color -->
 
         <item name="android:borderlessButtonStyle">@style/BorderlessButtonStyle</item>

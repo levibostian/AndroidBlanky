@@ -2,10 +2,11 @@ package com.levibostian.androidblanky.module;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
 import com.levibostian.androidblanky.manager.UserManager;
 import com.levibostian.androidblanky.manager.api.ReposApiManager;
 import com.levibostian.androidblanky.service.GitHubApi;
+
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
@@ -17,11 +18,6 @@ public class ManagerModule {
 
     public ManagerModule(Context context) {
         mContext = context;
-    }
-
-    @Provides
-    public SharedPreferences provideSharedPreferences() {
-        return PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
     @Provides

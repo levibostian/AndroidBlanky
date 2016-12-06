@@ -1,16 +1,16 @@
 package com.levibostian.androidblanky.manager.api;
 
-import com.crashlytics.android.Crashlytics;
 import com.levibostian.androidblanky.service.GitHubApi;
 import com.levibostian.androidblanky.vo.StatusMessageVo;
 import com.levibostian.androidblanky.vo.error.FieldsMissingVo;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 
 public abstract class BaseApiManager {
 
@@ -42,8 +42,6 @@ public abstract class BaseApiManager {
 
                     callback.apiError(error.errors[0].msg);
                 } catch (IOException e) {
-                    Crashlytics.logException(e);
-
                     callback.apiError("Error processing request. Try again.");
                 }
             } else {
@@ -53,8 +51,6 @@ public abstract class BaseApiManager {
 
                     callback.apiError(error.message);
                 } catch (IOException e) {
-                    Crashlytics.logException(e);
-
                     callback.apiError("Error processing request. Try again.");
                 }
             }

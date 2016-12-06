@@ -14,9 +14,6 @@
         <item name="colorControlNormal">@android:color/white</item> <!-- colors bottom bar for edittexts -->
         <item name="android:textColorHint">@android:color/white</item> <!-- edittext hint text color -->
 
-        <!-- MaterialDesign dialogs library global theming -->
-        <item name="md_dark_theme">false</item>
-
         <item name="colorControlHighlight">@color/primary_lighter</item> <!-- sets color ripple lollipop device and background color of selected state pre lollipop. Set for a lighter or darker shade then colorAccent color -->
 
         <item name="android:borderlessButtonStyle">@style/BorderlessButtonStyle</item>

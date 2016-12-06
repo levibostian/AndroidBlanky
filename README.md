@@ -8,14 +8,10 @@ How to use project:
 3. Open up project in Studio and all should be golden. Now continue on to below steps to get it compiling and running... 
 4. Edit namespace of app in manifest file and build.gradle file to not be 'com.levibostian.andoidblanky'. You will now also need to rename the source code directories. To do this, open up your source code project explorer in Studio (the place where you view your source code tree). Click the drop down arrows to `app/src/main/` and there you will see `com.levibostian.androidblanky`. Click on `com.levibostian.androidblanky` once and then look in the top right corner of the source project project explorer window (the little panel you are playing around with). There is a little gear icon for settings. Click that little gear icon and then click "Compact Empty Middle Packages". What this will do is make `com.levibostian.androidblanky` split up to show each directory individually. Then you can right click on `levibostian` > refactor > rename package (when you rename, it will take a few minutes of Studio frozen. Just wait, it will work.) and also rename `androidblanky` using the same method. (This help came from [this stackoverflow](http://stackoverflow.com/a/27677033/1486374) post.)
 5. Build > Clean Project. Build > Rebuild Project.
-6. Create a file: `app/fabric.properties` and inside of it, put:
-```
-apiSecret=YOUR_API_SECRET_HERE
-apiKey=YOUR_API_KEY_HERE
-``` 
-You find these values in your [organization](https://fabric.io/settings/organizations) page on fabric.io. Also go into your manifest file and put your apiKey in the `<meta-data .. />` designated for fabric.   
+6. Run the Fabric.io Android Studio plugin to install Crashlytics into app.
 7. If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request.
 8. In production/strings.xml it says AndroidBlanky. Change name your app name.
+9. Go into Android Studio preferences > Compiler > Command line args paste `-PminSdk=23` or whatever min SDK you want to compile with for dev testing.
 
 When creating build to release to play store:  
 
@@ -29,20 +25,17 @@ When creating build to release to play store:
 8. Zip Align the APK: `zipalign -v 4 UNALIGNED-SIGNED-APK.apk RELEASE_APK-NAME.apk` 
 9. [Publish](https://play.google.com/apps/publish) that bad boy. 
 
-Things done in this app:  
+Things done in this app:
 
 * [Retrofit 2.0](https://github.com/square/retrofit) for JSON API handling.
-* [Google Dagger](https://google.github.io/dagger/) for dependency injection. 
-* [Glide](https://github.com/bumptech/glide) for easily working with images.
+* [Google Dagger](https://google.github.io/dagger/) for dependency injection.
+* [Picasso](https://github.com/square/picasso) for easily working with images.
 * [Realm](https://realm.io/) for the database. Replacement for SQLite for easy way to work with databases.
-* [Realm RecyclerView](https://github.com/curiosityio/Realm-RecyclerView) to work with realm and recyclerviews. 
-* [AndroidViewAnimations](https://github.com/daimajia/AndroidViewAnimations) for easy way to work with animations. 
 * [Android design support library](http://android-developers.blogspot.com/2015/05/android-design-support-library.html).
-* [Android AppCompat library](http://android-developers.blogspot.com/2014/10/appcompat-v21-material-design-for-pre.html). 
+* [Android AppCompat library](http://android-developers.blogspot.com/2014/10/appcompat-v21-material-design-for-pre.html).
 * Replace ActionBar with [Toolbar](http://android-developers.blogspot.com/2014/10/appcompat-v21-material-design-for-pre.html) in MainActivity.
 * [LeakCanary](https://github.com/square/leakcanary) library to catch memory leaks. (currently disabled as not working on Marshmallow)
-* Create debug/beta/production build flavors for Gradle. 
+* Create debug/beta/production build flavors for Gradle.
 * Install [easy/secure way](https://github.com/almalkawi/Android-Guide/wiki/Generating-signed-release-APK-using-Gradle) to release app builds to release to store. (Install keystore/alias/password to make build releases)
-* Install some util classes for some easy ways to work with Android SDK. 
-* [Dexcount gradle plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) to display method count every time gradle builds app. 
-* Installed [fabric.io](https://fabric.io) to project to easily add Crashlytics to project. 
+* Install some util classes for some easy ways to work with Android SDK.
+* [Dexcount gradle plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) to display method count every time gradle builds app.
