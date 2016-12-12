@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'realm-android'
+apply plugin: 'android-apt'
 apply plugin: 'kotlin-kapt'
 
 repositories {
@@ -29,6 +30,9 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "0.1.0"
+
+        //multiDexEnabled true // don't need as not over dex limit yet.
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
@@ -70,14 +74,19 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
+    compile('com.android.support:appcompat-v7:25.0.1') {
+        exclude module: 'support-v4'
+    }
+    compile('com.android.support:design:25.0.1') {
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:support-v4:25.0.1'
-    compile 'com.android.support:customtabs:25.0.1' // chrome custom tabs
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile('com.squareup.retrofit2:adapter-rxjava:2.1.0') {
+        exclude group: 'io.reactivex', module: 'rxjava'
+    }
     //compile 'com.pkmmte.view:circularimageview:1.1' // if need a circle imageview.
     kapt 'com.google.dagger:dagger-compiler:2.8'
     compile 'com.google.dagger:dagger:2.8'
@@ -90,10 +99,25 @@ dependencies {
     compile 'com.github.curiosityio:AndroidBoilerplate:0.1.0'
 
     // rxjava
-    compile 'io.reactivex:rxjava:1.1.6'
-    compile 'com.trello:rxlifecycle:0.8.0'
-    compile 'com.trello:rxlifecycle-android:0.8.0'
-    compile 'com.trello:rxlifecycle-components:0.8.0'
+    compile('io.reactivex:rxandroid:1.2.1') {
+        exclude group: 'io.reactivex', module: 'rxjava'
+    }
+    compile 'io.reactivex:rxjava:1.2.0'
+    compile('com.trello:rxlifecycle:0.8.0') {
+        exclude group: 'io.reactivex', module: 'rxjava'
+    }
+    compile('com.trello:rxlifecycle-android:0.8.0') {
+        exclude group: 'com.trello', module: 'rxlifecycle'
+        exclude group: 'io.reactivex', module: 'rxjava'
+        exclude group: 'io.reactivex', module: 'rxandroid'
+    }
+    compile('com.trello:rxlifecycle-components:0.8.0') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+        exclude group: 'com.trello', module: 'rxlifecycle-android'
+        exclude group: 'com.trello', module: 'rxlifecycle'
+        exclude group: 'io.reactivex', module: 'rxandroid'
+        exclude group: 'io.reactivex', module: 'rxjava'
+    }
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'

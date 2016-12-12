@@ -10,4 +10,6 @@
         <item>Open Source License</item>
         <item>About</item>
     </string-array>
+
+    <string name="preferences_auth_token">preferences_auth_token</string>
 </resources>
