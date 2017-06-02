@@ -1,5 +1,9 @@
 # AndroidBlanky
-Creating a new blank Android app is a pain and takes time. Creating this blank Android project should be the last time I have to do it. 
+Creating a new blank Android app is a pain and takes time. Creating this blank Android project should be the last time I have to do it.
+
+## Generate app icons
+
+* Create a 128x128px icon and put into `fastlane/metadata/icons/app_icon.png`. Then run `fastlane app_icon` to generate them.
 
 How to use project:  
 
