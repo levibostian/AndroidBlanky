@@ -73,6 +73,12 @@ public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
     long consumerNode;
 }
 
+# ReactiveNetwork lib
+-dontwarn com.github.pwittchen.reactivenetwork.library.ReactiveNetwork
+-dontwarn io.reactivex.functions.Function
+-dontwarn rx.internal.util.**
+-dontwarn sun.misc.Unsafe
+
 # EventBus
 -keepattributes *Annotation*
 -keepclassmembers class ** {
@@ -87,6 +93,7 @@ public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
 # Fabric
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception # For your custom error classes.
 
 # Android v7 appcompat
 -keep public class android.support.v7.widget.** { *; }
@@ -104,6 +111,15 @@ public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
 
 # Picasso
 -dontwarn com.squareup.okhttp.**
+
+# Glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# for DexGuard only
+# -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 # Random apache code
 -dontnote android.net.http.*
