@@ -1,17 +1,17 @@
 package com.levibostian.androidblanky.fragment
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.curiosityio.andoidviews.fragment.BaseFragment
 import com.curiosityio.androidboilerplate.util.LogUtil
 import com.levibostian.androidblanky.MainApplication
 import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.vo.RepoVo
 import javax.inject.Inject
 
-class MainFragment : BaseFragment() {
+class MainFragment : Fragment() {
 
     companion object {
         fun newInstance(): MainFragment {
