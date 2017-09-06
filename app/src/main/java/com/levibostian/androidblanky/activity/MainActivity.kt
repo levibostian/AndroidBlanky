@@ -1,14 +1,23 @@
 package com.levibostian.androidblanky.activity
 
-import android.support.v4.app.Fragment
+import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.curiosityio.andoidviews.activity.BaseFragmentActivity
+import android.support.v7.widget.Toolbar
+import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.fragment.MainFragment
+import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
 
-class MainActivity : BaseFragmentActivity() {
+class MainActivity : AppCompatActivity() {
 
-    override fun getInitialFragment(): Fragment? {
-        return MainFragment.newInstance()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_toolbar_fragment_container)
+        setSupportActionBar(activity_toolbar_toolbar as Toolbar)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction().add(R.id.activity_toolbar_fragment_container, MainFragment.newInstance()).commit()
+        }
     }
 
 }

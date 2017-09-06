@@ -1,18 +1,4 @@
-# Customise this file, documentation can be found here:
-# https://github.com/fastlane/fastlane/tree/master/fastlane/docs
-# All available actions: https://docs.fastlane.tools/actions
-# can also be listed using the `fastlane actions` command
-
-# Change the syntax highlighting to Ruby
-# All lines starting with a # are ignored when running `fastlane`
-
-# If you want to automatically update fastlane if a new version is available:
-update_fastlane
-
-# This is the minimum version number required.
-# Update this, if you use features of a newer version
 fastlane_version "2.35.1"
-
 default_platform :android
 
 platform :android do
@@ -23,6 +9,17 @@ platform :android do
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
+  end
+
+  desc "Install dev build to connected device"
+  lane :install_dev do
+    gradle(
+      task: "install",
+      flavor: "Development",
+      build_type: "Debug",
+      flags: "--offline -PminSdk=22"
+    )
+    notification(subtitle: "Dev installed", message: "Done installing dev release to device.")
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"

@@ -4,12 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    android:gravity="center">
 
     <TextView
-        android:text="Hello World!"
+        android:text="Find out how many repos somone has."
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/fragment_main_github_username"
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter GitHub username"/>
+
+    <Button
+        android:id="@+id/fragment_main_find_num_repos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get number of repos"/>
+
+    <TextView
+        android:id="@+id/fragment_main_num_repos_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"/>
 
 </LinearLayout>

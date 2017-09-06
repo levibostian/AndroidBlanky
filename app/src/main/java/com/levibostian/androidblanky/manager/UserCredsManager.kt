@@ -1,13 +1,15 @@
 package com.levibostian.androidblanky.manager
 
 import android.content.Context
-import com.curiosityio.androidboilerplate.manager.SharedPreferencesManager
+import android.content.SharedPreferences
 import com.levibostian.androidblanky.R
 
-open class UserCredsManager(val context: Context) {
+open class UserCredsManager(val sharedPrefs: SharedPreferences) {
 
-    fun getAuthToken(): String? {
-        return SharedPreferencesManager.getString(context, context.getString(R.string.preferences_auth_token))
-    }
+    var authToken: String?
+        get() = sharedPrefs.getString("auth_token", null)
+        set(value) {
+            sharedPrefs.edit().putString("auth_token", value).commit()
+        }
 
 }
