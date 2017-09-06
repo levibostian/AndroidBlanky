@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.rx
+package com.levibostian.androidblanky.service.rx
 
 class HttpErrorResponseBody {
 

@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.vo.error
+package com.levibostian.androidblanky.service.vo.error
 
 class ErrorVo {
 

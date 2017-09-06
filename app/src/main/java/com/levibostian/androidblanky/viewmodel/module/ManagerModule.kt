@@ -1,16 +1,13 @@
-package com.levibostian.androidblanky.module
+package com.levibostian.androidblanky.viewmodel.module
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.support.v4.content.SharedPreferencesCompat
 
-import com.levibostian.androidblanky.manager.UserCredsManager
-import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.viewmodel.UserCredsManager
 
 import dagger.Module
 import dagger.Provides
-import retrofit2.Retrofit
 
 @Module class ManagerModule(private val context: Context) {
 

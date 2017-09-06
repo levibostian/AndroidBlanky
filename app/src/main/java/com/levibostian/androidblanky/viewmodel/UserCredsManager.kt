@@ -1,8 +1,6 @@
-package com.levibostian.androidblanky.manager
+package com.levibostian.androidblanky.viewmodel
 
-import android.content.Context
 import android.content.SharedPreferences
-import com.levibostian.androidblanky.R
 
 open class UserCredsManager(val sharedPrefs: SharedPreferences) {
 

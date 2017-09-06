@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.vo
+package com.levibostian.androidblanky.service.vo
 
 class RepoVo {
 

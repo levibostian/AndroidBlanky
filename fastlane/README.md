@@ -45,16 +45,16 @@ Install dev build to connected device
 fastlane android beta_beta
 ```
 Submit a new Beta Build to Crashlytics Beta
+### android prod_deploy
+```
+fastlane android prod_deploy
+```
+Deploy a new version to the Google Play
 ### android app_icon
 ```
 fastlane android app_icon
 ```
 
-### android deploy
-```
-fastlane android deploy
-```
-Deploy a new version to the Google Play
 
 ----
 

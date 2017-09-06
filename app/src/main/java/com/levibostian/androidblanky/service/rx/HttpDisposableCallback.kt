@@ -1,15 +1,9 @@
-package com.levibostian.androidblanky.rx
+package com.levibostian.androidblanky.service.rx
 
-import org.json.JSONObject
-import okhttp3.ResponseBody
-import retrofit2.adapter.rxjava2.Result.response
 import io.reactivex.observers.DisposableObserver
-import io.reactivex.observers.DisposableSingleObserver
 import retrofit2.HttpException
-import java.io.IOException
 import java.lang.ref.WeakReference
 import java.net.SocketTimeoutException
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 
 abstract class HttpDisposableObserver<T>(handler: HttpErrorMessageHandler) : DisposableObserver<T>() {

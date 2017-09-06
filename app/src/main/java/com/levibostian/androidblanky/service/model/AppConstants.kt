@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky
+package com.levibostian.androidblanky.service.model
 
 object AppConstants {
 

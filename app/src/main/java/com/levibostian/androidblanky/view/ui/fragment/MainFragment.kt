@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.fragment
+package com.levibostian.androidblanky.view.ui.fragment
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -6,31 +6,19 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar
-import com.jakewharton.rxbinding2.support.design.widget.RxTextInputLayout
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
-import com.jakewharton.rxbinding2.widget.error
-import com.levibostian.androidblanky.MainApplication
+import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.rx.HttpDisposableObserver
-import com.levibostian.androidblanky.rx.HttpErrorMessageHandler
+import com.levibostian.androidblanky.service.rx.HttpDisposableObserver
+import com.levibostian.androidblanky.service.rx.HttpErrorMessageHandler
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.vo.RepoVo
-import io.reactivex.Observer
-import io.reactivex.Single
-import io.reactivex.SingleObserver
+import com.levibostian.androidblanky.service.vo.RepoVo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subscribers.ResourceSubscriber
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.reactivestreams.Subscriber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

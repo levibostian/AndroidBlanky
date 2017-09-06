@@ -1,10 +1,8 @@
 package com.levibostian.androidblanky.service
 
 import retrofit2.http.GET
-import com.levibostian.androidblanky.vo.RepoVo
+import com.levibostian.androidblanky.service.vo.RepoVo
 import io.reactivex.Observable
-import io.reactivex.Single
-import retrofit2.Call
 import retrofit2.http.Path
 
 interface GitHubService {

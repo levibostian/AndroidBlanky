@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.models
+package com.levibostian.androidblanky.service.model
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey

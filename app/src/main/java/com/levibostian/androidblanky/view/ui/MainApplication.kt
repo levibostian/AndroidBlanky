@@ -1,10 +1,11 @@
-package com.levibostian.androidblanky
+package com.levibostian.androidblanky.view.ui
 
 import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.levibostian.androidblanky.module.ApiModule
-import com.levibostian.androidblanky.module.ManagerModule
+import com.levibostian.androidblanky.BuildConfig
+import com.levibostian.androidblanky.service.module.ApiModule
+import com.levibostian.androidblanky.viewmodel.module.ManagerModule
 import io.fabric.sdk.android.Fabric
 import io.realm.Realm
 import io.realm.RealmConfiguration

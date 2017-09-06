@@ -1,7 +1,7 @@
-package com.levibostian.androidblanky.fragment;
+package com.levibostian.androidblanky.view.ui.fragment;
 
 
-import com.levibostian.androidblanky.vo.RepoVo;
+import com.levibostian.androidblanky.service.vo.RepoVo;
 
 import java.util.List;
 
