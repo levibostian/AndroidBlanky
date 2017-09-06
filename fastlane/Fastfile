@@ -39,16 +39,23 @@ platform :android do
     notification(subtitle: "Finished beta release", message: "Released new Beta build of app")
   end
 
+  desc "Deploy a new version to the Google Play"
+  lane :prod_deploy do
+    foo = prompt(text: "Did you make sure to enter change log notes in /fastlane/metadata/android/en-US/app/changelog/? [y]")
+    bar = prompt(text: "Did you increment the version CODE in build.gradle? [y]")
+
+    gradle(task: "assembleProductionRelease")
+    supply(apk: "app/build/outputs/apk/app-production-release.apk",
+           package_name: 'com.levibostian.androidblanky',
+           metadata_path: "./fastlane/metadata/android/en-US/app/",
+           json_key: './fastlane/metadata/Google Play Android Developer-1234567890.json',
+           validate_only: true)
+  end
+
   lane :app_icon do
     android_appicon(appicon_image_file: 'fastlane/metadata/icons/app_icon.png',
       appicon_devices: [:phone, :tablet],
       appicon_path: 'app/src/main/res/mipmap')
-  end
-
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "assembleRelease")
-    supply
   end
 
   after_all do |lane|
@@ -60,16 +67,10 @@ platform :android do
   end
 
   error do |lane, exception|
+    notification(subtitle: "ERROR", message: "Error doing fastlane task")
     # slack(
     #   message: exception.message,
     #   success: false
     # )
   end
 end
-
-
-# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
-# All available actions: https://docs.fastlane.tools/actions
-
-# fastlane reports which actions are used. No personal data is recorded. 
-# Learn more at https://github.com/fastlane/fastlane#metrics
