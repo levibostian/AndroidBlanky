@@ -36,19 +36,9 @@ When creating build to release to play store:
 6. Sign the APK: `jarsigner -verbose -keystore KEYSTORE-PATH APK-PATH-CREATED-ABOVE KEYSTORE-ALIAS`
 7. Verify the signature: `jarsigner –verbose -keystore KEYSTORE-PATH –verify APK-PATH-CREATED-ABOVE`
 8. Zip Align the APK: `zipalign -v 4 UNALIGNED-SIGNED-APK.apk RELEASE_APK-NAME.apk` 
-9. [Publish](https://play.google.com/apps/publish) that bad boy. 
+9. [Publish](https://play.google.com/apps/publish) that bad boy.
 
-Things done in this app:
+# Credits
 
-* [Retrofit 2.0](https://github.com/square/retrofit) for JSON API handling.
-* [Google Dagger](https://google.github.io/dagger/) for dependency injection.
-* [Picasso](https://github.com/square/picasso) for easily working with images.
-* [Realm](https://realm.io/) for the database. Replacement for SQLite for easy way to work with databases.
-* [Android design support library](http://android-developers.blogspot.com/2015/05/android-design-support-library.html).
-* [Android AppCompat library](http://android-developers.blogspot.com/2014/10/appcompat-v21-material-design-for-pre.html).
-* Replace ActionBar with [Toolbar](http://android-developers.blogspot.com/2014/10/appcompat-v21-material-design-for-pre.html) in MainActivity.
-* [LeakCanary](https://github.com/square/leakcanary) library to catch memory leaks. (currently disabled as not working on Marshmallow)
-* Create debug/beta/production build flavors for Gradle.
-* Install [easy/secure way](https://github.com/almalkawi/Android-Guide/wiki/Generating-signed-release-APK-using-Gradle) to release app builds to release to store. (Install keystore/alias/password to make build releases)
-* Install some util classes for some easy ways to work with Android SDK.
-* [Dexcount gradle plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) to display method count every time gradle builds app.
+* [MockitoExample](https://github.com/JeroenMols/MockitoExample) for helping get Mockito v2 working.
+* [u2020](https://github.com/JakeWharton/u2020) for inspiration behind some of the project structure. This project helped setup my build.gradle files a ton!

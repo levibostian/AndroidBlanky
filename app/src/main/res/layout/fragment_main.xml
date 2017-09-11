@@ -5,31 +5,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".view.ui.activity.MainActivity"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="#EEEEEE">
 
-    <TextView
-        android:text="Find out how many repos somone has."
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"/>
+        android:padding="12dp"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/fragment_main_github_username"
+        <ImageView
+            android:id="@+id/fragment_main_profile_imageview"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            tools:background="@color/accent"/>
+
+        <TextView
+            android:id="@+id/fragment_main_username_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:textSize="20sp"
+            android:fontFamily="sans-serif-medium"
+            android:layout_gravity="center_vertical"
+            tools:text="levibostian"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_main_repos_recyclerview"
         android:layout_width="match_parent"
-        android:layout_margin="20dp"
-        android:layout_height="wrap_content"
-        android:hint="Enter GitHub username"/>
-
-    <Button
-        android:id="@+id/fragment_main_find_num_repos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get number of repos"/>
-
-    <TextView
-        android:id="@+id/fragment_main_num_repos_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:padding="8dp"
+        android:elevation="8dp"/>
 
 </LinearLayout>

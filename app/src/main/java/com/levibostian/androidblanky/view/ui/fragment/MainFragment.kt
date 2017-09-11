@@ -10,10 +10,7 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.service.rx.HttpDisposableObserver
-import com.levibostian.androidblanky.service.rx.HttpErrorMessageHandler
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.vo.RepoVo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -21,11 +18,24 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import android.arch.lifecycle.ViewModelProviders
+import com.levibostian.androidblanky.service.model.RepoModel
+import com.levibostian.androidblanky.service.statedata.StateData
+import com.levibostian.androidblanky.view.ui.LifecycleCompositeDisposable
+import com.levibostian.androidblanky.view.ui.plusAssign
+import com.levibostian.androidblanky.viewmodel.ReposViewModel
+import com.levibostian.androidblanky.viewmodel.ViewModelFactory
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.rxkotlin.toSingle
+import io.realm.RealmResults
 
-class MainFragment : Fragment(), HttpErrorMessageHandler {
+class MainFragment : SupportFragmentLifecycle() {
 
-    @Inject lateinit var service: GitHubService
-    private val composite = CompositeDisposable()
+    @Inject lateinit var viewModelFactory: ViewModelFactory
+
+    private val lifecycleComposite = LifecycleCompositeDisposable.init(this)
+
+    private lateinit var reposViewModel: ReposViewModel
 
     companion object {
         fun newInstance(): MainFragment {
@@ -41,6 +51,7 @@ class MainFragment : Fragment(), HttpErrorMessageHandler {
         super.onCreate(savedInstanceState)
 
         MainApplication.component.inject(this)
+        reposViewModel = ViewModelProviders.of(this, viewModelFactory).get(ReposViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,40 +61,21 @@ class MainFragment : Fragment(), HttpErrorMessageHandler {
     override fun onStart() {
         super.onStart()
 
-        val isUsernameNotBlank = RxTextView.afterTextChangeEvents(fragment_main_github_username)
-                .map { fragment_main_github_username.text.isNotBlank() }
-                .share()
-        composite += isUsernameNotBlank.subscribe(RxView.enabled(fragment_main_find_num_repos))
-        composite += isUsernameNotBlank
-                .filter { usernameNotBlank -> !usernameNotBlank }
-                .map { _ -> "Enter a username." }
-                .subscribe(RxTextView.error(fragment_main_github_username))
-
-        composite += RxView.clicks(fragment_main_find_num_repos)
-                .map { RxTextView.text(fragment_main_num_repos_textview).accept("Loading...") }
-                .debounce(500, TimeUnit.MILLISECONDS)
-                .flatMap {
-                    service.listRepos(fragment_main_github_username.text.toString())
-                            .subscribeOn(Schedulers.io())
-                }
+        lifecycleComposite += reposViewModel.getReposUsername()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : HttpDisposableObserver<List<RepoVo>>(MainFragment@this) {
-                    override fun onNext(repos: List<RepoVo>) {
-                        fragment_main_num_repos_textview.text = "Number of repos: ${repos.count()}"
-                    }
-                    override fun onError(e: Throwable) {
-                        fragment_main_num_repos_textview.text = "Error encountered. ${getErrorMessage(e)}"
+                .subscribe({ username ->
+                    fragment_main_username_textview.text = if (username.isBlank()) "(no username set)" else username
+                })
+        lifecycleComposite += reposViewModel.getRepos()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ reposState ->
+                    when (reposState.state) {
+                        StateData.State.LOADING -> TODO()
+                        StateData.State.EMPTY -> {}
+                        StateData.State.ERROR -> TODO()
+                        StateData.State.DATA -> TODO()
                     }
                 })
-    }
-
-    override fun onStop() {
-        composite.dispose()
-        super.onStop()
-    }
-
-    override fun handleHttpErrorMessage(message: String) {
-        view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG).show() }
     }
 
 }

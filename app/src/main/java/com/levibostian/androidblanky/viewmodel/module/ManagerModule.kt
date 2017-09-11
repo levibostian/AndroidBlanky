@@ -15,9 +15,5 @@ import dagger.Provides
         return UserCredsManager(sharedPrefs)
     }
 
-    @Provides fun provideSharedPrefs(): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-    }
-
 }
 

@@ -8,7 +8,16 @@ platform :android do
 
   desc "Runs all the tests"
   lane :test do
-    gradle(task: "test")
+    gradle(task: "testDevelopmentDebugUnitTest")
+    notification(subtitle: "Tests PASS!", message: "Tests PASS!")
+  end
+
+  desc "Run Android tests while also taking screenshots"
+  lane :android_test do
+    gradle(task: "assemble", flavor: "Development", build_type: "Debug")
+    gradle(task: "assembleDevelopmentDebugAndroidTest")
+    screengrab
+    notification(subtitle: "UI Tests PASS!", message: "UI Tests PASS!")
   end
 
   desc "Install dev build to connected device"

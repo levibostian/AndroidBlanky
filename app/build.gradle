@@ -44,6 +44,8 @@ android {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
+        testInstrumentationRunner 'com.levibostian.androidblanky.AndroidTestTestRunner'
+
         //multiDexEnabled true // don't need as not over dex limit yet.
         vectorDrawables.useSupportLibrary = true
     }
@@ -55,10 +57,10 @@ android {
 
     signingConfigs {
         releaseSigning {
-            storeFile rootProject.file('../keystores/keystore-filename.keystore')
-            storePassword 'android'
-            keyAlias 'android'
-            keyPassword 'android'
+            storeFile rootProject.file('keystores/keystore-name.keystore')
+            storePassword 'password'
+            keyAlias 'android-blanky'
+            keyPassword 'password'
         }
     }
 
@@ -132,8 +134,8 @@ artifacts {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
 
     // Support libraries
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
@@ -145,7 +147,10 @@ dependencies {
     implementation "android.arch.lifecycle:runtime:$rootProject.architectureComponentsVersion"
     implementation "android.arch.lifecycle:extensions:$rootProject.architectureComponentsVersion"
     kapt "android.arch.lifecycle:compiler:$rootProject.architectureComponentsVersion"
-    implementation "android.arch.lifecycle:reactivestreams:$rootProject.architectureComponentsVersion"
+
+    // Dagger
+    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
@@ -156,49 +161,60 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:$rootProject.rxbindingVersion"
     implementation "com.jakewharton.rxbinding2:rxbinding-design-kotlin:$rootProject.rxbindingVersion"
     implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:$rootProject.rxbindingVersion"
+    implementation "com.f2prateek.rx.preferences2:rx-preferences:$rootProject.rxPreferencesVersion"
 
     // Retrofit
     implementation "com.squareup.moshi:moshi:$rootProject.moshiVersion"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-moshi:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
-
-    // Dagger
-    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
-    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    implementation "com.squareup.retrofit2:retrofit-mock:$rootProject.retrofitVersion"
 
     // Realm
     implementation "io.realm:android-adapters:$rootProject.realmAdaptersVersion"
+
+    // Eventbus
+    implementation "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+
+    // Khronos (Kotlin date extensions)
+    implementation "com.github.hotchemi:khronos:$rootProject.khronosVersion"
 
     // Crashlytics
     implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
         transitive = true;
     }
 
+    implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+
     // Dependencies for local unit tests
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
-    testImplementation "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
     testImplementation "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
     testImplementation "android.arch.core:core-testing:$rootProject.architectureComponentsVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "io.reactivex:rxjava:1.3.0" // requirement for realm.
+    testImplementation "org.mockito:mockito-core:$rootProject.mockitoCoreUnitTestingVersion"
+    testImplementation "com.nhaarman:mockito-kotlin-kt1.1:$rootProject.mockitoKotlinVersion", { exclude group: 'org.jetbrains.kotlin' }
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.runnerVersion"
     androidTestImplementation "com.android.support.test:rules:$rootProject.ext.runnerVersion"
-    androidTestImplementation "android.arch.persistence.room:testing:$rootProject.architectureComponentsVersion"
     androidTestImplementation "android.arch.core:core-testing:$rootProject.architectureComponentsVersion"
 
     // Dependencies for Android unit tests
     androidTestImplementation "junit:junit:$rootProject.ext.junitVersion"
-    androidTestImplementation "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
+    androidTestImplementation "org.mockito:mockito-core:$rootProject.ext.androidTestsMockitoVersion"
     androidTestImplementation "com.google.dexmaker:dexmaker:$rootProject.ext.dexmakerVersion"
     androidTestImplementation "com.google.dexmaker:dexmaker-mockito:$rootProject.ext.dexmakerVersion"
 
     // Espresso UI Testing
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
-    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion") {
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'support-annotations'
+    }
     androidTestImplementation "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
+    androidTestImplementation "tools.fastlane:screengrab:$rootProject.fastlaneScreengrabVersion"
 
     // Resolve conflicts between main and test APK:
     androidTestImplementation "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
