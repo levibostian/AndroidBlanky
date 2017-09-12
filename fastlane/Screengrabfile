@@ -6,9 +6,9 @@ tests_apk_path 'app/build/outputs/apk/androidTest/development/debug/app-developm
 
 locales ['en-US']
 clear_previous_screenshots true
-exit_on_test_failure true
-reinstall_app false
+exit_on_test_failure false
 device_type 'phone'
 test_instrumentation_runner 'com.levibostian.androidblanky.AndroidTestTestRunner'
 output_directory 'fastlane/metadata/android'
 build_tools_version '26.0.1'
+reinstall_app true

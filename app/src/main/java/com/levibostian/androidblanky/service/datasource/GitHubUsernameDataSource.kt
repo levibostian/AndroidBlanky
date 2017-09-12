@@ -4,13 +4,14 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
+import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import java.util.*
 
-open class GitHubUsernameDataSource(val rxSharedPreferences: RxSharedPreferences,
-                                    val sharedPreferences: SharedPreferences): DataSource<String, GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements, String> {
+open class GitHubUsernameDataSource(private val rxSharedPreferencesWrapper: RxSharedPreferencesWrapper,
+                                    private val sharedPreferences: SharedPreferences): DataSource<String, GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements, String> {
 
     override fun fetchNewData(requirements: GitHubUsernameFetchDataRequirements): Completable = Completable.complete()
 
@@ -24,7 +25,7 @@ open class GitHubUsernameDataSource(val rxSharedPreferences: RxSharedPreferences
     }
 
     override fun getData(): Observable<String> {
-        return rxSharedPreferences.getString(SharedPrefersKeys.gitHubUsernameKey).asObservable()
+        return rxSharedPreferencesWrapper.getString(SharedPrefersKeys.gitHubUsernameKey).asObservable()
     }
 
     override fun cleanup() {

@@ -11,6 +11,7 @@ import com.levibostian.androidblanky.service.RealmInstanceWrapper
 import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
+import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import io.reactivex.Observable
 import io.realm.Realm
 import org.junit.Before
@@ -30,7 +31,8 @@ class GitHubUsernameDataSourceTest {
 
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Mock private lateinit var rxSharedPreferences: RxSharedPreferences
+    //@Mock private lateinit var rxSharedPreferences: RxSharedPreferences
+    @Mock private lateinit var rxSharedPreferencesWrapper: RxSharedPreferencesWrapper
     @Mock private lateinit var sharedPreferences: SharedPreferences
     @Mock private lateinit var sharedPreferencesEditor: SharedPreferences.Editor
     @Mock private lateinit var preference: Preference<String>
@@ -40,11 +42,11 @@ class GitHubUsernameDataSourceTest {
     private lateinit var dataSource: GitHubUsernameDataSource
 
     @Before fun setUp() {
-        dataSource = GitHubUsernameDataSource(rxSharedPreferences, sharedPreferences)
+        dataSource = GitHubUsernameDataSource(rxSharedPreferencesWrapper, sharedPreferences)
     }
 
     @Test fun getData_nothingSetDefaultString() {
-        `when`(rxSharedPreferences.getString(SharedPrefersKeys.gitHubUsernameKey)).thenReturn(preference)
+        `when`(rxSharedPreferencesWrapper.getString(SharedPrefersKeys.gitHubUsernameKey)).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.just(""))
 
         dataSource.getData()
@@ -53,7 +55,7 @@ class GitHubUsernameDataSourceTest {
     }
 
     @Test fun getData_getDataFromSharedPrefs() {
-        `when`(rxSharedPreferences.getString(SharedPrefersKeys.gitHubUsernameKey)).thenReturn(preference)
+        `when`(rxSharedPreferencesWrapper.getString(SharedPrefersKeys.gitHubUsernameKey)).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.just("username"))
 
         dataSource.getData()

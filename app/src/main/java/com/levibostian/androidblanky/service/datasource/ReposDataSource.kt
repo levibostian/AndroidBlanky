@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.RealmInstanceWrapper
 import com.levibostian.androidblanky.service.dao.repoDao
+import com.levibostian.androidblanky.service.error.fatal.HttpUnhandledStatusCodeException
 import com.levibostian.androidblanky.service.error.nonfatal.HttpUnsuccessfulStatusCodeException
 import com.levibostian.androidblanky.service.error.nonfatal.RecoverableBadNetworkConnectionException
 import com.levibostian.androidblanky.service.error.nonfatal.UserErrorException
@@ -27,9 +28,26 @@ open class ReposDataSource(val sharedPreferences: SharedPreferences,
 
     override fun fetchNewData(requirements: FetchNewDataRequirements): Completable {
         return gitHubService.getRepos(requirements.githubUsername)
-                .mapApiCallResult { statusCode ->
-                    if (statusCode == 404) throw UserErrorException("The username you entered does not exist in GitHub. Try another username.")
+                .map { result ->
+            if (result.isError) {
+                val retrofitError = result.error()!!
+                if (retrofitError is IOException) {
+                    // Note: For now, I will mark all requests as recoverable. I am not sure if there are any errors that should fail because my server is not configured correctly or something, but it is risky to guess here what is good and bad so we will leave it at this and assume bad issues will be thrown globally.
+                    throw RecoverableBadNetworkConnectionException(retrofitError)
                 }
+
+                throw retrofitError
+            }
+
+            val response = result.response()!!
+            if (response.isSuccessful) {
+                response.body()!!
+            } else {
+                if (response.code() == 404) throw UserErrorException("The username you entered does not exist in GitHub. Try another username.")
+
+                throw HttpUnhandledStatusCodeException("Sorry, there seems to be an issue. We have been notified. Try again later.")
+            }
+        }
                 .map { repos ->
                     saveData(repos).subscribe()
                     repos

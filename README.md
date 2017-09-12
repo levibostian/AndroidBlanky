@@ -38,7 +38,18 @@ When creating build to release to play store:
 8. Zip Align the APK: `zipalign -v 4 UNALIGNED-SIGNED-APK.apk RELEASE_APK-NAME.apk` 
 9. [Publish](https://play.google.com/apps/publish) that bad boy.
 
+# Tests
+
+* Run JUnit unit tests:
+
+`fastlane test`
+
+* Run Android Espresso tests and take screenshots:
+
+`fastlane android_test`
+
 # Credits
 
 * [MockitoExample](https://github.com/JeroenMols/MockitoExample) for helping get Mockito v2 working.
 * [u2020](https://github.com/JakeWharton/u2020) for inspiration behind some of the project structure. This project helped setup my build.gradle files a ton!
+* [clean-status-bar](https://github.com/emmaguy/clean-status-bar) for app to create a clean status bar intent.

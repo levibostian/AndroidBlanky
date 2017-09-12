@@ -22,11 +22,9 @@ import java.io.IOException
 import java.net.SocketException
 import io.fabric.sdk.android.services.common.Crash
 
-class MainApplication : Application() {
+open class MainApplication : Application() {
 
-    companion object {
-        @JvmStatic lateinit var component: ApplicationComponent
-    }
+    val component: ApplicationComponent by lazy { getApplicationComponent() }
 
     override fun onCreate() {
         super.onCreate()
@@ -62,15 +60,11 @@ class MainApplication : Application() {
             }
         }
 
-        component = DaggerApplicationComponent.builder()
-                .serviceModule(ServiceModule(this))
-                .managerModule(ManagerModule(this))
-                .repositoryModule(RepositoryModule(this))
-                .viewModelModule(ViewModelModule(this))
-                .dataSourceModule(DataSourceModule(this))
-                .build()
-
         configureRealm()
+    }
+
+    protected open fun getApplicationComponent(): ApplicationComponent {
+        return AppApplicationComponent.Initializer.init(this)
     }
 
     private fun configureRealm() {

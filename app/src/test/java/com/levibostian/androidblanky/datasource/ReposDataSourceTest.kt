@@ -12,7 +12,6 @@ import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import io.reactivex.Single
 import io.realm.Realm
-import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,8 +54,6 @@ class ReposDataSourceTest {
     private lateinit var reposDataSource: ReposDataSource
 
     @Before fun setUp() {
-        MockitoAnnotations.initMocks(this)
-
         `when`(realmWrapper.getDefault()).thenReturn(realm)
         reposDataSource = ReposDataSource(sharedPreferences, githubService, realmWrapper)
     }

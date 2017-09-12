@@ -7,6 +7,7 @@ import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.RealmInstanceWrapper
 import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
+import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 
 import dagger.Module
 import dagger.Provides
@@ -17,8 +18,8 @@ import dagger.Provides
         return ReposDataSource(sharedPreferences, gitHubService, realmInstanceWrapper)
     }
 
-    @Provides fun provideGitHubUsernameDataSource(rxSharedPreferences: RxSharedPreferences, sharedPreferences: SharedPreferences): GitHubUsernameDataSource {
-        return GitHubUsernameDataSource(rxSharedPreferences, sharedPreferences)
+    @Provides fun provideGitHubUsernameDataSource(rxSharedPreferencesWrapper: RxSharedPreferencesWrapper, sharedPreferences: SharedPreferences): GitHubUsernameDataSource {
+        return GitHubUsernameDataSource(rxSharedPreferencesWrapper, sharedPreferences)
     }
 
 }

@@ -14,6 +14,7 @@ platform :android do
 
   desc "Run Android tests while also taking screenshots"
   lane :android_test do
+    gradle(task: "clean")
     gradle(task: "assemble", flavor: "Development", build_type: "Debug")
     gradle(task: "assembleDevelopmentDebugAndroidTest")
     screengrab

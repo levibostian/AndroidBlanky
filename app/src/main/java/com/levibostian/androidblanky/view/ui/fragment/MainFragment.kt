@@ -25,6 +25,7 @@ import com.levibostian.androidblanky.view.ui.LifecycleCompositeDisposable
 import com.levibostian.androidblanky.view.ui.plusAssign
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
+import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.rxkotlin.toSingle
 import io.realm.RealmResults
@@ -50,7 +51,7 @@ class MainFragment : SupportFragmentLifecycle() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MainApplication.component.inject(this)
+        (activity.application as MainApplication).component.inject(this)
         reposViewModel = ViewModelProviders.of(this, viewModelFactory).get(ReposViewModel::class.java)
     }
 

@@ -23,8 +23,8 @@ test:
         parallel: true
     - circle-android wait-for-boot # wait for it to have booted
     # adb settings found from u2020 app.
-    - adb shell settings put global window_animation_scale 0 &
-    - adb shell settings put global transition_animation_scale 0 &
-    - adb shell settings put global animator_duration_scale 0 &
-    - adb shell input keyevent 82 &
-    - ./gradlew connectedAndroidTest # run tests  against the emulator.
+    - adb shell settings put global window_animation_scale 0
+    - adb shell settings put global transition_animation_scale 0
+    - adb shell settings put global animator_duration_scale 0
+    - adb shell input keyevent 82
+    - fastlane android_test # run tests  against the emulator.
