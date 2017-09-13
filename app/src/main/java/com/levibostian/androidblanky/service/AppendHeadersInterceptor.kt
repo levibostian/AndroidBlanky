@@ -1,6 +1,6 @@
 package com.levibostian.androidblanky.service
 
-import com.levibostian.androidblanky.viewmodel.UserCredsManager
+import com.levibostian.androidblanky.service.manager.UserCredsManager
 import okhttp3.Interceptor
 import okhttp3.Response
 

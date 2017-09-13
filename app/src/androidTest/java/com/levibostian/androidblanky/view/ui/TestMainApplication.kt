@@ -4,8 +4,12 @@ import com.levibostian.androidblanky.MockApplicationComponent
 
 class TestMainApplication : MainApplication() {
 
+    companion object {
+        var overrideComponent: ApplicationComponent? = null
+    }
+
     override fun getApplicationComponent(): ApplicationComponent {
-        return MockApplicationComponent.Initializer.init(this)
+        return overrideComponent ?: MockApplicationComponent.Initializer.init(this)
     }
 
 }

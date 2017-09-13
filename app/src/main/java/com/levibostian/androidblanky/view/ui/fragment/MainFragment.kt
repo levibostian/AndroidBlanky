@@ -73,7 +73,7 @@ class MainFragment : SupportFragmentLifecycle() {
                     when (reposState.state) {
                         StateData.State.LOADING -> TODO()
                         StateData.State.EMPTY -> {}
-                        StateData.State.ERROR -> TODO()
+                        StateData.State.ERROR -> {}
                         StateData.State.DATA -> TODO()
                     }
                 })

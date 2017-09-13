@@ -40,6 +40,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.hamcrest.Matchers
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.model.OwnerModel
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
@@ -50,6 +51,7 @@ import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
 import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
 import io.reactivex.rxkotlin.toSingle
+import io.realm.Realm
 import org.junit.BeforeClass
 import org.mockito.*
 import retrofit2.Response
@@ -61,6 +63,7 @@ open class DummyTest {
     @Inject lateinit var gitHubService: GitHubService
     @Inject lateinit var sharedPrefs: SharedPreferences
     @Inject lateinit var rxSharedPrefsWrapper: RxSharedPreferencesWrapper
+    @Inject lateinit var realmInstanceManager: RealmInstanceManager
 
     @Mock private lateinit var preference: Preference<String>
 
@@ -80,6 +83,8 @@ open class DummyTest {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         application = instrumentation.targetContext.applicationContext as TestMainApplication
         (application.component as MockApplicationComponent).inject(this)
+
+        `when`(realmInstanceManager.getDefault()).thenReturn(RealmInstanceManager.getInMemory())
     }
 
     private fun launchActivity() {

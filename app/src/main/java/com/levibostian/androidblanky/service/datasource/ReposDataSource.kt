@@ -3,10 +3,9 @@ package com.levibostian.androidblanky.service.datasource
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.RealmInstanceWrapper
+import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.dao.repoDao
 import com.levibostian.androidblanky.service.error.fatal.HttpUnhandledStatusCodeException
-import com.levibostian.androidblanky.service.error.nonfatal.HttpUnsuccessfulStatusCodeException
 import com.levibostian.androidblanky.service.error.nonfatal.RecoverableBadNetworkConnectionException
 import com.levibostian.androidblanky.service.error.nonfatal.UserErrorException
 import com.levibostian.androidblanky.service.model.RepoModel
@@ -20,11 +19,11 @@ import io.realm.RealmResults
 import java.io.IOException
 import java.util.*
 
-open class ReposDataSource(val sharedPreferences: SharedPreferences,
-                           val gitHubService: GitHubService,
-                           val realmWrapper: RealmInstanceWrapper) : DataSource<RealmResults<RepoModel>, ReposDataSource.FetchNewDataRequirements, List<RepoModel>> {
+open class ReposDataSource(private val sharedPreferences: SharedPreferences,
+                           private val gitHubService: GitHubService,
+                           private val realmManager: RealmInstanceManager) : DataSource<RealmResults<RepoModel>, ReposDataSource.FetchNewDataRequirements, List<RepoModel>> {
 
-    private val uiRealm: Realm = realmWrapper.getDefault()
+    private val uiRealm: Realm = realmManager.getDefault()
 
     override fun fetchNewData(requirements: FetchNewDataRequirements): Completable {
         return gitHubService.getRepos(requirements.githubUsername)
@@ -71,7 +70,7 @@ open class ReposDataSource(val sharedPreferences: SharedPreferences,
 
     override fun saveData(data: List<RepoModel>): Completable {
         return Completable.fromCallable {
-            val realm = realmWrapper.getDefault()
+            val realm = realmManager.getDefault()
             realm.executeTransaction {
                 realm.delete(RepoModel::class.java)
                 realm.insert(data)

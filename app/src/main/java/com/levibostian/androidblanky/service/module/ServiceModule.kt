@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.preference.PreferenceManager
-import com.f2prateek.rx.preferences2.RxSharedPreferences
 import com.levibostian.androidblanky.view.ui.MainApplication
 import dagger.Module
 import dagger.Provides
@@ -12,11 +11,12 @@ import javax.inject.Singleton
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
 import com.levibostian.androidblanky.service.model.AppConstants
-import com.levibostian.androidblanky.viewmodel.UserCredsManager
+import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.AppendHeadersInterceptor
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.RealmInstanceWrapper
+import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
+import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
@@ -62,8 +62,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
         return RxSharedPreferencesWrapper(sharedPreferences)
     }
 
-    @Provides fun provideRealmWrapper(): RealmInstanceWrapper {
-        return RealmInstanceWrapper()
+    @Provides fun provideRealmWrapper(userManager: UserManager): RealmInstanceManager {
+        return RealmInstanceManager(userManager)
     }
 
 }

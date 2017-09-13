@@ -20,9 +20,9 @@ import khronos.minus
 import khronos.minutes
 import khronos.plus
 
-open class RepoRepository(val reposDataSource: ReposDataSource,
-                          val gitHubUsernameDataSource: GitHubUsernameDataSource,
-                          val composite: CompositeDisposable): Repository {
+open class RepoRepository(private val reposDataSource: ReposDataSource,
+                          private val gitHubUsernameDataSource: GitHubUsernameDataSource,
+                          private val composite: CompositeDisposable): Repository {
 
     private val getReposObservable: BehaviorSubject<ReposStateData> = BehaviorSubject.create()
 

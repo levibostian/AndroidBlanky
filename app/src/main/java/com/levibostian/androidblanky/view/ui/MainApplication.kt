@@ -60,19 +60,11 @@ open class MainApplication : Application() {
             }
         }
 
-        configureRealm()
+        Realm.init(this)
     }
 
     protected open fun getApplicationComponent(): ApplicationComponent {
         return AppApplicationComponent.Initializer.init(this)
-    }
-
-    private fun configureRealm() {
-        Realm.init(this)
-        val config = RealmConfiguration.Builder()
-                .schemaVersion(0)
-                .build()
-        Realm.setDefaultConfiguration(config)
     }
 
     /** A tree which logs important information for crash reporting.  */

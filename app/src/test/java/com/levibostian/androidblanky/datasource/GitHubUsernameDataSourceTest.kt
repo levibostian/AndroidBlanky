@@ -3,17 +3,11 @@ package com.levibostian.androidblanky.datasource
 import android.annotation.SuppressLint
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
-import android.util.Log
 import com.f2prateek.rx.preferences2.Preference
-import com.f2prateek.rx.preferences2.RxSharedPreferences
-import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.RealmInstanceWrapper
 import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
-import com.levibostian.androidblanky.service.datasource.ReposDataSource
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import io.reactivex.Observable
-import io.realm.Realm
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,10 +15,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import timber.log.Timber
-import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
 class GitHubUsernameDataSourceTest {

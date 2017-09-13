@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.RealmInstanceWrapper
+import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
 import com.levibostian.androidblanky.service.error.nonfatal.UserErrorException
 import com.levibostian.androidblanky.service.model.OwnerModel
@@ -17,17 +17,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.*
 import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import com.levibostian.androidblanky.RxImmediateSchedulerRule
 import io.realm.RealmAsyncTask
-import org.junit.ClassRule
-import org.mockito.Mockito
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -39,7 +35,7 @@ class ReposDataSourceTest {
     @Mock private lateinit var sharedPreferences: SharedPreferences
     @Mock private lateinit var sharedPreferencesEditor: SharedPreferences.Editor
     @Mock private lateinit var githubService: GitHubService
-    @Mock private lateinit var realmWrapper: RealmInstanceWrapper
+    @Mock private lateinit var realmManager: RealmInstanceManager
     @Mock private lateinit var realm: Realm
     @Mock private lateinit var result: Result<List<RepoModel>>
     @Mock private lateinit var response: Response<List<RepoModel>>
@@ -54,8 +50,8 @@ class ReposDataSourceTest {
     private lateinit var reposDataSource: ReposDataSource
 
     @Before fun setUp() {
-        `when`(realmWrapper.getDefault()).thenReturn(realm)
-        reposDataSource = ReposDataSource(sharedPreferences, githubService, realmWrapper)
+        `when`(realmManager.getDefault()).thenReturn(realm)
+        reposDataSource = ReposDataSource(sharedPreferences, githubService, realmManager)
     }
 
     @Test fun fetchNewData_didThrow404() {
