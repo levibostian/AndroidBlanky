@@ -26,6 +26,7 @@ ext {
     realmAdaptersVersion = "2.1.0"
     eventbusVersion = "3.0.0"
     khronosVersion = "0.9.0"
+    androidViewsVersion = "ea85ee16e0"
     crashlyticsVersion = "2.6.1"
     timberVersion = "4.5.1"
     junitVersion = '4.12'

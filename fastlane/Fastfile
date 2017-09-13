@@ -6,7 +6,14 @@ platform :android do
     # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
   end
 
-  desc "Runs all the tests"
+  desc "Runs all tests. UI, Unit, all of em."
+    lane :test_all do
+      test()
+      android_tests()
+      notification(subtitle: "Tests PASS!", message: "Tests PASS!")
+    end
+
+  desc "Runs all unit tests"
   lane :test do
     gradle(task: "testDevelopmentDebugUnitTest")
     notification(subtitle: "Tests PASS!", message: "Tests PASS!")

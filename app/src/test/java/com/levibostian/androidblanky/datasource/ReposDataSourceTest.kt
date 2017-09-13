@@ -3,6 +3,7 @@ package com.levibostian.androidblanky.datasource
 import android.annotation.SuppressLint
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
+import android.support.annotation.UiThread
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
@@ -23,6 +24,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import com.levibostian.androidblanky.RxImmediateSchedulerRule
+import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import io.realm.RealmAsyncTask
 
 

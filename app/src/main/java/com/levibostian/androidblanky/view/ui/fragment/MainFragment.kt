@@ -71,10 +71,16 @@ class MainFragment : SupportFragmentLifecycle() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ reposState ->
                     when (reposState.state) {
-                        StateData.State.LOADING -> TODO()
-                        StateData.State.EMPTY -> {}
-                        StateData.State.ERROR -> {}
-                        StateData.State.DATA -> TODO()
+                        StateData.State.LOADING -> fragment_main_loading_empty_layout.showLoadingView(true)
+                        StateData.State.EMPTY -> {
+                            fragment_main_loading_empty_layout.setEmptyViewMessage("User does not have any repos.")
+                            fragment_main_loading_empty_layout.showEmptyView(true)
+                        }
+                        StateData.State.ERROR -> {
+                            fragment_main_loading_empty_layout.setEmptyViewMessage(reposState.error!!.message!!)
+                            fragment_main_loading_empty_layout.showEmptyView(true)
+                        }
+                        StateData.State.DATA -> fragment_main_loading_empty_layout.showContentView(true)
                     }
                 })
     }

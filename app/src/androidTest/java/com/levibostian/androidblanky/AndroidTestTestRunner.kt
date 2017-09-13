@@ -35,6 +35,8 @@ open class AndroidTestTestRunner : AndroidJUnitRunner() {
     private fun cleanupStatusBar(context: Context) {
         val extras = Bundle()
         extras.putBoolean("enabled", true)
+        extras.putString("background_color", context.getColor(R.color.primary_darker).toString())
+        extras.putString("background_color_name", context.getString(R.string.app_name))
         val intent = Intent("com.emmaguy.cleanstatusbar.TOGGLE")
         intent.putExtras(extras)
         context.sendBroadcast(intent)

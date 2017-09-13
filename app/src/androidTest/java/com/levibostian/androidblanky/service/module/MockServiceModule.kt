@@ -11,6 +11,7 @@ import dagger.Provides
 import javax.inject.Singleton
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
+import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import org.greenrobot.eventbus.EventBus
 
@@ -42,6 +43,10 @@ import org.greenrobot.eventbus.EventBus
 
     @Provides @Singleton fun provideRealmWrapper(): RealmInstanceManager {
         return Mockito.mock(RealmInstanceManager::class.java)
+    }
+
+    @Provides @Singleton fun provideLooperWrapper(): LooperWrapper {
+        return Mockito.mock(LooperWrapper::class.java)
     }
 
 }

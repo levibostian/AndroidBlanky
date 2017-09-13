@@ -179,6 +179,9 @@ dependencies {
     // Khronos (Kotlin date extensions)
     implementation "com.github.hotchemi:khronos:$rootProject.khronosVersion"
 
+    // Custom views
+    implementation "com.github.curiosityio.androidviews:loadingemptyviews:$rootProject.androidViewsVersion"
+
     // Crashlytics
     implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
         transitive = true;

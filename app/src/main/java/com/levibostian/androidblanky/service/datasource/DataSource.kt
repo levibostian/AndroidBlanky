@@ -1,10 +1,12 @@
 package com.levibostian.androidblanky.service.datasource
 
+import android.os.Looper
 import com.levibostian.androidblanky.service.error.fatal.HttpUnhandledStatusCodeException
 import com.levibostian.androidblanky.service.error.nonfatal.HttpUnsuccessfulStatusCodeException
 import com.levibostian.androidblanky.service.error.nonfatal.RecoverableBadNetworkConnectionException
 import com.levibostian.androidblanky.service.error.nonfatal.UserErrorException
 import com.levibostian.androidblanky.service.repository.Repository
+import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -61,4 +63,8 @@ fun <T> Single<Result<T>>.mapApiCallResult(handleStatusCode: (Int) -> Unit): Sin
             throw HttpUnhandledStatusCodeException("Sorry, there seems to be an issue. We have been notified. Try again later.")
         }
     }
+}
+
+fun <A, B, C> DataSource<A, B, C>.assertMainThread(looperWrapper: LooperWrapper) {
+    if (!looperWrapper.isOnUIThread()) throw RuntimeException("Must be on UI thread")
 }

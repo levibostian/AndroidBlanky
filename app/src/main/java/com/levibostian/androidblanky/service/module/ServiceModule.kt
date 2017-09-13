@@ -17,6 +17,7 @@ import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.manager.UserManager
+import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
@@ -64,6 +65,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
     @Provides fun provideRealmWrapper(userManager: UserManager): RealmInstanceManager {
         return RealmInstanceManager(userManager)
+    }
+
+    @Provides fun provideLooperWrapper(): LooperWrapper {
+        return LooperWrapper()
     }
 
 }

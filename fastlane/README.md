@@ -30,11 +30,16 @@ xcode-select --install
 
 # Available Actions
 ## Android
+### android test_all
+```
+fastlane android test_all
+```
+Runs all tests. UI, Unit, all of em.
 ### android test
 ```
 fastlane android test
 ```
-Runs all the tests
+Runs all unit tests
 ### android android_test
 ```
 fastlane android android_test

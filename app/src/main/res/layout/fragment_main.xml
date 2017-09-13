@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.ui.activity.MainActivity"
-    android:gravity="center"
-    android:background="#EEEEEE">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:custom="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              tools:context=".view.ui.activity.MainActivity"
+              android:gravity="center"
+              android:background="#EEEEEE">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,12 +32,20 @@
             tools:text="levibostian"/>
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_main_repos_recyclerview"
+    <com.curiosityio.loadingemptyviews.views.LoadingEmptyLayout
+        android:id="@+id/fragment_main_loading_empty_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="8dp"
         android:background="@android:color/white"
-        android:padding="8dp"
-        android:elevation="8dp"/>
+        custom:loadingView_loadingText="Loading repos..."
+        custom:loadingView_emptyText="User does not have any repos."
+        android:padding="8dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_main_repos_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.curiosityio.loadingemptyviews.views.LoadingEmptyLayout>
 
 </LinearLayout>

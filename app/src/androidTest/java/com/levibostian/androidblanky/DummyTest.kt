@@ -4,6 +4,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.content.SharedPreferences
 import android.support.test.InstrumentationRegistry
+import android.support.test.annotation.UiThreadTest
 import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions
@@ -84,7 +85,9 @@ open class DummyTest {
         application = instrumentation.targetContext.applicationContext as TestMainApplication
         (application.component as MockApplicationComponent).inject(this)
 
-        `when`(realmInstanceManager.getDefault()).thenReturn(RealmInstanceManager.getInMemory())
+        instrumentation.runOnMainSync { // Make sure to run this on the instrumentation UI thread or Realm will give you an error saying that "you cannot close a realm instance from another thread that created it" even though my app code is calling from the UI thread. This asserts the Realm instances are created on the UI thread.
+            `when`(realmInstanceManager.getDefault()).thenReturn(RealmInstanceManager.getInMemory())
+        }
     }
 
     private fun launchActivity() {
