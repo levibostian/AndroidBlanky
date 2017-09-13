@@ -1,18 +1,18 @@
 package com.levibostian.androidblanky.service.repository
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.common.truth.Truth
 import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
 import com.levibostian.androidblanky.service.model.OwnerModel
 import com.levibostian.androidblanky.service.model.RepoModel
-import com.levibostian.androidblanky.service.statedata.ReposStateData
 import com.levibostian.androidblanky.service.statedata.StateData
 import com.nhaarman.mockito_kotlin.times
 import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.MaybeObserver
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.realm.OrderedRealmCollection
-import io.realm.Realm
 import io.realm.RealmResults
 import khronos.Dates
 import khronos.minus
@@ -25,10 +25,10 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.verification.VerificationMode
 import java.io.IOException
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import org.mockito.ArgumentCaptor
+
+
 
 @RunWith(MockitoJUnitRunner::class)
 class RepoRespositoryTest {
@@ -39,8 +39,10 @@ class RepoRespositoryTest {
     @Mock private lateinit var githubUsernameDataSource: GitHubUsernameDataSource
     @Mock private lateinit var composite: CompositeDisposable
     @Mock private lateinit var repos: RealmResults<RepoModel>
+    @Mock private lateinit var completable: Completable
+    @Mock private lateinit var maybeString: Maybe<String>
 
-    @Captor private lateinit var userArgumentCaptor: ArgumentCaptor<RepoRepository>
+    @Captor private lateinit var maybeObservableStringArgumentCaptor: ArgumentCaptor<MaybeObserver<in String>>
 
     private lateinit var repository: RepoRepository
 
@@ -166,12 +168,16 @@ class RepoRespositoryTest {
 
     @Test fun getRepos_fetchNewDataLastFetchTimeNotSet() {
         `when`(reposDataSource.lastTimeNewDataFetched()).thenReturn(null)
+        `when`(reposDataSource.fetchNewData(com.nhaarman.mockito_kotlin.any())).thenReturn(completable)
+        `when`(completable.toMaybe<String>()).thenReturn(maybeString)
         `when`(githubUsernameDataSource.getData()).thenReturn(Observable.just("username"))
 
         repository.getRepos()
                 .test()
 
         verify(reposDataSource).fetchNewData(com.nhaarman.mockito_kotlin.any())
+        verify(maybeString).subscribe(maybeObservableStringArgumentCaptor.capture())
+        Truth.assertThat(maybeObservableStringArgumentCaptor.value).isNotNull()
     }
 
     @Test fun getRepos_fetchNewDataLastFetchTimeWhileAgo() {

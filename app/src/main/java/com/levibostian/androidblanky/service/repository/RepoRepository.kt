@@ -50,8 +50,9 @@ open class RepoRepository(private val reposDataSource: ReposDataSource,
                     if (lastFetch == null || lastFetch < Dates.today.minus(5.minutes)) {
                         gitHubUsernameDataSource.getData()
                                 .firstElement()
-                                .doOnSuccess { username ->
+                                .flatMap { username ->
                                     reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements(username))
+                                            .toMaybe<String>()
                                 }
                                 .subscribe()
                     }

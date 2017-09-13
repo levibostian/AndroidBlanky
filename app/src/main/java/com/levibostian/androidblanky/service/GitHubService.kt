@@ -8,9 +8,9 @@ import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.Path
 
-interface GitHubService {
+open interface GitHubService {
 
     @GET("users/{user}/repos")
-    fun getRepos(@Path("user") user: String): Single<Result<List<RepoModel>>>
+    open fun getRepos(@Path("user") user: String): Single<Result<List<RepoModel>>>
 
 }

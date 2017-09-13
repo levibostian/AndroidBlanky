@@ -1,12 +1,14 @@
 package com.levibostian.androidblanky.view.ui
 
 import android.app.Application
+import android.preference.PreferenceManager
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.levibostian.androidblanky.BuildConfig
 import com.levibostian.androidblanky.service.error.fatal.FatalAppError
 import com.levibostian.androidblanky.service.error.nonfatal.NonFatalAppError
+import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.module.DataSourceModule
 import com.levibostian.androidblanky.service.module.RepositoryModule
 import com.levibostian.androidblanky.service.module.ServiceModule

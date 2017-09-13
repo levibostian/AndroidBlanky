@@ -91,6 +91,10 @@ android {
             applicationIdSuffix ".beta"
         }
     }
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 // Code found from https://github.com/plastiv/CrashlyticsDemo used to build app on CI.
@@ -221,6 +225,7 @@ dependencies {
         exclude module: 'support-annotations'
     }
     androidTestImplementation "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
+    androidTestImplementation "com.android.support.test.uiautomator:uiautomator-v18:$rootProject.uiautomatorVersion"
     androidTestImplementation "tools.fastlane:screengrab:$rootProject.fastlaneScreengrabVersion"
 
     // Resolve conflicts between main and test APK:

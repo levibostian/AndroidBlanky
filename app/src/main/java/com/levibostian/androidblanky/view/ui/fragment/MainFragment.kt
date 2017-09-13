@@ -19,9 +19,12 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.arch.lifecycle.ViewModelProviders
+import android.support.v7.widget.LinearLayoutManager
+import android.widget.LinearLayout
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.statedata.StateData
 import com.levibostian.androidblanky.view.ui.LifecycleCompositeDisposable
+import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
 import com.levibostian.androidblanky.view.ui.plusAssign
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
@@ -80,7 +83,13 @@ class MainFragment : SupportFragmentLifecycle() {
                             fragment_main_loading_empty_layout.setEmptyViewMessage(reposState.error!!.message!!)
                             fragment_main_loading_empty_layout.showEmptyView(true)
                         }
-                        StateData.State.DATA -> fragment_main_loading_empty_layout.showContentView(true)
+                        StateData.State.DATA -> {
+                            if (fragment_main_repos_recyclerview.adapter == null) {
+                                fragment_main_repos_recyclerview.layoutManager = LinearLayoutManager(activity)
+                                fragment_main_repos_recyclerview.adapter = ReposRecyclerViewAdapter(reposState.repos!!)
+                            }
+                            fragment_main_loading_empty_layout.showContentView(true)
+                        }
                     }
                 })
     }

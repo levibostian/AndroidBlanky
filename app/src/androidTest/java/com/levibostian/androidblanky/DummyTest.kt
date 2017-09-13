@@ -6,14 +6,18 @@ import android.content.SharedPreferences
 import android.support.test.InstrumentationRegistry
 import android.support.test.annotation.UiThreadTest
 import android.support.test.espresso.Espresso
+import android.support.test.espresso.Espresso.onData
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.contrib.RecyclerViewActions
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
 import com.levibostian.androidblanky.view.ui.activity.MainActivity
 import android.support.test.rule.ActivityTestRule
 import org.junit.Rule
 import android.support.test.runner.AndroidJUnit4
+import android.support.test.uiautomator.UiDevice
 import com.f2prateek.rx.preferences2.Preference
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import com.levibostian.androidblanky.service.GitHubService
@@ -51,15 +55,17 @@ import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
 import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
+import com.nhaarman.mockito_kotlin.doReturn
 import io.reactivex.rxkotlin.toSingle
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import org.junit.BeforeClass
 import org.mockito.*
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 
 @RunWith(AndroidJUnit4::class)
-open class DummyTest {
+open class DummyTest: AndroidIntegrationTestClass {
 
     @Inject lateinit var gitHubService: GitHubService
     @Inject lateinit var sharedPrefs: SharedPreferences
@@ -67,6 +73,7 @@ open class DummyTest {
     @Inject lateinit var realmInstanceManager: RealmInstanceManager
 
     @Mock private lateinit var preference: Preference<String>
+    @Mock private lateinit var sharedPrefsEditor: SharedPreferences.Editor
 
     @get:Rule open val main = ActivityTestRule(MainActivity::class.java, false, false)
     @get:Rule open val localeTestRule = LocaleTestRule() // fastlane can switch locales to take screenshots and test.
@@ -86,9 +93,12 @@ open class DummyTest {
         (application.component as MockApplicationComponent).inject(this)
 
         instrumentation.runOnMainSync { // Make sure to run this on the instrumentation UI thread or Realm will give you an error saying that "you cannot close a realm instance from another thread that created it" even though my app code is calling from the UI thread. This asserts the Realm instances are created on the UI thread.
-            `when`(realmInstanceManager.getDefault()).thenReturn(RealmInstanceManager.getInMemory())
+            `when`(realmInstanceManager.getDefault()).thenAnswer { RealmInstanceManager.getInMemory() }
+            `when`(sharedPrefs.edit()).thenReturn(sharedPrefsEditor)
         }
     }
+
+    override fun getInstrumentation(): Instrumentation = InstrumentationRegistry.getInstrumentation()
 
     private fun launchActivity() {
         main.launchActivity(null)
@@ -97,13 +107,22 @@ open class DummyTest {
     @Test fun noneOfTheThings() {
         `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
-        `when`(gitHubService.getRepos(ArgumentMatchers.anyString())).thenReturn(Result.response(Response.success(listOf(repo1, repo2, repo3))).toSingle())
+        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf(repo1, repo2, repo3))).toSingle())
+        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
 
         launchActivity()
 
-        Screengrab.screenshot("initial_state")
+        orientationPortrait()
+
+        Screengrab.screenshot("data_state")
         onView(withId(R.id.fragment_main_username_textview))
                 .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
+
+        onView(withText(repo1.full_name)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
+
+        verify(sharedPrefsEditor).commit()
     }
 
 }
