@@ -26,6 +26,7 @@ import com.levibostian.androidblanky.service.statedata.StateData
 import com.levibostian.androidblanky.view.ui.LifecycleCompositeDisposable
 import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
 import com.levibostian.androidblanky.view.ui.plusAssign
+import com.levibostian.androidblanky.view.ui.widget.LoadingEmptyLayout
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
 import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
@@ -65,6 +66,11 @@ class MainFragment : SupportFragmentLifecycle() {
     override fun onStart() {
         super.onStart()
 
+        // TODO I need to fix this. LoadingEmpty layout does not accept the XML args.
+        fragment_main_loading_empty_layout.setLightDarkMode(LoadingEmptyLayout.LightDarkMode.DARK)
+        fragment_main_loading_empty_layout.setLoadingViewText(getString(R.string.loading_repos))
+        fragment_main_loading_empty_layout.setEmptyViewMessage(getString(R.string.user_no_repos))
+
         lifecycleComposite += reposViewModel.getReposUsername()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ username ->
@@ -77,11 +83,11 @@ class MainFragment : SupportFragmentLifecycle() {
                         StateData.State.LOADING -> fragment_main_loading_empty_layout.showLoadingView(true)
                         StateData.State.EMPTY -> {
                             fragment_main_loading_empty_layout.setEmptyViewMessage("User does not have any repos.")
-                            fragment_main_loading_empty_layout.showEmptyView(true)
+                            fragment_main_loading_empty_layout.showEmptyView(false)
                         }
                         StateData.State.ERROR -> {
                             fragment_main_loading_empty_layout.setEmptyViewMessage(reposState.error!!.message!!)
-                            fragment_main_loading_empty_layout.showEmptyView(true)
+                            fragment_main_loading_empty_layout.showEmptyView(false)
                         }
                         StateData.State.DATA -> {
                             if (fragment_main_repos_recyclerview.adapter == null) {

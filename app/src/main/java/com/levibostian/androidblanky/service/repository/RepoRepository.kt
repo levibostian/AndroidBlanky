@@ -51,6 +51,7 @@ open class RepoRepository(private val reposDataSource: ReposDataSource,
                         gitHubUsernameDataSource.getData()
                                 .firstElement()
                                 .flatMap { username ->
+                                    getReposObservable.onNext(ReposStateData.loading())
                                     reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements(username))
                                             .toMaybe<String>()
                                 }

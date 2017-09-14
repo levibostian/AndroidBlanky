@@ -4,7 +4,7 @@ import com.levibostian.androidblanky.service.module.DataSourceModule
 import com.levibostian.androidblanky.service.module.MockServiceModule
 import com.levibostian.androidblanky.service.module.RepositoryModule
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
-import com.levibostian.androidblanky.service.module.ServiceModule
+import com.levibostian.androidblanky.view.fragment.MainFragmentTest
 import com.levibostian.androidblanky.view.ui.ApplicationComponent
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.viewmodel.module.ManagerModule
@@ -22,7 +22,7 @@ import javax.inject.Singleton
 ))
 interface MockApplicationComponent: ApplicationComponent {
     override fun inject(mainFragment: MainFragment)
-    fun inject(dummyTest: DummyTest)
+    fun inject(mainFragmentTest: MainFragmentTest)
 
     object Initializer {
         fun init(application: MainApplication): MockApplicationComponent {

@@ -32,21 +32,21 @@
             tools:text="levibostian"/>
     </LinearLayout>
 
-    <com.curiosityio.loadingemptyviews.views.LoadingEmptyLayout
+    <com.levibostian.androidblanky.view.ui.widget.LoadingEmptyLayout
         android:id="@+id/fragment_main_loading_empty_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="8dp"
         android:background="@android:color/white"
-        custom:loadingView_loadingText="Loading repos..."
-        custom:loadingView_emptyText="User does not have any repos."
-        custom:loadingView_lightDarkView="dark"
+        custom:loadEmptyView_loadingText="@string/loading_repos"
+        custom:loadEmptyView_emptyText="@string/user_no_repos"
+        custom:loadEmptyView_lightDarkView="dark"
         android:padding="8dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_main_repos_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-    </com.curiosityio.loadingemptyviews.views.LoadingEmptyLayout>
+    </com.levibostian.androidblanky.view.ui.widget.LoadingEmptyLayout>
 
 </LinearLayout>

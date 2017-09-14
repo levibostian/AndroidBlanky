@@ -30,6 +30,9 @@ open class ReposDataSource(private val sharedPreferences: SharedPreferences,
 
     override fun fetchNewData(requirements: FetchNewDataRequirements): Completable {
         return gitHubService.getRepos(requirements.githubUsername)
+                .doOnSuccess {
+                    deletePreviousRepos().subscribe()
+                }
                 .mapApiCallResult { statusCode ->
                     if (statusCode == 404) throw UserErrorException("The username you entered does not exist in GitHub. Try another username.")
                 }
@@ -42,6 +45,16 @@ open class ReposDataSource(private val sharedPreferences: SharedPreferences,
                     updateLastTimeNewDataFetched(Date())
                 }
                 .subscribeOn(Schedulers.io())
+    }
+
+    private fun deletePreviousRepos(): Completable {
+        return Completable.fromCallable {
+            val realm = realmManager.getDefault()
+            realm.executeTransaction {
+                realm.delete(RepoModel::class.java)
+            }
+            realm.close()
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun lastTimeNewDataFetched(): Date? {

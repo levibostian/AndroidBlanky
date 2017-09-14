@@ -18,7 +18,6 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'realm-android'
-apply plugin: 'android-apt'
 apply plugin: 'kotlin-kapt'
 
 repositories {
@@ -184,7 +183,7 @@ dependencies {
     implementation "com.github.hotchemi:khronos:$rootProject.khronosVersion"
 
     // Custom views
-    implementation "com.github.curiosityio.androidviews:loadingemptyviews:$rootProject.androidViewsVersion"
+    // implementation "com.github.curiosityio.androidviews:loadingemptyviews:$rootProject.androidViewsVersion"
 
     // Crashlytics
     implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
@@ -227,6 +226,8 @@ dependencies {
     androidTestImplementation "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
     androidTestImplementation "com.android.support.test.uiautomator:uiautomator-v18:$rootProject.uiautomatorVersion"
     androidTestImplementation "tools.fastlane:screengrab:$rootProject.fastlaneScreengrabVersion"
+    androidTestImplementation "com.linkedin.testbutler:test-butler-library:$rootProject.testButlerVersion"
+    androidTestUtil "com.linkedin.testbutler:test-butler-app:$rootProject.testButlerVersion@apk"
 
     // Resolve conflicts between main and test APK:
     androidTestImplementation "com.android.support:support-annotations:$rootProject.supportLibraryVersion"

@@ -12,4 +12,6 @@
     </string-array>
 
     <string name="preferences_auth_token">preferences_auth_token</string>
+    <string name="user_no_repos">User does not have any repos.</string>
+    <string name="loading_repos">Loading repos…</string>
 </resources>
