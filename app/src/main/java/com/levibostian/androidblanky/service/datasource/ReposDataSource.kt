@@ -22,30 +22,27 @@ import io.realm.RealmResults
 import java.io.IOException
 import java.util.*
 
-open class ReposDataSource(private val sharedPreferences: SharedPreferences,
+open class ReposDataSource(override val sharedPreferences: SharedPreferences,
                            private val gitHubService: GitHubService,
-                           private val realmManager: RealmInstanceManager) : DataSource<RealmResults<RepoModel>, ReposDataSource.FetchNewDataRequirements, List<RepoModel>> {
+                           private val realmManager: RealmInstanceManager) : DataSource<RealmResults<RepoModel>, ReposDataSource.FetchNewDataRequirements, List<RepoModel>>(sharedPreferences) {
 
     private var uiRealm: Realm = realmManager.getDefault()
 
     override fun fetchNewData(requirements: FetchNewDataRequirements): Completable {
         return gitHubService.getRepos(requirements.githubUsername)
-                .doOnSuccess {
-                    deletePreviousRepos().subscribe()
-                }
                 .mapApiCallResult { statusCode ->
                     if (statusCode == 404) throw UserErrorException("The username you entered does not exist in GitHub. Try another username.")
                 }
-                .map { repos ->
-                    saveData(repos).subscribe()
-                    repos
-                }
-                .toCompletable()
-                .doOnComplete {
-                    updateLastTimeNewDataFetched(Date())
+                .flatMapCompletable { repos ->
+                    // todo I bet I can make this in the abstract class.
+                    Completable.concatArray(
+                            Completable.fromCallable { updateLastTimeNewDataFetched(Date()) },
+                            saveData(repos))
                 }
                 .subscribeOn(Schedulers.io())
     }
+
+    override fun deleteData(): Completable = deletePreviousRepos()
 
     private fun deletePreviousRepos(): Completable {
         return Completable.fromCallable {
@@ -57,10 +54,7 @@ open class ReposDataSource(private val sharedPreferences: SharedPreferences,
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun lastTimeNewDataFetched(): Date? {
-        val lastTimeDataFetched = sharedPreferences.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)
-        return if (lastTimeDataFetched == 0L) null else Date(lastTimeDataFetched)
-    }
+    override fun lastTimeNewDataFetchedKey(): String = SharedPrefersKeys.lastTimeReposFetchedKey
 
     @SuppressLint("ApplySharedPref")
     private fun updateLastTimeNewDataFetched(date: Date) {

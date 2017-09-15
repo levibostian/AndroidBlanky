@@ -31,6 +31,8 @@ import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import com.levibostian.androidblanky.view.ui.TestMainApplication
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
+import khronos.Dates
+import khronos.minutes
 import org.mockito.*
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
@@ -80,6 +82,11 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
     }
 
     @Test fun showReposDataList() {
+        RealmInstanceManager.getInMemory().executeTransaction { realm ->
+            realm.insertOrUpdate(listOf(repo1, repo2, repo3))
+        }
+
+        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(Dates.today.time)
         `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
         `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf(repo1, repo2, repo3))).toSingle())
@@ -97,10 +104,15 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
         onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
         onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
 
-        verify(sharedPrefsEditor).commit()
+        verify(sharedPrefsEditor, com.nhaarman.mockito_kotlin.never()).commit()
     }
 
     @Test fun showReposDataListOrientationChange() {
+        RealmInstanceManager.getInMemory().executeTransaction { realm ->
+            realm.insertOrUpdate(listOf(repo1, repo2, repo3))
+        }
+
+        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(Dates.today.time)
         `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
         `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf(repo1, repo2, repo3))).toSingle())
@@ -117,10 +129,9 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
         onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
         onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
 
-        verify(sharedPrefsEditor).commit()
+        verify(sharedPrefsEditor, com.nhaarman.mockito_kotlin.never()).commit()
 
         orientationLandscape()
-        Thread.sleep(200)
 
         Screengrab.screenshot("showReposDataListOrientationChange")
         onView(withId(R.id.fragment_main_username_textview))
@@ -132,6 +143,7 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
     }
 
     @Test fun showEmptyList() {
+        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(10.minutes.ago.time)
         `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
         `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf<RepoModel>())).toSingle())
@@ -149,6 +161,7 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
     }
 
     @Test fun showLoadingView() {
+        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(0)
         `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
         `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Single.never())

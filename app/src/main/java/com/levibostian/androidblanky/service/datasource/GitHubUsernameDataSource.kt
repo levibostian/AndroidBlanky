@@ -11,11 +11,14 @@ import io.reactivex.Observable
 import java.util.*
 
 open class GitHubUsernameDataSource(private val rxSharedPreferencesWrapper: RxSharedPreferencesWrapper,
-                                    private val sharedPreferences: SharedPreferences): DataSource<String, GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements, String> {
+                                    override val sharedPreferences: SharedPreferences): DataSource<String, GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements, String>(sharedPreferences) {
+
+    override fun lastTimeNewDataFetchedKey(): String = throw RuntimeException("You should never call this. This data source never needs updated.")
+
+    @SuppressLint("ApplySharedPref")
+    override fun deleteData(): Completable = Completable.fromCallable { sharedPreferences.edit().putString(SharedPrefersKeys.gitHubUsernameKey, "").commit() }
 
     override fun fetchNewData(requirements: GitHubUsernameFetchDataRequirements): Completable = Completable.complete()
-
-    override fun lastTimeNewDataFetched(): Date? = null
 
     @SuppressLint("ApplySharedPref")
     override fun saveData(data: String): Completable {

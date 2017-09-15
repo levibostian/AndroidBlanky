@@ -1,5 +1,7 @@
 package com.levibostian.androidblanky.service.datasource
 
+import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Looper
 import com.levibostian.androidblanky.service.error.fatal.HttpUnhandledStatusCodeException
 import com.levibostian.androidblanky.service.error.nonfatal.HttpUnsuccessfulStatusCodeException
@@ -12,6 +14,9 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.Function
+import khronos.Dates
+import khronos.Duration
+import khronos.minus
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import java.io.IOException
@@ -22,23 +27,51 @@ import java.util.*
  *
  * This class is mostly used with the [Repository] class.
  */
-interface DataSource<ResultDataType, in FetchNewDataRequirements, in RequestDataType> {
+abstract class DataSource<ResultDataType, in FetchNewDataRequirements, in RequestDataType>(open val sharedPreferences: SharedPreferences) {
 
-    fun lastTimeNewDataFetched(): Date?
+    /**
+     * Key used to save in Shared Preferences the last time new data fetched for Data Source.
+     */
+    abstract fun lastTimeNewDataFetchedKey(): String
+
+    fun lastTimeNewDataFetched(): Date? {
+        val lastTimeDataFetched = sharedPreferences.getLong(lastTimeNewDataFetchedKey(), 0)
+        return if (lastTimeDataFetched == 0L) null else Date(lastTimeDataFetched)
+    }
 
     /**
      * I am using RxJava observable types here because these calls may be async calls. RxJava is a good method of handling that.
      */
-    fun fetchNewData(requirements: FetchNewDataRequirements): Completable
+    abstract fun fetchNewData(requirements: FetchNewDataRequirements): Completable
 
     /**
      * Saves data to whatever storage [DataSource] chooses. It may decide to return an identifier for the source if there is one.
      */
-    fun saveData(data: RequestDataType): Completable
+    abstract fun saveData(data: RequestDataType): Completable
 
-    fun getData(): Observable<ResultDataType>
+    abstract fun getData(): Observable<ResultDataType>
 
-    fun cleanup()
+    /**
+     * Meant to delete database data, shared prefs, etc.
+     */
+    abstract fun deleteData(): Completable
+
+    @SuppressLint("ApplySharedPref")
+    fun resetData(): Completable {
+        return Completable.concatArray(deleteData(),
+                Completable.fromCallable {
+                    sharedPreferences.edit().putLong(lastTimeNewDataFetchedKey(), 0).commit()
+                })
+    }
+
+    abstract fun cleanup()
+
+    fun hasEverFetchedData(): Boolean = lastTimeNewDataFetched() != null
+
+    fun isDataOlderThan(date: Date): Boolean {
+        if (lastTimeNewDataFetched() == null) return true
+        return lastTimeNewDataFetched()!! < date
+    }
 
 }
 

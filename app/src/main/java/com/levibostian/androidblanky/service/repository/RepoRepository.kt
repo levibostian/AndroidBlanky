@@ -1,72 +1,69 @@
 package com.levibostian.androidblanky.service.repository
 
-import com.levibostian.androidblanky.service.statedata.StateData
+import com.levibostian.androidblanky.service.StateDataCompoundBehaviorSubject
 import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
 import com.levibostian.androidblanky.service.model.RepoModel
-import com.levibostian.androidblanky.service.model.SharedPrefersKeys
-import com.levibostian.androidblanky.service.statedata.ReposStateData
+import com.levibostian.androidblanky.service.statedata.StateData
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import io.realm.RealmResults
-import khronos.Dates
-import khronos.minus
 import khronos.minutes
-import khronos.plus
 
 open class RepoRepository(private val reposDataSource: ReposDataSource,
                           private val gitHubUsernameDataSource: GitHubUsernameDataSource,
                           private val composite: CompositeDisposable): Repository {
 
-    private val getReposObservable: BehaviorSubject<ReposStateData> = BehaviorSubject.create()
+    private val reposObservable: StateDataCompoundBehaviorSubject<RealmResults<RepoModel>> = StateDataCompoundBehaviorSubject()
 
-    init {
-        getReposObservable.onNext(ReposStateData.empty())
+    override fun observe() {
+        if (reposObservable.hasValue()) return
 
         composite += reposDataSource.getData()
-                .subscribe({ repos ->
-                    if (gitHubUsernameDataSource.getData().blockingFirst().isBlank()) {
-                        getReposObservable.onNext(ReposStateData.empty())
-                    } else {
-                        getReposObservable.onNext(if (repos.isEmpty()) ReposStateData.empty() else ReposStateData.success(repos))
+                .filter { !gitHubUsernameDataSource.getData().blockingFirst().isEmpty() }
+                .filter {
+                    val hasEverFetchedData = reposDataSource.hasEverFetchedData()
+                    if (!hasEverFetchedData) {
+                        reposObservable.onNextIsLoading()
+                        sync().subscribe({
+                        }, { error -> reposObservable.onNextCompoundError(error) })
                     }
-                }, { error ->
-                    getReposObservable.onNext(ReposStateData.error(error))
+                    hasEverFetchedData
+                }
+                .subscribe({ repos ->
+                    val needToFetchFreshData = reposDataSource.isDataOlderThan(5.minutes.ago)
+
+                    if (repos.isEmpty()) reposObservable.onNextEmpty(isFetchingFreshData = needToFetchFreshData)
+                    else reposObservable.onNextData(repos, isFetchingFreshData = needToFetchFreshData)
+
+                    if (needToFetchFreshData) {
+                        sync().subscribe({
+                            reposObservable.onNextCompoundDoneFetchingFreshData()
+                        }, { error -> reposObservable.onNextCompoundError(error) })
+                    }
                 })
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun getRepos(): Observable<ReposStateData> {
-        return (getReposObservable as Observable<ReposStateData>)
-                .doOnSubscribe {
-                    val lastFetch = reposDataSource.lastTimeNewDataFetched()
-
-                    if (lastFetch == null || lastFetch < Dates.today.minus(5.minutes)) {
-                        gitHubUsernameDataSource.getData()
-                                .firstElement()
-                                .flatMap { username ->
-                                    getReposObservable.onNext(ReposStateData.loading())
-                                    reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements(username))
-                                            .toMaybe<String>()
-                                }
-                                .subscribe()
-                    }
+    override fun sync(): Completable {
+        return gitHubUsernameDataSource.getData()
+                .firstElement()
+                .flatMapCompletable { username ->
+                    if (username.isEmpty()) Completable.complete()
+                    else reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements(username))
                 }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun getRepos(): Observable<StateData<RealmResults<RepoModel>>> {
+        observe()
+        return reposObservable.asObservable()
+    }
+
     fun setUserToGetReposFor(gitHubUsername: String): Completable {
-        return gitHubUsernameDataSource.saveData(gitHubUsername)
-                .doOnComplete {
-                    getReposObservable.onNext(ReposStateData.loading())
-                    reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements(gitHubUsername))
-                            .subscribe()
-                }
+        observe()
+        return Completable.concatArray(gitHubUsernameDataSource.saveData(gitHubUsername), reposDataSource.resetData())
     }
 
     fun getReposUsername(): Observable<String> {

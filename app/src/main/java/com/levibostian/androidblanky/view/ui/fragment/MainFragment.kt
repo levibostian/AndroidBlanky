@@ -19,10 +19,12 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.arch.lifecycle.ViewModelProviders
+import android.opengl.Visibility
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.statedata.StateData
+import com.levibostian.androidblanky.service.statedata.StateDataProcessedListener
 import com.levibostian.androidblanky.view.ui.LifecycleCompositeDisposable
 import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
 import com.levibostian.androidblanky.view.ui.plusAssign
@@ -72,31 +74,35 @@ class MainFragment : SupportFragmentLifecycle() {
         fragment_main_loading_empty_layout.setEmptyViewMessage(getString(R.string.user_no_repos))
 
         lifecycleComposite += reposViewModel.getReposUsername()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ username ->
                     fragment_main_username_textview.text = if (username.isBlank()) "(no username set)" else username
                 })
         lifecycleComposite += reposViewModel.getRepos()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ reposState ->
-                    when (reposState.state) {
-                        StateData.State.LOADING -> fragment_main_loading_empty_layout.showLoadingView(true)
-                        StateData.State.EMPTY -> {
+                    reposState.deliver(object : StateDataProcessedListener<RealmResults<RepoModel>> {
+                        override fun loadingData() = fragment_main_loading_empty_layout.showLoadingView(true)
+                        override fun emptyData() {
                             fragment_main_loading_empty_layout.setEmptyViewMessage("User does not have any repos.")
                             fragment_main_loading_empty_layout.showEmptyView(false)
                         }
-                        StateData.State.ERROR -> {
-                            fragment_main_loading_empty_layout.setEmptyViewMessage(reposState.error!!.message!!)
-                            fragment_main_loading_empty_layout.showEmptyView(false)
-                        }
-                        StateData.State.DATA -> {
+                        override fun data(data: RealmResults<RepoModel>) {
                             if (fragment_main_repos_recyclerview.adapter == null) {
                                 fragment_main_repos_recyclerview.layoutManager = LinearLayoutManager(activity)
-                                fragment_main_repos_recyclerview.adapter = ReposRecyclerViewAdapter(reposState.repos!!)
+                                fragment_main_repos_recyclerview.adapter = ReposRecyclerViewAdapter(data)
                             }
                             fragment_main_loading_empty_layout.showContentView(true)
                         }
-                    }
+                        override fun errorFound(error: Throwable) {
+                            fragment_main_loading_empty_layout.setEmptyViewMessage(error.message!!)
+                            fragment_main_loading_empty_layout.showEmptyView(false)
+                        }
+                        override fun fetchingFreshData() {
+                            fragment_main_fetching_data_view.visibility = View.VISIBLE
+                        }
+                        override fun finishedFetchingFreshData() {
+                            fragment_main_fetching_data_view.visibility = View.GONE
+                        }
+                    })
                 })
     }
 

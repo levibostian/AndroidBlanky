@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import android.support.annotation.UiThread
+import com.google.common.truth.Truth
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
@@ -26,6 +27,10 @@ import retrofit2.adapter.rxjava2.Result
 import com.levibostian.androidblanky.RxImmediateSchedulerRule
 import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import io.realm.RealmAsyncTask
+import khronos.Dates
+import khronos.minus
+import khronos.minutes
+import khronos.second
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -66,6 +71,26 @@ class ReposDataSourceTest {
         reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements("username"))
                 .test()
                 .assertError(UserErrorException::class.java)
+    }
+
+    @Test fun isDataOlderThan_whenNoLastTimeFetched() {
+        `when`(sharedPreferences.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(0)
+
+        Truth.assertThat(reposDataSource.isDataOlderThan(5.minutes.ago)).isTrue()
+    }
+
+    @Test fun isDataOlderThan_whenDataOlder() {
+        val now = Dates.today
+        `when`(sharedPreferences.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn((now - 5.minutes).time)
+
+        Truth.assertThat(reposDataSource.isDataOlderThan(now - 5.minutes - 1.second)).isTrue()
+    }
+
+    @Test fun isDataOlderThan_whenDataNotOlder() {
+        val now = Dates.today
+        `when`(sharedPreferences.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn((now - 5.minutes).time)
+
+        Truth.assertThat(reposDataSource.isDataOlderThan(now - 5.minutes)).isFalse()
     }
 
     @SuppressLint("CommitPrefEdits")
