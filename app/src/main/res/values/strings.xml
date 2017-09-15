@@ -14,4 +14,6 @@
     <string name="preferences_auth_token">preferences_auth_token</string>
     <string name="user_no_repos">User does not have any repos.</string>
     <string name="loading_repos">Loading repos…</string>
+    <string name="fetching_new_data">Fetching new data…</string>
+    <string name="error">Error</string>
 </resources>

@@ -11,6 +11,7 @@ import io.realm.RealmResults
 // This is temporary. I received this code snippet from https://stackoverflow.com/a/44341905/1486374 as well as https://github.com/realm/realm-java/issues/3497#issuecomment-275383550.
 //
 // Realm v4 will have rxjava2 support which allows you to get a Flowable from a realm query.
+// This code matches what official rxjava2 support looks like: https://github.com/realm/realm-java/pull/4991/files#diff-d2a478f97174b1a580e4c8c672741c1cR55
 fun <T: RealmModel> Dao.getFlowable(realm: Realm, getResults: (Realm) -> RealmResults<T>): Flowable<RealmResults<T>> {
     return io.reactivex.Flowable.create<RealmResults<T>>({ emitter ->
         val results: RealmResults<T> = getResults(realm)

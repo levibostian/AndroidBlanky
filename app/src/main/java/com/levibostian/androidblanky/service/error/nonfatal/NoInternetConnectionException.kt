@@ -1,3 +1,5 @@
 package com.levibostian.androidblanky.service.error.nonfatal
 
-class NoInternetConnectionException : NonFatalAppError("No Internet connection. Connect, then try again.")
+import com.levibostian.androidblanky.service.model.AppConstants
+
+class NoInternetConnectionException : NonFatalAppError(AppConstants.httpNoInternetConnectionExceptionMessage)

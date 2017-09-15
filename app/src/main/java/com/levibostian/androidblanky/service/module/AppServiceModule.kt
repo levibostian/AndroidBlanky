@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.preference.PreferenceManager
+import com.levibostian.androidblanky.module.ServiceModule
 import com.levibostian.androidblanky.view.ui.MainApplication
 import dagger.Module
 import dagger.Provides
@@ -24,9 +25,9 @@ import org.greenrobot.eventbus.EventBus
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-@Module open class ServiceModule(val application: MainApplication) {
+@Module open class AppServiceModule(val application: MainApplication): ServiceModule {
 
-    @Provides @Singleton fun provideRetrofit(credsManager: UserCredsManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
+    @Provides @Singleton override fun provideRetrofit(credsManager: UserCredsManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
         val client = OkHttpClient.Builder()
                 .addInterceptor(defaultErrorHandlerInterceptor)
                 .addNetworkInterceptor(AppendHeadersInterceptor(credsManager))
@@ -39,35 +40,35 @@ import retrofit2.converter.moshi.MoshiConverterFactory
                 .build()
     }
 
-    @Provides fun provideDefaultErrorHandlerInterceptor(connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor {
+    @Provides override fun provideDefaultErrorHandlerInterceptor(connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor {
         return DefaultErrorHandlerInterceptor(eventBus, connectivityManager)
     }
 
-    @Provides fun provideEventbus(): EventBus {
+    @Provides override fun provideEventbus(): EventBus {
         return EventBus.getDefault()
     }
 
-    @Provides fun provideConnectivityManager(): ConnectivityManager {
+    @Provides override fun provideConnectivityManager(): ConnectivityManager {
         return application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    @Provides open fun provideService(retrofit: Retrofit): GitHubService {
+    @Provides override fun provideService(retrofit: Retrofit): GitHubService {
         return retrofit.create(GitHubService::class.java)
     }
 
-    @Provides open fun provideSharedPreferences(): SharedPreferences {
+    @Provides override fun provideSharedPreferences(): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(application)
     }
 
-    @Provides open fun provideRxSharedPreferences(sharedPreferences: SharedPreferences): RxSharedPreferencesWrapper {
+    @Provides override fun provideRxSharedPreferences(sharedPreferences: SharedPreferences): RxSharedPreferencesWrapper {
         return RxSharedPreferencesWrapper(sharedPreferences)
     }
 
-    @Provides fun provideRealmWrapper(userManager: UserManager): RealmInstanceManager {
+    @Provides override fun provideRealmWrapper(userManager: UserManager): RealmInstanceManager {
         return RealmInstanceManager(userManager)
     }
 
-    @Provides fun provideLooperWrapper(): LooperWrapper {
+    @Provides override fun provideLooperWrapper(): LooperWrapper {
         return LooperWrapper()
     }
 

@@ -7,6 +7,7 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
+import org.hamcrest.Matchers.not
 import android.support.test.filters.SdkSuppress
 import com.levibostian.androidblanky.view.ui.activity.MainActivity
 import android.support.test.rule.ActivityTestRule
@@ -81,7 +82,34 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
         main.launchActivity(null)
     }
 
-    @Test fun showReposDataList() {
+    @Test fun showReposDataListFetchingFresh() {
+        RealmInstanceManager.getInMemory().executeTransaction { realm ->
+            realm.insertOrUpdate(listOf(repo1, repo2, repo3))
+        }
+        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(10.minutes.ago.time)
+        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
+        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
+        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Single.never())
+        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
+
+        launchActivity()
+
+        orientationPortrait()
+
+        Screengrab.screenshot("showReposDataListFetchingFresh")
+        onView(withId(R.id.fragment_main_username_textview))
+                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
+
+        onView(withText(repo1.full_name)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
+
+        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(isDisplayed()))
+
+        verify(sharedPrefsEditor, com.nhaarman.mockito_kotlin.never()).commit()
+    }
+
+    @Test fun showReposDataListNotFetchingFreshData() {
         RealmInstanceManager.getInMemory().executeTransaction { realm ->
             realm.insertOrUpdate(listOf(repo1, repo2, repo3))
         }
@@ -96,13 +124,15 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
 
         orientationPortrait()
 
-        Screengrab.screenshot("showReposDataList")
+        Screengrab.screenshot("showReposDataListNotFetchingFreshData")
         onView(withId(R.id.fragment_main_username_textview))
                 .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
 
         onView(withText(repo1.full_name)).check(ViewAssertions.matches(isDisplayed()))
         onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
         onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
+
+        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(not(isDisplayed())))
 
         verify(sharedPrefsEditor, com.nhaarman.mockito_kotlin.never()).commit()
     }
@@ -142,8 +172,27 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
         onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
     }
 
-    @Test fun showEmptyList() {
+    @Test fun showEmptyListFetchingNewData() {
         `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(10.minutes.ago.time)
+        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
+        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
+        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Single.never())
+        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
+
+        launchActivity()
+
+        orientationPortrait()
+
+        Screengrab.screenshot("showEmptyListFetchingNewData")
+        onView(withId(R.id.fragment_main_username_textview))
+                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
+
+        onView(withText(application.getString(R.string.user_no_repos))).check(ViewAssertions.matches(isDisplayed()))
+        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(isDisplayed()))
+    }
+
+    @Test fun showEmptyListNotFetchingNewData() {
+        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(Dates.today.time)
         `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
         `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf<RepoModel>())).toSingle())
@@ -153,11 +202,12 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
 
         orientationPortrait()
 
-        Screengrab.screenshot("showEmptyList")
+        Screengrab.screenshot("showEmptyListNotFetchingNewData")
         onView(withId(R.id.fragment_main_username_textview))
                 .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
 
         onView(withText(application.getString(R.string.user_no_repos))).check(ViewAssertions.matches(isDisplayed()))
+        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(not(isDisplayed())))
     }
 
     @Test fun showLoadingView() {
@@ -176,6 +226,7 @@ open class MainFragmentTest : AndroidIntegrationTestClass {
                 .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
 
         onView(withText(application.getString(R.string.loading_repos))).check(ViewAssertions.matches(isDisplayed()))
+        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(not(isDisplayed())))
     }
 
 }

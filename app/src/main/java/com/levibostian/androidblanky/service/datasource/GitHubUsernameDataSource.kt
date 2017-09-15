@@ -8,28 +8,23 @@ import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 import java.util.*
 
 open class GitHubUsernameDataSource(private val rxSharedPreferencesWrapper: RxSharedPreferencesWrapper,
                                     override val sharedPreferences: SharedPreferences): DataSource<String, GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements, String>(sharedPreferences) {
 
-    override fun lastTimeNewDataFetchedKey(): String = throw RuntimeException("You should never call this. This data source never needs updated.")
+    override fun lastTimeFreshDataFetchedKey(): String = throw RuntimeException("You should never call this. This data source never needs updated.")
 
     @SuppressLint("ApplySharedPref")
     override fun deleteData(): Completable = Completable.fromCallable { sharedPreferences.edit().putString(SharedPrefersKeys.gitHubUsernameKey, "").commit() }
 
-    override fun fetchNewData(requirements: GitHubUsernameFetchDataRequirements): Completable = Completable.complete()
+    override fun fetchFreshDataOrFail(requirements: GitHubUsernameFetchDataRequirements): Single<String> = throw RuntimeException("You should never call this. This data source never needs updated.")
 
     @SuppressLint("ApplySharedPref")
-    override fun saveData(data: String): Completable {
-        return Completable.fromCallable {
-            sharedPreferences.edit().putString(SharedPrefersKeys.gitHubUsernameKey, data).commit()
-        }
-    }
+    override fun saveData(data: String): Completable = Completable.fromCallable { sharedPreferences.edit().putString(SharedPrefersKeys.gitHubUsernameKey, data).commit() }
 
-    override fun getData(): Observable<String> {
-        return rxSharedPreferencesWrapper.getString(SharedPrefersKeys.gitHubUsernameKey).asObservable()
-    }
+    override fun getData(): Observable<String> = rxSharedPreferencesWrapper.getString(SharedPrefersKeys.gitHubUsernameKey).asObservable()
 
     override fun cleanup() {
     }

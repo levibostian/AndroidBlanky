@@ -19,12 +19,4 @@ class RepoDao(private val uiRealm: Realm): Dao {
         })
     }
 
-    fun insertOrUpdateReposBackground(repos: List<RepoModel>) {
-        val realm = Realm.getDefaultInstance()
-        realm.executeTransaction {
-            it.copyToRealmOrUpdate(repos)
-        }
-        realm.close()
-    }
-
 }

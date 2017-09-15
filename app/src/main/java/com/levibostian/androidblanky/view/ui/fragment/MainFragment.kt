@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.arch.lifecycle.ViewModelProviders
 import android.opengl.Visibility
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import com.levibostian.androidblanky.service.model.RepoModel
@@ -93,8 +94,11 @@ class MainFragment : SupportFragmentLifecycle() {
                             fragment_main_loading_empty_layout.showContentView(true)
                         }
                         override fun errorFound(error: Throwable) {
-                            fragment_main_loading_empty_layout.setEmptyViewMessage(error.message!!)
-                            fragment_main_loading_empty_layout.showEmptyView(false)
+                            AlertDialog.Builder(activity)
+                                    .setTitle(R.string.error)
+                                    .setMessage(error.message!!)
+                                    .create()
+                                    .show()
                         }
                         override fun fetchingFreshData() {
                             fragment_main_fetching_data_view.visibility = View.VISIBLE

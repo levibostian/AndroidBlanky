@@ -68,7 +68,7 @@ class GitHubUsernameDataSourceTest {
     }
 
     @Test fun fetchNewData_doNothing() {
-        dataSource.fetchNewData(GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements())
+        dataSource.fetchFreshData(GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements())
                 .test()
                 .assertComplete()
     }

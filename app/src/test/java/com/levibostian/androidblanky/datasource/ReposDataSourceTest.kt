@@ -3,7 +3,6 @@ package com.levibostian.androidblanky.datasource
 import android.annotation.SuppressLint
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
-import android.support.annotation.UiThread
 import com.google.common.truth.Truth
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
@@ -25,7 +24,6 @@ import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import com.levibostian.androidblanky.RxImmediateSchedulerRule
-import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import io.realm.RealmAsyncTask
 import khronos.Dates
 import khronos.minus
@@ -68,7 +66,7 @@ class ReposDataSourceTest {
         `when`(response.isSuccessful).thenReturn(false)
         `when`(response.code()).thenReturn(404)
 
-        reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements("username"))
+        reposDataSource.fetchFreshData(ReposDataSource.FetchNewDataRequirements("username"))
                 .test()
                 .assertError(UserErrorException::class.java)
     }
@@ -105,7 +103,7 @@ class ReposDataSourceTest {
         `when`(sharedPreferencesEditor.putLong(ArgumentMatchers.anyString(), ArgumentMatchers.anyLong())).thenReturn(sharedPreferencesEditor)
         `when`(realm.executeTransaction(ArgumentMatchers.any(Realm.Transaction::class.java))).thenCallRealMethod()
 
-        reposDataSource.fetchNewData(ReposDataSource.FetchNewDataRequirements("username"))
+        reposDataSource.fetchFreshData(ReposDataSource.FetchNewDataRequirements("username"))
                 .test()
                 .assertNoErrors()
 

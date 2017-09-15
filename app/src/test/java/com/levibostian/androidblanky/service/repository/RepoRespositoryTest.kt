@@ -28,8 +28,6 @@ import org.mockito.junit.MockitoJUnitRunner
 import java.io.IOException
 import org.mockito.ArgumentCaptor
 
-
-
 @RunWith(MockitoJUnitRunner::class)
 class RepoRespositoryTest {
 
@@ -56,7 +54,7 @@ class RepoRespositoryTest {
     }
 
     @Test fun getRepos_getEmptyStateDefault() {
-        `when`(reposDataSource.lastTimeNewDataFetched()).thenReturn(Dates.today.minus(1.second))
+        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(1.second))
 
         repository.getRepos()
                 .test()
@@ -67,9 +65,9 @@ class RepoRespositoryTest {
     }
 
     @Test fun getRepos_getLoadingStateWhenSetNewUsernameToGetReposFor() {
-        `when`(reposDataSource.lastTimeNewDataFetched()).thenReturn(Dates.today.minus(1.second))
+        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(1.second))
         `when`(githubUsernameDataSource.saveData(ArgumentMatchers.anyString())).thenReturn(Completable.complete())
-        `when`(reposDataSource.fetchNewData(com.nhaarman.mockito_kotlin.any())).thenReturn(Completable.never())
+        `when`(reposDataSource.fetchFreshData(com.nhaarman.mockito_kotlin.any())).thenReturn(Completable.never())
 
         repository.setUserToGetReposFor("username")
                 .test()
@@ -83,7 +81,7 @@ class RepoRespositoryTest {
     }
 
     @Test fun getRepos_errorState() {
-        `when`(reposDataSource.lastTimeNewDataFetched()).thenReturn(Dates.today.minus(1.second))
+        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(1.second))
         `when`(reposDataSource.getData()).thenReturn(Observable.error(IOException("Some error")))
         repository = RepoRepository(reposDataSource, githubUsernameDataSource, composite)
 
@@ -158,36 +156,36 @@ class RepoRespositoryTest {
     }
 
     @Test fun getRepos_doNotFetchNewDataHasNotBeenLongEnoughTimeSinceLastFetch() {
-        `when`(reposDataSource.lastTimeNewDataFetched()).thenReturn(Dates.today.minus(1.minutes))
+        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(1.minutes))
 
         repository.getRepos()
                 .test()
 
-        verify(reposDataSource, never()).fetchNewData(com.nhaarman.mockito_kotlin.any())
+        verify(reposDataSource, never()).fetchFreshData(com.nhaarman.mockito_kotlin.any())
     }
 
     @Test fun getRepos_fetchNewDataLastFetchTimeNotSet() {
-        `when`(reposDataSource.lastTimeNewDataFetched()).thenReturn(null)
-        `when`(reposDataSource.fetchNewData(com.nhaarman.mockito_kotlin.any())).thenReturn(completable)
+        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(null)
+        `when`(reposDataSource.fetchFreshData(com.nhaarman.mockito_kotlin.any())).thenReturn(completable)
         `when`(completable.toMaybe<String>()).thenReturn(maybeString)
         `when`(githubUsernameDataSource.getData()).thenReturn(Observable.just("username"))
 
         repository.getRepos()
                 .test()
 
-        verify(reposDataSource).fetchNewData(com.nhaarman.mockito_kotlin.any())
+        verify(reposDataSource).fetchFreshData(com.nhaarman.mockito_kotlin.any())
         verify(maybeString).subscribe(maybeObservableStringArgumentCaptor.capture())
         Truth.assertThat(maybeObservableStringArgumentCaptor.value).isNotNull()
     }
 
     @Test fun getRepos_fetchNewDataLastFetchTimeWhileAgo() {
-        `when`(reposDataSource.lastTimeNewDataFetched()).thenReturn(Dates.today.minus(5.minutes).minus(1.second))
+        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(5.minutes).minus(1.second))
         `when`(githubUsernameDataSource.getData()).thenReturn(Observable.just("username"))
 
         repository.getRepos()
                 .test()
 
-        verify(reposDataSource).fetchNewData(com.nhaarman.mockito_kotlin.any())
+        verify(reposDataSource).fetchFreshData(com.nhaarman.mockito_kotlin.any())
     }
 
     @Test fun getReposUsername_getDefaultEmptyString() {

@@ -1,3 +1,5 @@
 package com.levibostian.androidblanky.service.error.nonfatal
 
-class RecoverableBadNetworkConnectionException(val originalError: Throwable) : NonFatalAppError("You have a bad Internet connection. Connect, then try again.")
+import com.levibostian.androidblanky.service.model.AppConstants
+
+class RecoverableBadNetworkConnectionException(val originalError: Throwable) : NonFatalAppError(AppConstants.httpBadNetworkConnectionExceptionMessage)

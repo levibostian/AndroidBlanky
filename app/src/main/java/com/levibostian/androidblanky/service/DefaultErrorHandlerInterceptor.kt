@@ -12,9 +12,7 @@ class DefaultErrorHandlerInterceptor(val eventbus: EventBus,
                                      val connectivityManager: ConnectivityManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain?): Response {
-        if (!isOnline()) {
-            throw NoInternetConnectionException()
-        }
+        if (!isOnline()) throw NoInternetConnectionException()
 
         val request = chain!!.request()
         val response = chain.proceed(request)

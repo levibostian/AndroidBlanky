@@ -28,23 +28,14 @@ open class ReposDataSource(override val sharedPreferences: SharedPreferences,
 
     private var uiRealm: Realm = realmManager.getDefault()
 
-    override fun fetchNewData(requirements: FetchNewDataRequirements): Completable {
+    override fun fetchFreshDataOrFail(requirements: FetchNewDataRequirements): Single<List<RepoModel>> {
         return gitHubService.getRepos(requirements.githubUsername)
                 .mapApiCallResult { statusCode ->
                     if (statusCode == 404) throw UserErrorException("The username you entered does not exist in GitHub. Try another username.")
                 }
-                .flatMapCompletable { repos ->
-                    // todo I bet I can make this in the abstract class.
-                    Completable.concatArray(
-                            Completable.fromCallable { updateLastTimeNewDataFetched(Date()) },
-                            saveData(repos))
-                }
-                .subscribeOn(Schedulers.io())
     }
 
-    override fun deleteData(): Completable = deletePreviousRepos()
-
-    private fun deletePreviousRepos(): Completable {
+    override fun deleteData(): Completable {
         return Completable.fromCallable {
             val realm = realmManager.getDefault()
             realm.executeTransaction {
@@ -54,12 +45,7 @@ open class ReposDataSource(override val sharedPreferences: SharedPreferences,
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun lastTimeNewDataFetchedKey(): String = SharedPrefersKeys.lastTimeReposFetchedKey
-
-    @SuppressLint("ApplySharedPref")
-    private fun updateLastTimeNewDataFetched(date: Date) {
-        sharedPreferences.edit().putLong(SharedPrefersKeys.lastTimeReposFetchedKey, date.time).commit()
-    }
+    override fun lastTimeFreshDataFetchedKey(): String = SharedPrefersKeys.lastTimeReposFetchedKey
 
     override fun saveData(data: List<RepoModel>): Completable {
         return Completable.fromCallable {

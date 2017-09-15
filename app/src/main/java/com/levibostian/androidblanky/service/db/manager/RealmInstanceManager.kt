@@ -1,6 +1,7 @@
 package com.levibostian.androidblanky.service.db.manager
 
 import com.levibostian.androidblanky.service.db.migrations.Migration1
+import com.levibostian.androidblanky.service.db.migrations.Migration2
 import com.levibostian.androidblanky.service.db.migrations.RealmSchemaMigration
 import com.levibostian.androidblanky.service.manager.UserManager
 import io.realm.Realm
@@ -18,7 +19,8 @@ open class RealmInstanceManager(private val userManager: UserManager) {
         }
 
         val migrations: List<RealmSchemaMigration> = listOf(
-                Migration1()
+                Migration1(),
+                Migration2()
         )
 
         var schemaVersion: Long = 0L

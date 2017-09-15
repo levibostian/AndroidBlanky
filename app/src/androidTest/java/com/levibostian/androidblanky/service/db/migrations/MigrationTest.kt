@@ -70,6 +70,25 @@ open class MigrationTest {
         realm.close()
     }
 
+    @Test fun migrate_migrateFrom1toLatest() {
+        val REALM_NAME = "1.realm"
+        val realmConfig = RealmConfiguration.Builder()
+                .name(REALM_NAME)
+                .schemaVersion(RealmInstanceManager.schemaVersion)
+                .migration { dynamicRealm, oldVersion, newVersion ->
+                    val schema = dynamicRealm.schema
+
+                    for (i in oldVersion until newVersion) {
+                        RealmInstanceManager.migrations[i.toInt()].runMigration(schema)
+                    }
+                }
+                .build()
+        configFactory.copyRealmFromAssets(context, REALM_NAME, realmConfig)
+
+        val realm = Realm.getInstance(realmConfig)
+        realm.close()
+    }
+
     // convenient method to generate 1 realm file in app directory to be able to copy to assets directory for the next migration test when schema version changes.
     @Test fun createFileForCurrentVersionToCopyToAssetsFile() {
         val REALM_NAME = "${RealmInstanceManager.schemaVersion}.realm"

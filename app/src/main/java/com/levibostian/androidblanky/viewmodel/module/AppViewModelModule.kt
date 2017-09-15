@@ -1,6 +1,7 @@
 package com.levibostian.androidblanky.viewmodel.module
 
 import android.content.Context
+import com.levibostian.androidblanky.module.ViewModelModule
 import com.levibostian.androidblanky.service.repository.RepoRepository
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
 import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
@@ -8,13 +9,13 @@ import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
 import dagger.Module
 import dagger.Provides
 
-@Module class ViewModelModule(private val context: Context) {
+@Module class AppViewModelModule(private val context: Context): ViewModelModule {
 
-    @Provides fun provideViewModelFactory(repoRepository: RepoRepository): ViewModelFactory {
+    @Provides override fun provideViewModelFactory(repoRepository: RepoRepository): ViewModelFactory {
         return ViewModelFactory(repoRepository)
     }
 
-    @Provides fun provideViewModelProviderWrapper(): ViewModelProviderWrapper {
+    @Provides override fun provideViewModelProviderWrapper(): ViewModelProviderWrapper {
         return ViewModelProviderWrapper()
     }
 

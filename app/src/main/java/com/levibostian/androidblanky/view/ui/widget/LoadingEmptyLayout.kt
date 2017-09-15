@@ -73,7 +73,7 @@ open class LoadingEmptyLayout : LinearLayout {
             throw RuntimeException("You forgot to add a child view to " + javaClass.simpleName)
         }
 
-        var lightDarkModeInt: Int = LightDarkMode.LIGHT.mode
+        val lightDarkModeInt: Int
         val a = context.obtainStyledAttributes(mAttrs, R.styleable.LoadingEmptyLayout, 0, 0)
         try {
             mLoadingViewText = a.getString(R.styleable.LoadingEmptyLayout_loadEmptyView_loadingText)

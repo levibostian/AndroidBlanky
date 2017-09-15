@@ -1,28 +1,19 @@
 package com.levibostian.androidblanky.view.ui
 
 import android.app.Application
-import android.preference.PreferenceManager
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.levibostian.androidblanky.BuildConfig
 import com.levibostian.androidblanky.service.error.fatal.FatalAppError
 import com.levibostian.androidblanky.service.error.nonfatal.NonFatalAppError
-import com.levibostian.androidblanky.service.model.SharedPrefersKeys
-import com.levibostian.androidblanky.service.module.DataSourceModule
-import com.levibostian.androidblanky.service.module.RepositoryModule
-import com.levibostian.androidblanky.service.module.ServiceModule
-import com.levibostian.androidblanky.viewmodel.module.ManagerModule
-import com.levibostian.androidblanky.viewmodel.module.ViewModelModule
 import io.fabric.sdk.android.Fabric
 import io.realm.Realm
-import io.realm.RealmConfiguration
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketException
-import io.fabric.sdk.android.services.common.Crash
 
 open class MainApplication : Application() {
 
