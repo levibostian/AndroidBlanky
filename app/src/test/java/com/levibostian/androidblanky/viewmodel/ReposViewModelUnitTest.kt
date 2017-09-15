@@ -1,10 +1,10 @@
 package com.levibostian.androidblanky.viewmodel
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
+import com.levibostian.androidblanky.RxImmediateSchedulerRule
 import com.levibostian.androidblanky.service.model.OwnerModel
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.repository.RepoRepository
-import com.levibostian.androidblanky.service.statedata.ReposStateData
 import com.levibostian.androidblanky.service.statedata.StateData
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -28,6 +28,7 @@ import rx.subjects.BehaviorSubject
 class ReposViewModelUnitTest {
 
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule var rxSchedulerRule = RxImmediateSchedulerRule()
 
     @Mock private lateinit var repository: RepoRepository
 
@@ -40,7 +41,7 @@ class ReposViewModelUnitTest {
     }
 
     @Test fun getRepos_whenNoReposSaved() {
-        `when`(repository.getRepos()).thenReturn(Observable.empty<ReposStateData>())
+        `when`(repository.getRepos()).thenReturn(Observable.empty<StateData<RealmResults<RepoModel>>>())
 
         viewModel.getRepos()
                 .test()

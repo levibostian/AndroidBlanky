@@ -24,11 +24,12 @@ import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import com.levibostian.androidblanky.RxImmediateSchedulerRule
+import com.levibostian.androidblanky.service.dao.RepoDao
+import com.levibostian.androidblanky.service.dao.repoDao
+import io.reactivex.Flowable
 import io.realm.RealmAsyncTask
-import khronos.Dates
-import khronos.minus
-import khronos.minutes
-import khronos.second
+import io.realm.RealmResults
+import khronos.*
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -45,6 +46,8 @@ class ReposDataSourceTest {
     @Mock private lateinit var result: Result<List<RepoModel>>
     @Mock private lateinit var response: Response<List<RepoModel>>
     @Mock private lateinit var realmAsyncTask: RealmAsyncTask
+    @Mock private lateinit var repoDao: RepoDao
+    @Mock private lateinit var flowableRealmResults: Flowable<RealmResults<RepoModel>>
 
     val repo1 = RepoModel("name1", "desc1", OwnerModel("login1"))
     val repo2 = RepoModel("name2", "desc2", OwnerModel("login2"))
@@ -71,6 +74,58 @@ class ReposDataSourceTest {
                 .assertError(UserErrorException::class.java)
     }
 
+    @Test fun deleteData_deletesDataInRealm() {
+        `when`(realm.executeTransaction(com.nhaarman.mockito_kotlin.any())).thenCallRealMethod()
+
+        reposDataSource.deleteData()
+                .test()
+                .assertComplete()
+
+        verify(realm).close()
+        verify(realm).delete(RepoModel::class.java)
+    }
+
+    @Test fun lastTimeFreshDataFetchedKey() {
+        Truth.assertThat(reposDataSource.lastTimeFreshDataFetchedKey()).matches(SharedPrefersKeys.lastTimeReposFetchedKey)
+    }
+
+    @Test fun saveData_emptyList() {
+        `when`(realm.executeTransaction(com.nhaarman.mockito_kotlin.any())).thenCallRealMethod()
+
+        reposDataSource.saveData(emptyList())
+                .test()
+                .assertComplete()
+
+        verify(realm).close()
+        verify(realm).delete(RepoModel::class.java)
+        verify(realm).insert(emptyList())
+    }
+
+    @Test fun saveData_insertDataIntoRealm() {
+        `when`(realm.executeTransaction(com.nhaarman.mockito_kotlin.any())).thenCallRealMethod()
+
+        reposDataSource.saveData(listOf(repo1))
+                .test()
+                .assertComplete()
+
+        verify(realm).close()
+        verify(realm).delete(RepoModel::class.java)
+        verify(realm, times(1)).insert(listOf(repo1))
+    }
+
+    @Test fun getData_emptyList() {
+        // todo the below will not pass. I cannot mock a Kotlin extension. Kotlin extensions are static functions I guess. So, I cannot mock this. Therefore, I cannot unit test this *or* I refactor the code to be testable. 
+        `when`(realm.repoDao()).thenReturn(repoDao)
+        `when`(repoDao.getReposUi()).thenReturn(Flowable.empty())
+
+        reposDataSource.getData()
+                .test()
+                .assertNotComplete()
+                .assertValue {
+                    it.isEmpty()
+                }
+    }
+
     @Test fun isDataOlderThan_whenNoLastTimeFetched() {
         `when`(sharedPreferences.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(0)
 
@@ -81,7 +136,7 @@ class ReposDataSourceTest {
         val now = Dates.today
         `when`(sharedPreferences.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn((now - 5.minutes).time)
 
-        Truth.assertThat(reposDataSource.isDataOlderThan(now - 5.minutes - 1.second)).isTrue()
+        Truth.assertThat(reposDataSource.isDataOlderThan(now - 5.minutes + 1.second)).isTrue()
     }
 
     @Test fun isDataOlderThan_whenDataNotOlder() {

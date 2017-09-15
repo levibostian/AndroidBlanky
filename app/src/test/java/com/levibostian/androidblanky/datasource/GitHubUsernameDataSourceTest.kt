@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import com.f2prateek.rx.preferences2.Preference
+import com.google.common.truth.Truth
 import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import io.reactivex.Observable
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +38,30 @@ class GitHubUsernameDataSourceTest {
         dataSource = GitHubUsernameDataSource(rxSharedPreferencesWrapper, sharedPreferences)
     }
 
-    @Test fun getData_nothingSetDefaultString() {
+    @Test(expected = RuntimeException::class)
+    @Throws(Exception::class)
+    fun lastTimeFreshDataFetchedKey_throw() {
+        dataSource.lastTimeFreshDataFetchedKey()
+    }
+
+    @Test fun deleteData_setsToDefaultString() {
+        `when`(sharedPreferences.edit()).thenReturn(sharedPreferencesEditor)
+        `when`(sharedPreferencesEditor.putString(SharedPrefersKeys.gitHubUsernameKey, "")).thenReturn(sharedPreferencesEditor)
+
+        dataSource.deleteData()
+                .test()
+                .assertComplete()
+
+        verify(sharedPreferencesEditor).commit()
+    }
+
+    @Test(expected = RuntimeException::class)
+    @Throws(Exception::class)
+    fun fetchFreshDataOrFail_throw() {
+        dataSource.fetchFreshData(GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements())
+    }
+
+    @Test fun getData_nothingSetGetDefaultString() {
         `when`(rxSharedPreferencesWrapper.getString(SharedPrefersKeys.gitHubUsernameKey)).thenReturn(preference)
         `when`(preference.asObservable()).thenReturn(Observable.just(""))
 
@@ -67,7 +92,9 @@ class GitHubUsernameDataSourceTest {
         verify(sharedPreferencesEditor).commit()
     }
 
-    @Test fun fetchNewData_doNothing() {
+    @Test(expected = RuntimeException::class)
+    @Throws(Exception::class)
+    fun fetchNewData_cannotDo() {
         dataSource.fetchFreshData(GitHubUsernameDataSource.GitHubUsernameFetchDataRequirements())
                 .test()
                 .assertComplete()

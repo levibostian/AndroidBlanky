@@ -7,6 +7,7 @@ import com.levibostian.androidblanky.service.datasource.ReposDataSource
 import com.levibostian.androidblanky.service.model.OwnerModel
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.statedata.StateData
+import com.levibostian.androidblanky.service.statedata.StateDataProcessedListener
 import com.nhaarman.mockito_kotlin.times
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -27,6 +28,7 @@ import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 import java.io.IOException
 import org.mockito.ArgumentCaptor
+import java.util.concurrent.TimeUnit
 
 @RunWith(MockitoJUnitRunner::class)
 class RepoRespositoryTest {
@@ -53,30 +55,15 @@ class RepoRespositoryTest {
         repository = RepoRepository(reposDataSource, githubUsernameDataSource, composite)
     }
 
-    @Test fun getRepos_getEmptyStateDefault() {
-        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(1.second))
-
-        repository.getRepos()
-                .test()
-                .assertNotComplete()
-                .assertValue {
-                    it.state == StateData.State.EMPTY
-                }
-    }
-
     @Test fun getRepos_getLoadingStateWhenSetNewUsernameToGetReposFor() {
         `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(1.second))
         `when`(githubUsernameDataSource.saveData(ArgumentMatchers.anyString())).thenReturn(Completable.complete())
         `when`(reposDataSource.fetchFreshData(com.nhaarman.mockito_kotlin.any())).thenReturn(Completable.never())
 
-        repository.setUserToGetReposFor("username")
-                .test()
-                .assertComplete()
-
         repository.getRepos()
                 .test()
                 .assertValue {
-                    it.state == StateData.State.LOADING && it.repos == null && it.error == null
+                    it.isLoading
                 }
     }
 
@@ -89,13 +76,11 @@ class RepoRespositoryTest {
                 .test()
                 .assertNotComplete()
                 .assertValue {
-                    it.state == StateData.State.ERROR &&
-                    it.repos == null &&
-                    it.error != null && it.error is IOException
+                    it.latestError != null && it.latestError!!.message == "Some error"
                 }
     }
 
-    @Test fun getRepos_emptyState() {
+    @Test fun getRepos_noState() {
         //val reposArray = arrayListOf(repo1, repo2)
         //`when`(repos.iterator()).thenReturn(reposArray.iterator())
         //`when`(repos.size).thenReturn(reposArray.size)
@@ -104,14 +89,12 @@ class RepoRespositoryTest {
         `when`(githubUsernameDataSource.getData()).thenReturn(Observable.just(""))
         repository = RepoRepository(reposDataSource, githubUsernameDataSource, composite)
 
-        verify(githubUsernameDataSource).getData()
-
         repository.getRepos()
                 .test()
                 .assertNotComplete()
-                .assertValue {
-                    it.state == StateData.State.EMPTY && it.repos == null && it.error == null
-                }
+                .assertEmpty()
+
+        verify(githubUsernameDataSource).getData()
     }
 
     @Test fun getRepos_emptyStateWithUsernamePresent() {
@@ -124,14 +107,14 @@ class RepoRespositoryTest {
         `when`(githubUsernameDataSource.getData()).thenReturn(Observable.just("username"))
         repository = RepoRepository(reposDataSource, githubUsernameDataSource, composite)
 
-        verify(githubUsernameDataSource).getData()
-
         repository.getRepos()
                 .test()
                 .assertNotComplete()
                 .assertValue {
-                    it.state == StateData.State.EMPTY && it.repos == null && it.error == null
+                    it.emptyData
                 }
+
+        verify(githubUsernameDataSource, times(2)).getData()
     }
 
     @Test fun getRepos_dataState() {
@@ -149,13 +132,13 @@ class RepoRespositoryTest {
                 .test()
                 .assertNotComplete()
                 .assertValue {
-                    it.state == StateData.State.DATA &&
-                            it.repos!!.size == 2 &&
-                            it.error == null
+                    it.data!!.size == 2
                 }
     }
 
     @Test fun getRepos_doNotFetchNewDataHasNotBeenLongEnoughTimeSinceLastFetch() {
+        `when`(repos.isEmpty()).thenReturn(true)
+        `when`(reposDataSource.getData()).thenReturn(Observable.create { it.onNext(repos) })
         `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(1.minutes))
 
         repository.getRepos()
@@ -165,21 +148,25 @@ class RepoRespositoryTest {
     }
 
     @Test fun getRepos_fetchNewDataLastFetchTimeNotSet() {
+        `when`(repos.isEmpty()).thenReturn(true)
+        `when`(reposDataSource.getData()).thenReturn(Observable.create { it.onNext(repos) })
         `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(null)
+        `when`(reposDataSource.hasEverFetchedData()).thenReturn(false)
         `when`(reposDataSource.fetchFreshData(com.nhaarman.mockito_kotlin.any())).thenReturn(completable)
         `when`(completable.toMaybe<String>()).thenReturn(maybeString)
         `when`(githubUsernameDataSource.getData()).thenReturn(Observable.just("username"))
 
         repository.getRepos()
+                .delay(200, TimeUnit.MILLISECONDS)
                 .test()
 
         verify(reposDataSource).fetchFreshData(com.nhaarman.mockito_kotlin.any())
-        verify(maybeString).subscribe(maybeObservableStringArgumentCaptor.capture())
-        Truth.assertThat(maybeObservableStringArgumentCaptor.value).isNotNull()
     }
 
     @Test fun getRepos_fetchNewDataLastFetchTimeWhileAgo() {
-        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(5.minutes).minus(1.second))
+        `when`(repos.isEmpty()).thenReturn(true)
+        `when`(reposDataSource.getData()).thenReturn(Observable.create { it.onNext(repos) })
+        `when`(reposDataSource.lastTimeFreshDataFetched()).thenReturn(Dates.today.minus(5.minutes).minus(2.second))
         `when`(githubUsernameDataSource.getData()).thenReturn(Observable.just("username"))
 
         repository.getRepos()
