@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.wrapper.LooperWrapper

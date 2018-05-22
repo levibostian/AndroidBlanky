@@ -24,7 +24,6 @@ import tools.fastlane.screengrab.locale.LocaleTestRule
 import tools.fastlane.screengrab.Screengrab
 import javax.inject.Inject
 import org.mockito.Mockito.*
-import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.model.OwnerModel
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
@@ -37,7 +36,6 @@ import khronos.minutes
 import org.mockito.*
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
-import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
 @SdkSuppress(minSdkVersion = 18)

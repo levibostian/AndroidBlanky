@@ -1,8 +1,5 @@
 package com.levibostian.androidblanky.view.ui.activity
 
-import android.arch.lifecycle.LifecycleActivity
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -10,7 +7,7 @@ import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
 
-class MainActivity : AppCompatLifecycleActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

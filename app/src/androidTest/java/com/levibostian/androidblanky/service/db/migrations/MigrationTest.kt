@@ -3,24 +3,14 @@ package com.levibostian.androidblanky.service.db.migrations
 import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.google.common.truth.Truth
 import org.junit.runner.RunWith
-import javax.inject.Inject
 import com.levibostian.androidblanky.rule.TestRealmConfigurationFactory
-import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
-import com.levibostian.androidblanky.service.model.OwnerModel
-import com.levibostian.androidblanky.view.ui.AppApplicationComponent
-import com.levibostian.androidblanky.view.ui.MainApplication
-import com.levibostian.androidblanky.view.ui.TestMainApplication
 import io.realm.Realm
 import io.realm.RealmMigration
 import io.realm.exceptions.RealmMigrationNeededException
-import junit.framework.Assert
 import org.junit.rules.ExpectedException
-import org.mockito.*
 import io.realm.RealmConfiguration
 import org.junit.*
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 open class MigrationTest {

@@ -11,7 +11,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
-import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.model.AppConstants

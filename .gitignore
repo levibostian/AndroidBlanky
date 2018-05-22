@@ -1,7 +1,5 @@
 # manually added
-app/fabric.properties
 fastlane/metadata/android/en-US/images/phoneScreenshots
-debug.db
 
 # added by android studio
 *.iml

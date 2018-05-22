@@ -1,26 +1,16 @@
 package com.levibostian.androidblanky.service.datasource
 
-import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import android.os.Handler
-import android.os.Looper
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
-import com.levibostian.androidblanky.service.dao.repoDao
-import com.levibostian.androidblanky.service.error.fatal.HttpUnhandledStatusCodeException
-import com.levibostian.androidblanky.service.error.nonfatal.RecoverableBadNetworkConnectionException
 import com.levibostian.androidblanky.service.error.nonfatal.UserErrorException
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
-import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import io.reactivex.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmResults
-import java.io.IOException
-import java.util.*
 
 open class ReposDataSource(override val sharedPreferences: SharedPreferences,
                            private val gitHubService: GitHubService,

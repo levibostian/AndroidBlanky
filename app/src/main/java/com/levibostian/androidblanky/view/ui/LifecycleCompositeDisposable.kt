@@ -4,10 +4,8 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.OnLifecycleEvent
-import com.levibostian.androidblanky.view.ui.activity.AppCompatLifecycleActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import java.lang.ref.WeakReference
 
 operator fun LifecycleCompositeDisposable.plusAssign(disposable: Disposable) {
     add(disposable)

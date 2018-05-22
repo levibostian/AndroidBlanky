@@ -1,0 +1,180 @@
+{
+  "project_info": {
+    "project_number": "111111111111",
+    "firebase_url": "https://foo-12345.firebaseio.com",
+    "project_id": "foo-12345",
+    "storage_bucket": "foo-12345.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111111111111:android:1111111111111111",
+        "android_client_info": {
+          "package_name": "com.levibostian.androidblanky"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.levibostian.androidblanky",
+            "certificate_hash": "wefwefewfwefwefwefwefwefwefwe"
+          }
+        },
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.levibostian.androidblanky",
+            "certificate_hash": "wefwefewfwefwefwefwefwefwefwe"
+          }
+        },
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "wfwefwefwefwefwefwefwefwefwefwefwefwefwe"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1111111111-11111111.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.levibostian.androidblanky.debug"
+              }
+            },
+            {
+              "client_id": "1111111111-11111111.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111111111111:android:1111111111111111",
+        "android_client_info": {
+          "package_name": "com.levibostian.androidblanky.beta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.levibostian.androidblanky.beta",
+            "certificate_hash": "wefwefewfwefwefwefwefwefwefwe"
+          }
+        },
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.levibostian.androidblanky.beta",
+            "certificate_hash": "wefwefewfwefwefwefwefwefwefwe"
+          }
+        },
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "wefwefewfwefwefwefwefwefwefwe"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1111111111-11111111.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.levibostian.androidblanky.debug"
+              }
+            },
+            {
+              "client_id": "1111111111-11111111.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111111111111:android:1111111111111111",
+        "android_client_info": {
+          "package_name": "com.levibostian.androidblanky.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.levibostian.androidblanky.debug",
+            "certificate_hash": "wefwefewfwefwefwefwefwefwefwe"
+          }
+        },
+        {
+          "client_id": "1111111111-11111111.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "wefwefewfwefwefwefwefwefwefwe"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1111111111-11111111.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.levibostian.androidblanky.debug"
+              }
+            },
+            {
+              "client_id": "1111111111-11111111.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

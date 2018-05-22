@@ -1,42 +1,116 @@
 # AndroidBlanky
-Creating a new blank Android app is a pain and takes time. Creating this blank Android project should be the last time I have to do it.
+Android boilerplate project I use for all the Android apps that I build. Clone the repo, edit some configurations, and get off to building your next awesome app!
+
+iOS developer? I have [a boilerplate project for you!](https://github.com/levibostian/iosblanky)
+Nodejs API developer? I have [a boilerplate project for you!](https://github.com/levibostian/expressjsblanky)
+
+# What is AndroidBlanky?
+
+AndroidBlanky is an Android app. It's a very simple Android app that includes a collection of libraries, configurations, and architecture decisions for all of the apps that I build. So whenever I want to build a new Android, instead of creating a new Android Studio project and spending a bunch of time configuring it to include all my libraries, configurations, and architecture decisions in it that I want, I simply clone this repo, do some editing to the project, and I am off to building my app!
+
+# Why use AndroidBlanky?
+
+You know the feeling when you go to begin a new project. The day you begin a project is spent on just setting up your project, configuring it, and getting your environment all setup. It takes hours to days to complete!
+
+AndroidBlanky works to avoid that. By having a blank Android app already created, I am able to copy it and I am ready to jump right into developing my new app. AndroidBlanky works to get you to building your app within minutes instead of hours or days.
+
+# What is included in AndroidBlanky?
+
+### Language:
+
+* [Kotlin](https://kotlinlang.org/) -  Yeah, Kotlin is awesome. It's Java but better.
+
+### Libraries:
+
+* AppCompat
+* Android Design support library
+* RecyclerView
+* [Teller](https://github.com/levibostian/teller-android) - To help build offline-first mobile apps by caching retrieved data for offline viewing.
+* [Wendy](https://github.com/levibostian/wendy-android) - To help build offline-first mobile apps by pushing data to my API in the background.
+* [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) Architecture components - Great way to work with data and the Android life cycle.
+* [Room](https://developer.android.com/topic/libraries/architecture/room) - Easier way to work with SQLite on Android.
+* [Dagger 2](https://github.com/google/dagger) - Easier dependency management for Android to make testing easier.
+* [RxJava2](https://github.com/ReactiveX/RxJava), [RxAndroid](https://github.com/ReactiveX/RxAndroid) - Make data observable in my apps to update the UI of my apps easily.
+* [RxPreferences](https://github.com/f2prateek/rx-preferences) - RxJava2 for SharedPreferences.
+* [Moshi](https://github.com/square/moshi) - Deserialize JSON into models.
+* [Retrofit](https://github.com/square/retrofit) - Easy way to perform network calls.
+* [OkHttp logging interceptor](https://github.com/square/okhttp) - Log network calls to the Logcat during development for debugging.
+* [Eventbus](https://github.com/greenrobot/EventBus) - An event bus to communicate in my app.
+* [Timber](https://github.com/JakeWharton/timber/) - Unified logging to the Logcat and to Crashlytics within my app.
+* [Android-License-Fragment](https://github.com/first087/Android-License-Fragment) - To easily create an open source licenses list.
+
+##### For testing...
+
+* [Truth](https://github.com/google/truth/) - Assertions library used by Google.
+* [Mockito](https://github.com/mockito/mockito) - Mocking objects for testing.
+* [Android testing support library](https://developer.android.com/training/testing/) - To run unit, integration, and UI tests for Android.
+* [Espresso](https://developer.android.com/training/testing/espresso/) - Create UI tests on Android.
+* [Fastlane screengrab](https://docs.fastlane.tools/actions/screengrab/) - Take screenshots of app during UI tests to help debug UI tests and to use for creating screenshots for the Play Store.
+
+### Tools and services:
+
+* [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/) - Crash reporting.
+Configure: After you follow the directions in [Getting started](#getting-started) for setting up Firebase, this is done for you.
+
+* [Firebase Analytics](https://firebase.google.com/docs/analytics/) - Mobile analytics.
+Configure: After you follow the directions in [Getting started](#getting-started) for setting up Firebase, this is done for you.
+
+* [Fastlane](https://fastlane.tools/) - Distributing the app to the Play Store. Pretty much automates tasks for me.
+Configure: Edit the files in the `fastlane/` directory to configure it for your project.
+
+* [Travis CI](https://travis-ci.com/) - CI server to run tests and distribute apps to the Play Store. Pretty much all automation that I can.
+Configure: Create a [Travis](https://travis-ci.com/) account, and enable your GitHub repo for your Android project in your Travis profile page.
+
+* [Danger](http://danger.systems/ruby/) - Bot that looks over my pull requests and make sure I do not forget to complete certain tasks.
+Configure: [Here are instructions](http://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use) for adding a Danger bot to your repo. This depends on if your app is an open source or closed source project.
+
+# Getting started
+
+The instructions below assume you are on a macOS machine and are comfortable with the command line. Are you on Windows or want to use a GUI? Feel free to make a pull request with the instructions!
+
+```
+git clone https://github.com/levibostian/AndroidBlanky.git NameOfYourNewApp
+cd NameOfYourNewApp
+rm -rf .git/
+git init
+git config user.email "you@example.com"
+git config user.name "First Last"
+git add .; git commit -m "Initial commit. Created project from levibostian/AndroidBlanky boilerplate.";
+bundle install # This is a ruby tool, [Bundler](https://bundler.io/). This is for running [Fastlane](https://fastlane.tools/).
+```
+
+Now, open up the Android project in Android Studio. Everything should Gradle sync and build successfully.
+
+* Open the `app/build.gradle` file. Find and replace this line: `applicationId "com.levibostian.androidblanky"` with your own namespace for your app.
+* Edit the package names of your source code to your namespace as well. [This is how to do that](https://stackoverflow.com/a/29092698/1486374)
+
+Now it's time to setup Firebase.
+
+* [Create a new Firebase application via a web browser and setup Firebase in app](https://firebase.google.com/docs/android/setup). The big thing to do here is to download a `google-services.json` file and save that to `app/google-services.json` replacing the existing one there already.
+* Select `Set up Crashlytics` [in the Firebase console](https://console.firebase.google.com/project/_/crashlytics) for the project you just created (if `Set up Crashlytics` is not visible, simply [follow these directions](https://firebase.google.com/docs/crashlytics/get-started) to enable Crashlytics in your project).
+* Build > Clean Project. Build > Rebuild Project.
+
+### Things to edit beyond setup
+
+* In production/strings.xml it says AndroidBlanky. Change name your app name.
+* If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request.
+* Edit the theme in the `app/src/main/res/values/styles.xml`.
+* Edit `fastlane/Fastfile`
 
 ## Generate app icons
 
 * Create a 128x128px icon and put into `fastlane/metadata/icons/app_icon.png`. Then run `fastlane app_icon` to generate them.
 
-How to use project:  
+# Release app to Play Store
 
-* Copy project to a directory of your choice. (`cp -R AndroidBlanky/ newProjectName/`)
-* `rm -rf .git/` to remove history for AndroidBlanky and `git init; git config user.email "you@foo.com"; git config user.name "First Last"` to create a new git history. `git add .; git commit -m "Initial commit. Create project from template."` to get new history completed.
-* Open up project in Studio and all should be golden. Now continue on to below steps to get it compiling and running...
-* Edit namespace of app in manifest file and build.gradle file to not be 'com.levibostian.andoidblanky'. You will now also need to rename the source code directories. To do this, open up your source code project explorer in Studio (the place where you view your source code tree). Click the drop down arrows to `app/src/main/` and there you will see `com.levibostian.androidblanky`. Click on `com.levibostian.androidblanky` once and then look in the top right corner of the source project project explorer window (the little panel you are playing around with). There is a little gear icon for settings. Click that little gear icon and then click "Compact Empty Middle Packages". What this will do is make `com.levibostian.androidblanky` split up to show each directory individually. Then you can right click on `levibostian` > refactor > rename package (when you rename, it will take a few minutes of Studio frozen. Just wait, it will work.) and also rename `androidblanky` using the same method. (This help came from [this stackoverflow](http://stackoverflow.com/a/27677033/1486374) post.)
-* Go into `app/proguard-rules.pro` and towards the top, you will see 2 rules for models and vos. Change the namespace from `com.levibostian.androidblanky` to your namespace you changed above.
-* Build > Clean Project. Build > Rebuild Project.
-* Create a new file `app/fabric.properties` and inside of it, add your org's Fabric api key and secret:
+AndroidBlanky uses [Fastlane](https://fastlane.tools/) to distribute apps to the Play Store for beta testing and production releases.
 
-```
-#Contains API Secret used to validate your application. Commit to internal source control; avoid making secret public.
-#Mon Jan 16 18:43:59 CST 2017
-apiSecret=secret_here
-apiKey=key_here
-```
+When creating build to release to Play Store:
 
-* If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request.
-* In production/strings.xml it says AndroidBlanky. Change name your app name.
-* Go into Android Studio preferences > Compiler > Command line args paste `-PminSdk=23` or whatever min SDK you want to compile with for dev testing.
-
-When creating build to release to play store:  
-
-1. (If you have not created a keystore file yet) Run command `keytool -genkey -v -keystore KEYSTORE-NAME.keystore -alias KEYSTORE-ALIAS -keyalg RSA -validity 10000 -storepass PASSWORD1 -keypass PASSWORD2` (replacing KEYSTORE-NAME to name of your app, KEYSTORE-ALIAS to name of your app, PASSWORD1 to a password used for your keypass password and PASSWORD2 to another password for your keypass password) *NOTE: do not lose the file that this command creates. You will not be able to generate another one!*
-2. Edit the environment variable to point to the path you are storing the keystore file you made above: `export ANDROID_KEYSTORE=/path/to/keystore/file/created/above`. The default is: `export ANDROID_KEYSTORE=~/.android/debug.keystore` for creating debug builds.
-3. Edit the environment variable for your alias name: `export ANDROID_KEYALIAS=aliasnameyousetwhencreatingalias`. Default is: `export ANDROID_KEYALIAS=androiddebugkey` for creating debug builds.
-4. Go into the `build.gradle` file and uncomment the signingConfigs{} variables. 
-5. `./gradlew assembleRelease` This creates the APK files. Go to  `app/build/outputs/apk` to view them all after this command is complete. 
-6. Sign the APK: `jarsigner -verbose -keystore KEYSTORE-PATH APK-PATH-CREATED-ABOVE KEYSTORE-ALIAS`
-7. Verify the signature: `jarsigner –verbose -keystore KEYSTORE-PATH –verify APK-PATH-CREATED-ABOVE`
-8. Zip Align the APK: `zipalign -v 4 UNALIGNED-SIGNED-APK.apk RELEASE_APK-NAME.apk` 
-9. [Publish](https://play.google.com/apps/publish) that bad boy.
+* [Create a keystore file](keystores/README.md).
+* Edit your `app/build.gradle` file editing the `signingConfig` section with the passwords and location to your keystore file.
+* Manually create a new Android app in the [Play Console](https://play.google.com/apps/publish). For Fastlane to push an app, it must exist first in your Play Console account.
+* Edit the `prod_deploy` section of `fastlane/Fastfile` to set it up for your account.
 
 # Tests
 
@@ -48,8 +122,16 @@ When creating build to release to play store:
 
 `fastlane android_test`
 
-# Credits
+## Author
 
-* [MockitoExample](https://github.com/JeroenMols/MockitoExample) for helping get Mockito v2 working.
-* [u2020](https://github.com/JakeWharton/u2020) for inspiration behind some of the project structure. This project helped setup my build.gradle files a ton!
-* [clean-status-bar](https://github.com/emmaguy/clean-status-bar) for app to create a clean status bar intent.
+* Levi Bostian - [GitHub](https://github.com/levibostian), [Twitter](https://twitter.com/levibostian), [Website/blog](http://levibostian.com)
+
+![Levi Bostian image](https://gravatar.com/avatar/22355580305146b21508c74ff6b44bc5?s=250)
+
+## Contribute
+
+AndroidBlanky is not open for contributions at this time. This project showcases *my* preferred way to build an Android app. If you wish to make edits, by all means, fork the repo and make your edits in your own copy of the repo.
+
+I do make some exceptions for contributions. I allow the following:
+
+* Edits to this `README.md` document.

@@ -5,7 +5,6 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import com.google.common.truth.Truth
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.datasource.ReposDataSource
 import com.levibostian.androidblanky.service.error.nonfatal.UserErrorException
 import com.levibostian.androidblanky.service.model.OwnerModel
@@ -25,7 +24,6 @@ import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import com.levibostian.androidblanky.RxImmediateSchedulerRule
 import com.levibostian.androidblanky.service.dao.RepoDao
-import com.levibostian.androidblanky.service.dao.repoDao
 import io.reactivex.Flowable
 import io.realm.RealmAsyncTask
 import io.realm.RealmResults

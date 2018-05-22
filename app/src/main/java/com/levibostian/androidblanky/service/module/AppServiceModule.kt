@@ -16,7 +16,6 @@ import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.AppendHeadersInterceptor
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.db.manager.RealmInstanceManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
@@ -32,11 +31,14 @@ import retrofit2.converter.moshi.MoshiConverterFactory
                 .addInterceptor(defaultErrorHandlerInterceptor)
                 .addNetworkInterceptor(AppendHeadersInterceptor(credsManager))
                 .build()
+        val moshi = Moshi.Builder()
+                .add(Date.class, new Rfc3339DateJsonAdapter())
+                .build()
 
         return Retrofit.Builder()
                 .client(client).baseUrl(AppConstants.API_ENDPOINT)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
     }
 
