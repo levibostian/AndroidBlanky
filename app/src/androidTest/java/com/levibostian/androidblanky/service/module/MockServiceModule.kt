@@ -11,16 +11,15 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
+import com.levibostian.androidblanky.service.ResponseProcessor
 import com.levibostian.androidblanky.service.manager.UserCredsManager
-import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.model.AppConstants
-import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import okhttp3.OkHttpClient
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 
-@Module open class MockServiceModule(val application: MainApplication): ServiceModule {
+@Module class MockServiceModule(val application: MainApplication): ServiceModule {
 
     @Provides override fun provideRetrofit(credsManager: UserCredsManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
         val client = OkHttpClient.Builder()
@@ -47,8 +46,6 @@ import retrofit2.Retrofit
 
     @Provides @Singleton override fun provideSharedPreferences(): SharedPreferences = Mockito.mock(SharedPreferences::class.java)
 
-    @Provides @Singleton override fun provideRealmWrapper(userManager: UserManager): RealmInstanceManager = Mockito.mock(RealmInstanceManager::class.java)
-
-    @Provides @Singleton override fun provideLooperWrapper(): LooperWrapper = Mockito.mock(LooperWrapper::class.java)
+    @Provides @Singleton override fun provideResponseProcessor(): ResponseProcessor = Mockito.mock(ResponseProcessor::class.java)
 
 }

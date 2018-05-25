@@ -1,14 +1,18 @@
 package com.levibostian.androidblanky.module
 
-import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
-import com.levibostian.androidblanky.service.datasource.ReposDataSource
-import com.levibostian.androidblanky.service.repository.RepoRepository
+import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.db.Database
+import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
+import com.levibostian.androidblanky.service.repository.ReposRepository
 import io.reactivex.disposables.CompositeDisposable
 
 interface RepositoryModule {
 
     fun provideCompositeDisposable(): CompositeDisposable
 
-    fun provideRepoRepository(reposDataSource: ReposDataSource, gitHubUsernameDataSource: GitHubUsernameDataSource, compositeDisposable: CompositeDisposable): RepoRepository
+    fun provideRepoRepository(responseProcessor: ResponseProcessor, service: GitHubService, db: Database): ReposRepository
+
+    fun provideGithubUsernameRepository(): GitHubUsernameRepository
 
 }

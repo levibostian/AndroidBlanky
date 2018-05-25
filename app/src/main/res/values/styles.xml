@@ -16,12 +16,32 @@
 
         <item name="colorControlHighlight">@color/accent_lighter</item> <!-- sets color ripple lollipop device and background color of selected state pre lollipop. Set for a lighter or darker shade then colorAccent color -->
 
-        <item name="android:buttonStyle">@style/ButtonColor</item>
+        <item name="android:borderlessButtonStyle">@style/BorderlessButtonStyle</item>
+        <item name="android:buttonStyle">@style/ButtonStyle</item>
         <item name="colorButtonNormal">@color/accent</item>
+
+        <item name="dialogTheme">@style/DialogTheme</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
-    <style name="ButtonColor" parent="@style/Widget.AppCompat.Button">
+    <style name="BorderlessButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="ButtonStyle" parent="@style/Widget.AppCompat.Button">
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_darker</item>
+        <item name="colorAccent">@color/accent</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_darker</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
     <style name="ToolbarStyle" parent="Widget.AppCompat.ActionBar">

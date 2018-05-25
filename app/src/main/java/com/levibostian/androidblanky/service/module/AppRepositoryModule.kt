@@ -2,9 +2,11 @@ package com.levibostian.androidblanky.service.module
 
 import android.content.Context
 import com.levibostian.androidblanky.module.RepositoryModule
-import com.levibostian.androidblanky.service.datasource.GitHubUsernameDataSource
-import com.levibostian.androidblanky.service.datasource.ReposDataSource
-import com.levibostian.androidblanky.service.repository.RepoRepository
+import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.db.Database
+import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
+import com.levibostian.androidblanky.service.repository.ReposRepository
 
 import dagger.Module
 import dagger.Provides
@@ -16,8 +18,12 @@ import io.reactivex.disposables.CompositeDisposable
         return CompositeDisposable()
     }
 
-    @Provides override fun provideRepoRepository(reposDataSource: ReposDataSource, gitHubUsernameDataSource: GitHubUsernameDataSource, compositeDisposable: CompositeDisposable): RepoRepository {
-        return RepoRepository(reposDataSource, gitHubUsernameDataSource, compositeDisposable)
+    @Provides override fun provideRepoRepository(responseProcessor: ResponseProcessor, service: GitHubService, db: Database): ReposRepository {
+        return ReposRepository(responseProcessor, service, db)
+    }
+
+    @Provides override fun provideGithubUsernameRepository(): GitHubUsernameRepository {
+        return GitHubUsernameRepository(context)
     }
 
 }

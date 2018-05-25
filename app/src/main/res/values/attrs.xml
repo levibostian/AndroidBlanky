@@ -1,27 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="LoadingView">
-        <attr name="loading_loadingText" format="string"/>
-        <attr name="loading_lightDarkView" format="enum">
-            <enum name="light" value="0" />
-            <enum name="dark" value="1" />
-        </attr>
-    </declare-styleable>
-    <declare-styleable name="EmptyView">
-        <attr name="emptyView_emptyText" format="string"/>
-        <attr name="emptyView_emptyImageRes" format="reference"/>
-        <attr name="emptyView_lightDarkView" format="enum">
-            <enum name="light" value="0" />
-            <enum name="dark" value="1" />
-        </attr>
-    </declare-styleable>
-    <declare-styleable name="LoadingEmptyLayout">
-        <attr name="loadEmptyView_loadingText" format="string"/>
-        <attr name="loadEmptyView_emptyText" format="string"/>
-        <attr name="loadEmptyView_emptyImageRes" format="reference" />
-        <attr name="loadEmptyView_lightDarkView" format="enum">
-            <enum name="light" value="0" />
-            <enum name="dark" value="1" />
-        </attr>
-    </declare-styleable>
 </resources>

@@ -12,6 +12,7 @@ import com.artitk.licensefragment.model.License
 import com.artitk.licensefragment.model.LicenseID
 import com.artitk.licensefragment.model.LicenseType
 import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.R.id.activity_toolbar_toolbar
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
 
 class LicensesActivity: AppCompatActivity() {

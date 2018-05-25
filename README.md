@@ -95,7 +95,9 @@ Now it's time to setup Firebase.
 * In production/strings.xml it says AndroidBlanky. Change name your app name.
 * If calling an API, then go into `src/main/java/service/` and edit the name of `GitHubApi.java` to be your API name. If not calling an API, go into the manifest file and delete the INTERNET permission request.
 * Edit the theme in the `app/src/main/res/values/styles.xml`.
-* Edit `fastlane/Fastfile`
+* Edit `fastlane/Fastfile` to work for your app.
+* Edit `DatabaseManager`'s DATABASE_NAME.
+* Edit 'res/values/strings.xml' file to edit the strings put in place.
 
 ## Generate app icons
 

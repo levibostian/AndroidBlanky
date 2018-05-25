@@ -12,7 +12,7 @@ import com.levibostian.wendy.service.Wendy
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
-open class MainApplication : Application() {
+class MainApplication : Application() {
 
     val component: ApplicationComponent by lazy { getApplicationComponent() }
 

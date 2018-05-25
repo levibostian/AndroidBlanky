@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.R.id.activity_toolbar_toolbar
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
 

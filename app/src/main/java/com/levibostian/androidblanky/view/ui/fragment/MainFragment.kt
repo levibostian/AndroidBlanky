@@ -1,49 +1,49 @@
 package com.levibostian.androidblanky.view.ui.fragment
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxTextView
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.service.GitHubService
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.arch.lifecycle.ViewModelProviders
-import android.opengl.Visibility
+import android.content.Context
+import android.os.Handler
+import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.recyclerview.R.attr.layoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.widget.LinearLayout
+import android.text.format.DateUtils
+import android.widget.TextView
+import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.model.RepoModel
-import com.levibostian.androidblanky.service.statedata.StateData
-import com.levibostian.androidblanky.service.statedata.StateDataProcessedListener
-import com.levibostian.androidblanky.view.ui.LifecycleCompositeDisposable
 import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
-import com.levibostian.androidblanky.view.ui.plusAssign
-import com.levibostian.androidblanky.view.ui.widget.LoadingEmptyLayout
+import com.levibostian.androidblanky.view.ui.extensions.closeKeyboard
+import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
-import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.rxkotlin.toSingle
-import io.realm.RealmResults
+import com.levibostian.teller.datastate.listener.LocalDataStateListener
+import com.levibostian.teller.datastate.listener.OnlineDataStateListener
+import java.util.*
 
-class MainFragment : SupportFragmentLifecycle() {
-
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-
-    private val lifecycleComposite = LifecycleCompositeDisposable.init(this)
+class MainFragment : Fragment() {
 
     private lateinit var reposViewModel: ReposViewModel
+    private lateinit var gitHubUsernameViewModel: GitHubUsernameViewModel
+
+    private var updateLastSyncedHandler: Handler? = null
+    private var updateLastSyncedRunnable: Runnable? = null
+
+    private var fetchingSnackbar: Snackbar? = null
+
+    @Inject lateinit var service: GitHubService
+    @Inject lateinit var db: Database
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     companion object {
         fun newInstance(): MainFragment {
@@ -58,56 +58,100 @@ class MainFragment : SupportFragmentLifecycle() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (activity.application as MainApplication).component.inject(this)
+        (activity!!.application as MainApplication).component.inject(this)
         reposViewModel = ViewModelProviders.of(this, viewModelFactory).get(ReposViewModel::class.java)
+        gitHubUsernameViewModel = ViewModelProviders.of(this, viewModelFactory).get(GitHubUsernameViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_main, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onStart() {
         super.onStart()
+        reposViewModel.observeRepos()
+                .observe(this, Observer { reposState ->
+                    reposState?.deliver(object : OnlineDataStateListener<List<RepoModel>> {
+                        override fun finishedFirstFetchOfData(errorDuringFetch: Throwable?) {
+                            if (errorDuringFetch != null) {
+                                errorDuringFetch.message?.let {
+                                    frag_main_loading_empty.showEmptyView(false)
+                                    frag_main_loading_empty.emptyViewMessage = it
+                                }
 
-        // TODO I need to fix this. LoadingEmpty layout does not accept the XML args.
-        fragment_main_loading_empty_layout.setLightDarkMode(LoadingEmptyLayout.LightDarkMode.DARK)
-        fragment_main_loading_empty_layout.setLoadingViewText(getString(R.string.loading_repos))
-        fragment_main_loading_empty_layout.setEmptyViewMessage(getString(R.string.user_no_repos))
-
-        lifecycleComposite += reposViewModel.getReposUsername()
-                .subscribe({ username ->
-                    fragment_main_username_textview.text = if (username.isBlank()) "(no username set)" else username
-                })
-        lifecycleComposite += reposViewModel.getRepos()
-                .subscribe({ reposState ->
-                    reposState.deliver(object : StateDataProcessedListener<RealmResults<RepoModel>> {
-                        override fun loadingData() = fragment_main_loading_empty_layout.showLoadingView(true)
-                        override fun emptyData() {
-                            fragment_main_loading_empty_layout.setEmptyViewMessage("User does not have any repos.")
-                            fragment_main_loading_empty_layout.showEmptyView(false)
-                        }
-                        override fun data(data: RealmResults<RepoModel>) {
-                            if (fragment_main_repos_recyclerview.adapter == null) {
-                                fragment_main_repos_recyclerview.layoutManager = LinearLayoutManager(activity)
-                                fragment_main_repos_recyclerview.adapter = ReposRecyclerViewAdapter(data)
+                                activity?.let {
+                                    AlertDialog.Builder(it)
+                                            .setTitle("Error")
+                                            .setMessage(errorDuringFetch.message?: "Unknown error. Please, try again.")
+                                            .setPositiveButton("Ok") { dialog, _ ->
+                                                dialog.dismiss()
+                                            }
+                                            .create()
+                                            .show()
+                                }
                             }
-                            fragment_main_loading_empty_layout.showContentView(true)
                         }
-                        override fun errorFound(error: Throwable) {
-                            AlertDialog.Builder(activity)
-                                    .setTitle(R.string.error)
-                                    .setMessage(error.message!!)
-                                    .create()
-                                    .show()
+                        override fun firstFetchOfData() {
+                            frag_main_loading_empty.showLoadingView(false)
                         }
-                        override fun fetchingFreshData() {
-                            fragment_main_fetching_data_view.visibility = View.VISIBLE
+                        override fun cacheEmpty() {
+                            frag_main_loading_empty.showEmptyView(false)
+                            frag_main_loading_empty.emptyViewMessage = "There are no repos."
                         }
-                        override fun finishedFetchingFreshData() {
-                            fragment_main_fetching_data_view.visibility = View.GONE
+                        override fun cacheData(data: List<RepoModel>, fetched: Date) {
+                            frag_main_loading_empty.showContentView(true)
+
+                            updateLastSyncedRunnable?.let { updateLastSyncedHandler?.removeCallbacks(it) }
+                            updateLastSyncedHandler = Handler()
+                            updateLastSyncedRunnable = Runnable {
+                                data_age_textview.text = "Data last synced ${DateUtils.getRelativeTimeSpanString(fetched.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)}"
+                                updateLastSyncedHandler?.postDelayed(updateLastSyncedRunnable!!, 1000)
+                            }
+                            updateLastSyncedHandler?.post(updateLastSyncedRunnable!!)
+
+                            repos_recyclerview.apply {
+                                layoutManager = LinearLayoutManager(activity!!)
+                                adapter = ReposRecyclerViewAdapter(data)
+                                setHasFixedSize(true)
+                            }
+                        }
+                        override fun fetchingFreshCacheData() {
+                            fetchingSnackbar = Snackbar.make(parent_view, "Updating repos list...", Snackbar.LENGTH_LONG)
+                            fetchingSnackbar?.show()
+                        }
+                        override fun finishedFetchingFreshCacheData(errorDuringFetch: Throwable?) {
+                            fetchingSnackbar?.dismiss()
                         }
                     })
                 })
+        gitHubUsernameViewModel.observeUsername()
+                .observe(this, Observer { username ->
+                    username?.deliver(object : LocalDataStateListener<String> {
+                        override fun isEmpty() {
+                            username_edittext.setText("", TextView.BufferType.EDITABLE)
+                        }
+                        override fun data(data: String) {
+                            username_edittext.setText(data, TextView.BufferType.EDITABLE)
+                            reposViewModel.setUsername(data)
+                        }
+                    })
+                })
+
+        go_button.setOnClickListener {
+            if (username_edittext.text.isBlank()) {
+                username_edittext.error = "Enter a GitHub username"
+            } else {
+                gitHubUsernameViewModel.setUsername(username_edittext.text.toString())
+
+                closeKeyboard()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        updateLastSyncedRunnable?.let { updateLastSyncedHandler?.removeCallbacks(it) }
     }
 
 }

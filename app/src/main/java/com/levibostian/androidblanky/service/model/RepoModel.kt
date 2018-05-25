@@ -1,9 +1,8 @@
 package com.levibostian.androidblanky.service.model
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import android.arch.persistence.room.*
 
-@JsonClass(generateAdapter = true)
-open class RepoModel(@PrimaryKey var full_name: String? = null,
-                     var description: String? = null,
-                     var owner: OwnerModel? = null) : RealmObject()
+@Entity(tableName = "repo")
+class RepoModel(@PrimaryKey var id: Long = 0,
+                var name: String = "",
+                @Embedded(prefix = "repo_owner_") var owner: RepoOwnerModel = RepoOwnerModel())

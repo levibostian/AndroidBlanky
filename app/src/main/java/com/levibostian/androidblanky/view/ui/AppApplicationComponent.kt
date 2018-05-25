@@ -1,6 +1,5 @@
 package com.levibostian.androidblanky.view.ui
 
-import com.levibostian.androidblanky.service.module.AppDataSourceModule
 import com.levibostian.androidblanky.service.module.AppManagerModule
 import com.levibostian.androidblanky.service.module.AppRepositoryModule
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
@@ -10,13 +9,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = arrayOf(
-        AppServiceModule::class,
-        AppManagerModule::class,
-        AppRepositoryModule::class,
-        AppViewModelModule::class,
-        AppDataSourceModule::class
-))
+@Component(modules = [AppServiceModule::class, AppManagerModule::class, AppRepositoryModule::class, AppViewModelModule::class])
 interface AppApplicationComponent: ApplicationComponent {
     override fun inject(mainFragment: MainFragment)
 
@@ -27,7 +20,6 @@ interface AppApplicationComponent: ApplicationComponent {
                     .appManagerModule(AppManagerModule(application))
                     .appRepositoryModule(AppRepositoryModule(application))
                     .appViewModelModule(AppViewModelModule(application))
-                    .appDataSourceModule(AppDataSourceModule(application))
                     .build()
         }
     }

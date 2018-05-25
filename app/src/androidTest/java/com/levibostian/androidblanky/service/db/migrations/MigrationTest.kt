@@ -1,95 +1,41 @@
 package com.levibostian.androidblanky.service.db.migrations
 
-import android.content.Context
-import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import org.junit.Rule
 import org.junit.runner.RunWith
-import com.levibostian.androidblanky.rule.TestRealmConfigurationFactory
-import io.realm.Realm
-import io.realm.RealmMigration
-import io.realm.exceptions.RealmMigrationNeededException
-import org.junit.rules.ExpectedException
-import io.realm.RealmConfiguration
-import org.junit.*
+import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory
+import android.support.test.InstrumentationRegistry
+import android.arch.persistence.room.testing.MigrationTestHelper
+import com.levibostian.androidblanky.service.db.Database
+import org.junit.Test
+import java.io.IOException
+import android.arch.persistence.db.SupportSQLiteDatabase
 
 @RunWith(AndroidJUnit4::class)
-open class MigrationTest {
+class MigrationTest {
 
-    @get:Rule open val configFactory = TestRealmConfigurationFactory()
-    @get:Rule open val thrown = ExpectedException.none()
-
-    private lateinit var context: Context
-
-    @Before
-    fun setup() {
-        context = InstrumentationRegistry.getInstrumentation().context
+    companion object {
+        private const val TEST_DB = "migration-test"
     }
 
-    @Test(expected = RealmMigrationNeededException::class)
-    @Throws(Exception::class)
-    fun migrate_migrationNeededIsThrown() {
-        val REALM_NAME = "0.realm"
-        val realmConfig = RealmConfiguration.Builder()
-                .name(REALM_NAME)
-                .schemaVersion(0)
-                .build()
-        configFactory.copyRealmFromAssets(context, REALM_NAME, realmConfig)
+    @Rule var helper: MigrationTestHelper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(), Database::class.java.canonicalName, FrameworkSQLiteOpenHelperFactory())
 
-        // should fail because the realm files have changed *since* this 0.realm file.
-        // When you want to get a realm instance, it will take what realm objects are already in memory (mapped by the "name" property of the RealmConfiguration) and it will compare it to the files in the application. If they are different, a realm migration exception will be thrown. So, you need to make sure to add Realm migrations to your code at all times.
-        val realm = Realm.getInstance(realmConfig)
-        realm.close()
-    }
-
-    @Test fun migrate_migrateFrom0toLatest() {
-        val REALM_NAME = "0.realm"
-        val realmConfig = RealmConfiguration.Builder()
-                .name(REALM_NAME)
-                .schemaVersion(RealmInstanceManager.schemaVersion)
-                .migration { dynamicRealm, oldVersion, newVersion ->
-                    val schema = dynamicRealm.schema
-
-                    for (i in oldVersion until newVersion) {
-                        RealmInstanceManager.migrations[i.toInt()].runMigration(schema)
-                    }
-                }
-                .build()
-        configFactory.copyRealmFromAssets(context, REALM_NAME, realmConfig)
-
-        val realm = Realm.getInstance(realmConfig)
-        realm.close()
-    }
-
-    @Test fun migrate_migrateFrom1toLatest() {
-        val REALM_NAME = "1.realm"
-        val realmConfig = RealmConfiguration.Builder()
-                .name(REALM_NAME)
-                .schemaVersion(RealmInstanceManager.schemaVersion)
-                .migration { dynamicRealm, oldVersion, newVersion ->
-                    val schema = dynamicRealm.schema
-
-                    for (i in oldVersion until newVersion) {
-                        RealmInstanceManager.migrations[i.toInt()].runMigration(schema)
-                    }
-                }
-                .build()
-        configFactory.copyRealmFromAssets(context, REALM_NAME, realmConfig)
-
-        val realm = Realm.getInstance(realmConfig)
-        realm.close()
-    }
-
-    // convenient method to generate 1 realm file in app directory to be able to copy to assets directory for the next migration test when schema version changes.
-    @Test fun createFileForCurrentVersionToCopyToAssetsFile() {
-        val REALM_NAME = "${RealmInstanceManager.schemaVersion}.realm"
-        val realmConfig = RealmConfiguration.Builder()
-                .name(REALM_NAME)
-                .schemaVersion(RealmInstanceManager.schemaVersion)
-                .build()
-
-        Realm.deleteRealm(realmConfig)
-        val realm = Realm.getInstance(realmConfig)
-        realm.close()
-    }
+//    @Test fun migrate1to2() {
+//        var db = helper.createDatabase(TEST_DB, 1)
+//
+//        // db has schema version 1. insert some data using SQL queries.
+//        // You cannot use DAO classes because they expect the latest schema.
+//        db.execSQL("")
+//
+//        // Prepare for the next version.
+//        db.close()
+//
+//        // Re-open the database with version 2 and provide
+//        // MIGRATION_1_2 as the migration process.
+//        db = helper.runMigrationsAndValidate(TEST_DB, 2, true, Migration1())
+//
+//        // MigrationTestHelper automatically verifies the schema changes,
+//        // but you need to validate that the data was migrated properly.
+//    }
 
 }

@@ -15,25 +15,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.test.InstrumentationRegistry
 import com.levibostian.androidblanky.view.ui.TestMainApplication
-import com.linkedin.android.testbutler.TestButler
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 
-open class AndroidTestTestRunner : AndroidJUnitRunner() {
+class AndroidTestTestRunner : AndroidJUnitRunner() {
 
     override fun onStart() {
-        TestButler.setup(InstrumentationRegistry.getTargetContext())
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
 
         val app = targetContext.applicationContext
         cleanupStatusBar(app)
 
         super.onStart()
-    }
-
-    override fun finish(resultCode: Int, results: Bundle) {
-        TestButler.teardown(InstrumentationRegistry.getTargetContext())
-        super.finish(resultCode, results)
     }
 
     override fun newApplication(cl: ClassLoader?, className: String?, context: Context?): Application {

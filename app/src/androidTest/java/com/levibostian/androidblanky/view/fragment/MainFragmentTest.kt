@@ -39,7 +39,7 @@ import retrofit2.adapter.rxjava2.Result
 
 @RunWith(AndroidJUnit4::class)
 @SdkSuppress(minSdkVersion = 18)
-open class MainFragmentTest : AndroidIntegrationTestClass {
+class MainFragmentTest : AndroidIntegrationTestClass {
 
     @Inject lateinit var gitHubService: GitHubService
     @Inject lateinit var sharedPrefs: SharedPreferences

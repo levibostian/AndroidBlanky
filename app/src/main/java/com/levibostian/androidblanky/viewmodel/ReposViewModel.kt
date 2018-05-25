@@ -1,33 +1,28 @@
 package com.levibostian.androidblanky.viewmodel
 
-import android.arch.lifecycle.*
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.LiveDataReactiveStreams
+import android.arch.lifecycle.ViewModel
+import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.model.RepoModel
-import com.levibostian.androidblanky.service.repository.RepoRepository
-import com.levibostian.androidblanky.service.statedata.StateData
-import io.reactivex.Observable
+import com.levibostian.androidblanky.service.repository.ReposRepository
+import com.levibostian.teller.datastate.OnlineDataState
+import io.reactivex.BackpressureStrategy
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.realm.RealmResults
+import io.reactivex.schedulers.Schedulers
 
-class ReposViewModel(val reposRepository: RepoRepository) : ViewModel() {
+class ReposViewModel(private val reposRepository: ReposRepository): ViewModel() {
 
-    fun getRepos(): Observable<StateData<RealmResults<RepoModel>>> {
-        return reposRepository.getRepos()
-                .observeOn(AndroidSchedulers.mainThread())
+    fun setUsername(username: String) {
+        reposRepository.loadDataRequirements = ReposRepository.GetRequirements(username)
     }
 
-    fun getReposUsername(): Observable<String> {
-        return reposRepository.getReposUsername()
-                .observeOn(AndroidSchedulers.mainThread())
+    fun observeRepos(): LiveData<OnlineDataState<List<RepoModel>>> {
+        return LiveDataReactiveStreams.fromPublisher(reposRepository.observe()
+                .toFlowable(BackpressureStrategy.LATEST)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()))
     }
 
-    override fun onCleared() {
-        cleanup()
-        super.onCleared()
-    }
-
-}
-
-// Created for testing to access.
-fun ReposViewModel.cleanup() {
-    reposRepository.cleanup()
 }

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 
-open class UserManager(private val sharedPrefs: SharedPreferences) {
+class UserManager(private val sharedPrefs: SharedPreferences) {
 
     var id: String?
         get() = sharedPrefs.getString(SharedPrefersKeys.userIdKey, null)

@@ -16,4 +16,8 @@
     <string name="loading_repos">Loading repos…</string>
     <string name="fetching_new_data">Fetching new data…</string>
     <string name="error">Error</string>
+    <string name="no_internet_connection_error_message">You do not have an Internet connection. Connect, then try again.</string>
+    <string name="server_down_error_message">Sorry! There was an issue. The team has been notified. Please try again later.</string>
+    <string name="error_500_600_response_code">Sorry! Our system is currently not working. Come back in a few minutes and try again.</string>
+    <string name="error_network_connection_issue">There is an issue with your Internet connection. Try again soon.</string>
 </resources>

@@ -4,13 +4,13 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.manager.UserManager
-import com.levibostian.androidblanky.service.wrapper.LooperWrapper
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
-
 
 interface ServiceModule {
 
@@ -28,8 +28,8 @@ interface ServiceModule {
 
     fun provideRxSharedPreferences(sharedPreferences: SharedPreferences): RxSharedPreferencesWrapper
 
-    fun provideRealmWrapper(userManager: UserManager): RealmInstanceManager
+    fun provideDatabase(): Database
 
-    fun provideLooperWrapper(): LooperWrapper
+    fun provideResponseProcessor(): ResponseProcessor
 
 }

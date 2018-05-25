@@ -1,18 +1,20 @@
 package com.levibostian.androidblanky.service
 
+import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.greenrobot.eventbus.EventBus
 import android.net.ConnectivityManager
-import com.levibostian.androidblanky.service.error.nonfatal.NoInternetConnectionException
-import com.levibostian.androidblanky.service.error.nonfatal.ServerErrorException
+import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.service.error.NoInternetConnectionException
 import com.levibostian.androidblanky.service.event.LogoutUserEvent
 
-class DefaultErrorHandlerInterceptor(val eventbus: EventBus,
-                                     val connectivityManager: ConnectivityManager) : Interceptor {
+class DefaultErrorHandlerInterceptor(private val context: Context,
+                                     private val eventbus: EventBus,
+                                     private val connectivityManager: ConnectivityManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain?): Response {
-        if (!isOnline()) throw NoInternetConnectionException()
+        if (!isOnline()) throw NoInternetConnectionException(context.getString(R.string.no_internet_connection_error_message))
 
         val request = chain!!.request()
         val response = chain.proceed(request)
@@ -20,7 +22,6 @@ class DefaultErrorHandlerInterceptor(val eventbus: EventBus,
         if (!response.isSuccessful) {
             val statusCode = response.code()
             when (statusCode) {
-                in 500..600 -> throw ServerErrorException()
                 401 -> eventbus.post(LogoutUserEvent())
             }
         }

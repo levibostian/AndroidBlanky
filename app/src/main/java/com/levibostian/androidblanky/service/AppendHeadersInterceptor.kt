@@ -4,16 +4,15 @@ import com.levibostian.androidblanky.service.manager.UserCredsManager
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AppendHeadersInterceptor(val credsManager: UserCredsManager) : Interceptor {
+class AppendHeadersInterceptor(private val credsManager: UserCredsManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain?): Response {
-        val authToken = credsManager.authToken
         var request = chain!!.request()
 
-        if (authToken != null) {
+        credsManager.authToken?.let { authToken ->
             request = request
                     .newBuilder()
-                    .addHeader("Access-Token", credsManager.authToken)
+                    .addHeader("Authorization", "Bearer $authToken")
                     .build()
         }
 

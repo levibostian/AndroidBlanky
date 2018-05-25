@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 
-open class UserCredsManager(val sharedPrefs: SharedPreferences) {
+class UserCredsManager(private val sharedPrefs: SharedPreferences) {
 
     var authToken: String?
         get() = sharedPrefs.getString(SharedPrefersKeys.userAuthTokenKey, null)

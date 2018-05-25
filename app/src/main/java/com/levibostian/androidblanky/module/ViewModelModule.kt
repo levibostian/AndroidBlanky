@@ -1,13 +1,12 @@
 package com.levibostian.androidblanky.module
 
-import com.levibostian.androidblanky.service.repository.RepoRepository
+import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
+import com.levibostian.androidblanky.service.repository.ReposRepository
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
-import com.levibostian.androidblanky.viewmodel.ViewModelProviderWrapper
 
 interface ViewModelModule {
 
-    fun provideViewModelFactory(repoRepository: RepoRepository): ViewModelFactory
-
-    fun provideViewModelProviderWrapper(): ViewModelProviderWrapper
+    fun provideViewModelFactory(repoRepository: ReposRepository,
+                                gitHubUsernameRepository: GitHubUsernameRepository): ViewModelFactory
 
 }
