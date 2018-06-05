@@ -3,3 +3,5 @@
 # Ensure this file is checked in to source control!
 
 gem 'fastlane-plugin-appicon'
+gem 'fastlane-plugin-get_android_version'
+gem 'fastlane-plugin-versioning_android'

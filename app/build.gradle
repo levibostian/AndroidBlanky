@@ -8,6 +8,7 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -35,7 +36,7 @@ android {
         // allows developer to set the minSdk via gradle command line **during development**. API 21+ are faster. `./gradlew assembleDevelopmentDebug -PminSdk=23`
         minSdkVersion hasProperty('minSdk') ? minSdk : 16
         targetSdkVersion 27
-        versionCode 1
+        versionCode 1528215515
         versionName "0.1.0"
 
         testInstrumentationRunner 'com.levibostian.androidblanky.AndroidTestTestRunner'
@@ -108,8 +109,8 @@ dependencies {
     implementation 'com.github.levibostian:wendy-android:0.1.3-alpha'
 
     // Firebase
-    implementation "com.google.firebase:firebase-core:15.0.2"
-    implementation "com.google.firebase:firebase-perf:15.2.0"
+    implementation "com.google.firebase:firebase-core:16.0.0"
+    implementation 'com.google.firebase:firebase-perf:16.0.0'
 
     // Custom views
     implementation "com.github.levibostian:androidviews:0.1.4"

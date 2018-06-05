@@ -1,9 +1,14 @@
-fastlane_version "2.35.1"
+beta_package_name = "com.levibostian.androidblanky.beta"
+prod_package_name = "com.levibostian.androidblanky"
+slack_room_url = "https://hooks.slack.com/services/..."
+gitRepo = "git@github.com:levibostian/AndroidBlanky.git"
+
+fastlane_version "2.97.0"
 default_platform :android
 
 platform :android do
   before_all do
-    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
+    ENV["SLACK_URL"] = slack_room_url
   end
 
   desc "Runs all tests. UI, Unit, all of em."
@@ -39,38 +44,48 @@ platform :android do
     notification(subtitle: "Dev installed", message: "Done installing dev release to device.")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta_beta do
-    foo = prompt(text: "Did you make sure to enter release notes in ./fastlane/beta_release_notes.txt? [y]")
-    bar = prompt(text: "Did you increment the version in build.gradle? [y]")
-
-    groups = ['internal-team']
+  desc "Submit beta build to the Play Store"
+  lane :beta do
+    changelog = File.read("./release_notes.txt")
+    android_set_version_code(version_code: Time.now.to_i)
+    File.open('metadata/android/en-US/app/changelogs/' + android_get_version_code().to_s + '.txt', 'w') { |file| file.write(changelog) }
 
     gradle(task: "assembleBetaRelease")
-    crashlytics(api_token: 'apitoken',
-             build_secret: 'buildsecret',
-                 apk_path: './app/build/outputs/apk/app-beta-release.apk',
-                   groups: groups,
-               notes_path: './fastlane/beta_release_notes.txt',
-            notifications: true)
-    notification(subtitle: "Finished beta release", message: "Released new Beta build of app")
+
+    upload_to_play_store(apk: "app/build/outputs/apk/app-beta-release.apk",
+               mapping: 'app/build/outputs/mapping/beta/release/mapping.txt',
+               package_name: beta_package_name,
+               metadata_path: "./fastlane/metadata/android/en-US/app/",
+               json_key: './fastlane/metadata/google_play_dev.json',
+               track: 'beta')
+
+    add_git_tag(tag: android_get_version_name() + "-beta_" + android_get_version_code(), message: changelog)
+    push_git_tags(remote: gitRepo)
+    slack(message: "Beta release " + beta_package_name + " to the Play Store successful!")
   end
 
-  desc "Deploy a new version to the Google Play"
-  lane :prod_deploy do
-    foo = prompt(text: "Did you make sure to enter change log notes in /fastlane/metadata/android/en-US/app/changelog/? [y]")
-    bar = prompt(text: "Did you increment the version CODE in build.gradle? [y]")
+  desc "Submit production build to the Play Store"
+  lane :production do
+    changelog = File.read("./release_notes.txt")
+    android_set_version_code(version_code: Time.now.to_i)
+    File.open('metadata/android/en-US/app/changelogs/' + android_get_version_code().to_s + '.txt', 'w') { |file| file.write(changelog) }
 
     gradle(task: "assembleProductionRelease")
-    supply(apk: "app/build/outputs/apk/app-production-release.apk",
-           package_name: 'com.levibostian.androidblanky',
-           metadata_path: "./fastlane/metadata/android/en-US/app/",
-           json_key: './fastlane/metadata/Google Play Android Developer-1234567890.json',
-           validate_only: true)
+
+    upload_to_play_store(apk: "app/build/outputs/apk/app-production-release.apk",
+               mapping: 'app/build/outputs/mapping/production/release/mapping.txt',
+               package_name: prod_package_name,
+               metadata_path: "./fastlane/metadata/android/en-US/app/",
+               json_key: './fastlane/metadata/google_play_dev.json',
+               track: 'production')
+
+    add_git_tag(tag: android_get_version_name() + "_" + android_get_version_code(), message: changelog)
+    push_git_tags(remote: gitRepo)
+    slack(message: "Prod release " + prod_package_name + " to the Play Store successful!")
   end
 
   lane :app_icon do
-    android_appicon(appicon_image_file: 'fastlane/metadata/icons/app_icon.png',
+    android_appicon(appicon_image_file: 'fastlane/metadata/android/en-US/app/images/icon.png',
       appicon_devices: [:phone, :tablet],
       appicon_path: 'app/src/main/res/mipmap')
   end
@@ -84,10 +99,9 @@ platform :android do
   end
 
   error do |lane, exception|
-    notification(subtitle: "ERROR", message: "Error doing fastlane task")
-    # slack(
-    #   message: exception.message,
-    #   success: false
-    # )
+    slack(
+      message: exception.message,
+      success: false
+    )
   end
 end

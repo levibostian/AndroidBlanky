@@ -90,6 +90,12 @@ Now it's time to setup Firebase.
 * Select `Set up Crashlytics` [in the Firebase console](https://console.firebase.google.com/project/_/crashlytics) for the project you just created (if `Set up Crashlytics` is not visible, simply [follow these directions](https://firebase.google.com/docs/crashlytics/get-started) to enable Crashlytics in your project).
 * Build > Clean Project. Build > Rebuild Project.
 
+Lastly, Fastlane
+
+* For Google Play distribution of your app for beta and prod deployments, [setup supply](https://docs.fastlane.tools/getting-started/android/setup/#setting-up-supply). Save the json file exported with your keys to the path: `fastlane/metadata/google_play_dev.json`
+* Edit the variables at the top of the `fastlane/Fastlane` file.
+* Add images/icons/screenshots for the Play Store: https://docs.fastlane.tools/actions/supply/#images-and-screenshots
+
 ### Things to edit beyond setup
 
 * In production/strings.xml it says AndroidBlanky. Change name your app name.
