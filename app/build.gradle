@@ -111,9 +111,10 @@ dependencies {
     // Firebase
     implementation "com.google.firebase:firebase-core:16.0.0"
     implementation 'com.google.firebase:firebase-perf:16.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
 
     // Play Install Referrer Library
-    compile 'com.android.installreferrer:installreferrer:1.0'
+    implementation 'com.android.installreferrer:installreferrer:1.0'
 
     // Custom views
     implementation "com.github.levibostian:androidviews:0.1.4"
@@ -166,7 +167,7 @@ dependencies {
     implementation "org.greenrobot:eventbus:3.0.0"
 
     // Crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
 
     // Timber
     implementation "com.jakewharton.timber:timber:4.7.0"
@@ -204,10 +205,10 @@ dependencies {
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$espressoVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-intents:$espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-accessibility:$espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-web:$espressoVersion"
-    androidTestCompile "com.android.support.test.espresso.idling:idling-concurrent:$espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-idling-resource:$espressoVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-accessibility:$espressoVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-web:$espressoVersion"
+    androidTestImplementation "com.android.support.test.espresso.idling:idling-concurrent:$espressoVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-idling-resource:$espressoVersion"
 
     // Fastlane screengrab
     androidTestImplementation "tools.fastlane:screengrab:1.1.0"

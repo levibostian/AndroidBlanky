@@ -5,6 +5,7 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.levibostian.androidblanky.BuildConfig
+import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 import com.levibostian.androidblanky.service.pendingtasks.PendingTasksFactory
 import com.levibostian.teller.Teller
 import com.levibostian.wendy.WendyConfig
@@ -30,7 +31,7 @@ class MainApplication : Application() {
         Fabric.with(fabric)
 
         Teller.init(this)
-        Wendy.init(this, PendingTasksFactory())
+        Wendy.init(this, PendingTasksFactory(this))
         WendyConfig.debug = BuildConfig.DEBUG
     }
 

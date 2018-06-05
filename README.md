@@ -1,6 +1,8 @@
 # AndroidBlanky
 Android boilerplate project I use for all the Android apps that I build. Clone the repo, edit some configurations, and get off to building your next awesome app!
 
+This project is *very* opinionated. It is not designed for the best practices, common libraries, and design patterns for the general public. It's designed for the apps that [I](https://github.com/levibostian/) build.
+
 iOS developer? I have [a boilerplate project for you!](https://github.com/levibostian/iosblanky)
 Nodejs API developer? I have [a boilerplate project for you!](https://github.com/levibostian/expressjsblanky)
 
@@ -54,6 +56,13 @@ Configure: After you follow the directions in [Getting started](#getting-started
 
 * [Firebase Analytics](https://firebase.google.com/docs/analytics/) - Mobile analytics.
 Configure: After you follow the directions in [Getting started](#getting-started) for setting up Firebase, this is done for you.
+
+* [Firebase Performance Monitoring](https://firebase.google.com/docs/perf-mon/) - Monitoring of performance metrics of your app such as UI hangs and network call successes.
+Configure: None :) You can [configure custom methods or pieces of code to be traced](https://firebase.google.com/docs/perf-mon/custom-attributes) if you wish, but it's optional.
+
+* [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) - Receive push notifications and display them in your app.
+Configure: Open the `UpdateFcmTokenPendingTask` file and edit `runTask()` with code to send up the FCM token to your own server.
+You can also edit the `NotificationChannelManager` to configure your notification channels. The announcement channel is the default channel that FCM uses for notifications from the console.
 
 * [Fastlane](https://fastlane.tools/) - Distributing the app to the Play Store. Pretty much automates tasks for me.
 Configure: There is a section in this README for Fastlane under Getting Started.

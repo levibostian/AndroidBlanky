@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.preference.PreferenceFragment
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 
 class SettingsFragment: PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -21,7 +22,7 @@ class SettingsFragment: PreferenceFragment(), SharedPreferences.OnSharedPreferen
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             getString(R.string.preferences_enable_analytics) -> {
-                val enableAnalytics: Boolean = sharedPreferences?.getBoolean(getString(R.string.preferences_enable_analytics), true) ?: true
+                val enableAnalytics: Boolean = sharedPreferences?.getBoolean(SharedPrefersKeys.enableAnalytics(activity), true) ?: true
                 FirebaseAnalytics.getInstance(activity).setAnalyticsCollectionEnabled(enableAnalytics)
             }
             else -> {}

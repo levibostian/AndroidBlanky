@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.view.ui.MainApplication
 import javax.inject.Inject
@@ -18,11 +19,14 @@ class LaunchActivity: Activity() {
     }
 
     @Inject lateinit var userManager: UserManager
+    @Inject lateinit var notificationChannelManager: NotificationChannelManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         (application as MainApplication).component.inject(this)
+
+        notificationChannelManager.createChannels()
 
         if (userManager.isUserLoggedIn()) {
             startActivity(MainActivity.getIntent(this))

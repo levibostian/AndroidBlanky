@@ -3,6 +3,7 @@ package com.levibostian.androidblanky.service.module
 import android.content.Context
 import android.content.SharedPreferences
 import com.levibostian.androidblanky.module.ManagerModule
+import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 
 import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.manager.UserManager
@@ -18,6 +19,10 @@ import dagger.Provides
 
     @Provides override fun provideUserManager(sharedPrefs: SharedPreferences): UserManager {
         return UserManager(context, sharedPrefs)
+    }
+
+    @Provides override fun provideNotificationChannelManager(): NotificationChannelManager {
+        return NotificationChannelManager(context)
     }
 
 }
