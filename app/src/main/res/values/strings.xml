@@ -1,5 +1,4 @@
 <resources>
-    <string name="preference_file_key">preferencesFileKey</string>
     <string name="open_source_licenses">Open Source licenses</string>
     <string name="about">About</string>
     <string name="blank" />
@@ -11,7 +10,6 @@
         <item>About</item>
     </string-array>
 
-    <string name="preferences_auth_token">preferences_auth_token</string>
     <string name="user_no_repos">User does not have any repos.</string>
     <string name="loading_repos">Loading repos…</string>
     <string name="fetching_new_data">Fetching new data…</string>
@@ -20,4 +18,9 @@
     <string name="server_down_error_message">Sorry! There was an issue. The team has been notified. Please try again later.</string>
     <string name="error_500_600_response_code">Sorry! Our system is currently not working. Come back in a few minutes and try again.</string>
     <string name="error_network_connection_issue">There is an issue with your Internet connection. Try again soon.</string>
+    <string name="settings">Settings</string>
+    <string name="privacy">Privacy</string>
+    <string name="enable_analytics">Enable analytics</string>
+    <string name="analytics_settings_page_summary">Allow app to collect my basic activity to help improve the app.</string>
+    <string name="logout">Logout</string>
 </resources>

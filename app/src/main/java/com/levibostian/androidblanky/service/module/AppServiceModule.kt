@@ -78,8 +78,12 @@ import java.util.*
         return RxSharedPreferencesWrapper(sharedPreferences)
     }
 
-    @Provides override fun provideDatabase(): Database {
-        return DatabaseManager.dbInstance(application)
+    @Provides override fun provideDatabaseManager(userManager: UserManager): DatabaseManager {
+        return DatabaseManager(userManager)
+    }
+
+    @Provides override fun provideDatabase(databaseManager: DatabaseManager): Database {
+        return databaseManager.dbInstance(application)
     }
 
     @Provides override fun provideResponseProcessor(): ResponseProcessor {

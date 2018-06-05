@@ -17,7 +17,7 @@ import dagger.Provides
     }
 
     @Provides override fun provideUserManager(sharedPrefs: SharedPreferences): UserManager {
-        return UserManager(sharedPrefs)
+        return UserManager(context, sharedPrefs)
     }
 
 }

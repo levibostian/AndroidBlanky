@@ -2,9 +2,6 @@ package com.levibostian.androidblanky.view.ui.fragment
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.R
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -18,10 +15,16 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.recyclerview.R.attr.layoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.text.format.DateUtils
+import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.db.Database
+import com.levibostian.androidblanky.service.event.LogoutUserEvent
 import com.levibostian.androidblanky.service.model.RepoModel
+import com.levibostian.androidblanky.view.ui.activity.LicensesActivity
+import com.levibostian.androidblanky.view.ui.activity.MainActivity
+import com.levibostian.androidblanky.view.ui.activity.SettingsActivity
 import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
 import com.levibostian.androidblanky.view.ui.extensions.closeKeyboard
 import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
@@ -29,6 +32,7 @@ import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
 import com.levibostian.teller.datastate.listener.LocalDataStateListener
 import com.levibostian.teller.datastate.listener.OnlineDataStateListener
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 class MainFragment : Fragment() {
@@ -44,6 +48,7 @@ class MainFragment : Fragment() {
     @Inject lateinit var service: GitHubService
     @Inject lateinit var db: Database
     @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var eventBus: EventBus
 
     companion object {
         fun newInstance(): MainFragment {
@@ -61,6 +66,33 @@ class MainFragment : Fragment() {
         (activity!!.application as MainApplication).component.inject(this)
         reposViewModel = ViewModelProviders.of(this, viewModelFactory).get(ReposViewModel::class.java)
         gitHubUsernameViewModel = ViewModelProviders.of(this, viewModelFactory).get(GitHubUsernameViewModel::class.java)
+
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.main_fragment, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.settings -> {
+                startActivity(SettingsActivity.getIntent(activity!!))
+                true
+            }
+            R.id.open_source_licenses -> {
+                startActivity(LicensesActivity.getIntent(activity!!))
+                true
+            }
+            R.id.logout -> {
+                eventBus.post(LogoutUserEvent())
+                Toast.makeText(activity!!, "Logout successful!", Toast.LENGTH_LONG).show()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

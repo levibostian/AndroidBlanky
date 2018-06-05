@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/privacy">
+        <CheckBoxPreference
+            android:key="@string/preferences_enable_analytics"
+            android:title="@string/enable_analytics"
+            android:summary="@string/analytics_settings_page_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

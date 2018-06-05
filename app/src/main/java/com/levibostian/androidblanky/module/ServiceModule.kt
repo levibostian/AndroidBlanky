@@ -6,6 +6,7 @@ import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
+import com.levibostian.androidblanky.service.db.manager.DatabaseManager
 import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
@@ -28,7 +29,9 @@ interface ServiceModule {
 
     fun provideRxSharedPreferences(sharedPreferences: SharedPreferences): RxSharedPreferencesWrapper
 
-    fun provideDatabase(): Database
+    fun provideDatabaseManager(userManager: UserManager): DatabaseManager
+
+    fun provideDatabase(databaseManager: DatabaseManager): Database
 
     fun provideResponseProcessor(): ResponseProcessor
 

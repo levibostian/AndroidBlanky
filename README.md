@@ -102,6 +102,7 @@ Setup your CI server
 * Create an account for [Travis CI](https://travis-ci.com/) and add your project from GitHub to it to build.
 * [Here are instructions](http://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use) for adding a Danger bot to your repo. This depends on if your app is an open source or closed source project.
 * You will need to configure Travis to have push access to your GitHub project so that Travis can push git tag releases to your repo for you. To do this, [follow these directions](https://github.com/travis-ci/travis-ci/issues/8680#issuecomment-354455116) to generate SSH keys for Travis and upload it to GitHub and to Travis.
+* Create the branches in git and GitHub: `production`, `beta`, and `development`. Go into the GitHub settings and protect all of these branches. The CI server is setup so as you are developing, you make all of your pull requests into the `development` branch. When you are ready to make a new beta release of the app, make a pull request from the `development` branch to `beta`. Then, when you want to make a beta build go to production, make a pull request from `beta` into `production`. The CI server will take care of doing the deploying for you.
 
 ### Things to edit beyond setup
 
@@ -111,6 +112,8 @@ Setup your CI server
 * Edit `fastlane/Fastfile` to work for your app.
 * Edit `DatabaseManager`'s DATABASE_NAME.
 * Edit 'res/values/strings.xml' file to edit the strings put in place.
+* Use the Android Studio Asset Studio to generate [Adaptive launch icons](https://developer.android.com/guide/practices/ui_guidelines/icon_design_adaptive) for your app.
+* Go into the `LaunchActivity`. This is where the logic is around launching your app depending on if the user is logged in or not. Edit it to your liking.
 
 ## Generate app icons
 
