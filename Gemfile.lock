@@ -188,6 +188,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  danger (~> 5.6)
   danger-android_version_change
   fastlane (~> 2.97.0)
   fastlane-plugin-appicon

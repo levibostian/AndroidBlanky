@@ -56,13 +56,13 @@ Configure: After you follow the directions in [Getting started](#getting-started
 Configure: After you follow the directions in [Getting started](#getting-started) for setting up Firebase, this is done for you.
 
 * [Fastlane](https://fastlane.tools/) - Distributing the app to the Play Store. Pretty much automates tasks for me.
-Configure: Edit the files in the `fastlane/` directory to configure it for your project.
+Configure: There is a section in this README for Fastlane under Getting Started.
 
 * [Travis CI](https://travis-ci.com/) - CI server to run tests and distribute apps to the Play Store. Pretty much all automation that I can.
 Configure: Create a [Travis](https://travis-ci.com/) account, and enable your GitHub repo for your Android project in your Travis profile page.
 
 * [Danger](http://danger.systems/ruby/) - Bot that looks over my pull requests and make sure I do not forget to complete certain tasks.
-Configure: [Here are instructions](http://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use) for adding a Danger bot to your repo. This depends on if your app is an open source or closed source project.
+Configure: There is a section in this README for Danger under Getting Started.
 
 # Getting started
 
@@ -90,11 +90,18 @@ Now it's time to setup Firebase.
 * Select `Set up Crashlytics` [in the Firebase console](https://console.firebase.google.com/project/_/crashlytics) for the project you just created (if `Set up Crashlytics` is not visible, simply [follow these directions](https://firebase.google.com/docs/crashlytics/get-started) to enable Crashlytics in your project).
 * Build > Clean Project. Build > Rebuild Project.
 
-Lastly, Fastlane
+Fastlane
 
 * For Google Play distribution of your app for beta and prod deployments, [setup supply](https://docs.fastlane.tools/getting-started/android/setup/#setting-up-supply). Save the json file exported with your keys to the path: `fastlane/metadata/google_play_dev.json`
 * Edit the variables at the top of the `fastlane/Fastlane` file.
 * Add images/icons/screenshots for the Play Store: https://docs.fastlane.tools/actions/supply/#images-and-screenshots
+
+Setup your CI server
+
+* I use Travis CI. I have included a `.travis.yml` file in this project already setup for you to build and deploy the app for you.
+* Create an account for [Travis CI](https://travis-ci.com/) and add your project from GitHub to it to build.
+* [Here are instructions](http://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use) for adding a Danger bot to your repo. This depends on if your app is an open source or closed source project.
+* You will need to configure Travis to have push access to your GitHub project so that Travis can push git tag releases to your repo for you. To do this, [follow these directions](https://github.com/travis-ci/travis-ci/issues/8680#issuecomment-354455116) to generate SSH keys for Travis and upload it to GitHub and to Travis.
 
 ### Things to edit beyond setup
 
