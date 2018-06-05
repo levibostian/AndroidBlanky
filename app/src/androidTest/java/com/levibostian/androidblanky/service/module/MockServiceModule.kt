@@ -11,7 +11,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
-import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.model.AppConstants
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper

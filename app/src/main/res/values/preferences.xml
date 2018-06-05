@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="preferences_auth_token">preferences_auth_token</string>
     <string name="preferences_enable_analytics">preferences_enable_analytics</string>
 </resources>

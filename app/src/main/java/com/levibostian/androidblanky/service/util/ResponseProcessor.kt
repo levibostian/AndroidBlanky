@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.service
+package com.levibostian.androidblanky.service.util
 
 import android.content.Context
 import com.levibostian.androidblanky.R

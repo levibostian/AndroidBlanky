@@ -36,7 +36,7 @@ class UserManagerTest {
 
     @Test
     fun authToken_getNullNotSet() {
-        Mockito.`when`(sharedPrefs.getString(SharedPrefersKeys.userIdKey, null)).thenReturn(null)
+        Mockito.`when`(sharedPrefs.getString(SharedPrefersKeys.USER_ID, null)).thenReturn(null)
 
         Truth.assertThat(manager.id)
                 .isNull()
@@ -48,11 +48,11 @@ class UserManagerTest {
         val id = "12345"
 
         Mockito.`when`(sharedPrefs.edit()).thenReturn(sharedPrefsEditor)
-        Mockito.`when`(sharedPrefsEditor.putString(SharedPrefersKeys.userIdKey, id)).thenReturn(sharedPrefsEditor)
+        Mockito.`when`(sharedPrefsEditor.putString(SharedPrefersKeys.USER_ID, id)).thenReturn(sharedPrefsEditor)
 
         manager.id = id
 
-        Mockito.verify(sharedPrefsEditor).putString(SharedPrefersKeys.userIdKey, id)
+        Mockito.verify(sharedPrefsEditor).putString(SharedPrefersKeys.USER_ID, id)
         Mockito.verify(sharedPrefsEditor).commit()
     }
 

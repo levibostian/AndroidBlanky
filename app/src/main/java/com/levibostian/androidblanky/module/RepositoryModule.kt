@@ -1,7 +1,7 @@
 package com.levibostian.androidblanky.module
 
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
 import com.levibostian.androidblanky.service.repository.ReposRepository

@@ -112,6 +112,9 @@ dependencies {
     implementation "com.google.firebase:firebase-core:16.0.0"
     implementation 'com.google.firebase:firebase-perf:16.0.0'
 
+    // Play Install Referrer Library
+    compile 'com.android.installreferrer:installreferrer:1.0'
+
     // Custom views
     implementation "com.github.levibostian:androidviews:0.1.4"
 

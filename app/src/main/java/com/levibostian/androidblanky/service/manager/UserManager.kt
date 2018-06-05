@@ -15,10 +15,10 @@ class UserManager(private val context: Context, private val sharedPrefs: SharedP
     }
 
     var id: String?
-        get() = sharedPrefs.getString(SharedPrefersKeys.userIdKey, null)
+        get() = sharedPrefs.getString(SharedPrefersKeys.USER_ID, null)
         @SuppressLint("ApplySharedPref")
         set(value) {
-            sharedPrefs.edit().putString(SharedPrefersKeys.userIdKey, value).commit()
+            sharedPrefs.edit().putString(SharedPrefersKeys.USER_ID, value).commit()
             FirebaseAnalytics.getInstance(context).setUserId(id)
         }
 

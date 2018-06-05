@@ -1,6 +1,5 @@
 package com.levibostian.androidblanky.service.module
 
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -18,7 +17,7 @@ import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.AppendHeadersInterceptor
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.db.manager.DatabaseManager
 import com.levibostian.androidblanky.service.manager.UserManager

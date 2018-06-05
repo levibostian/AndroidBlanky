@@ -3,7 +3,6 @@ package com.levibostian.androidblanky.service.manager
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import com.google.common.truth.Truth
-import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import org.junit.Before
@@ -33,7 +32,7 @@ class UserCredsManagerTest {
     }
 
     @Test fun authToken_getNullNotSet() {
-        `when`(sharedPrefs.getString(SharedPrefersKeys.userAuthTokenKey, null)).thenReturn(null)
+        `when`(sharedPrefs.getString(SharedPrefersKeys.USER_AUTH_TOKEN, null)).thenReturn(null)
 
         Truth.assertThat(credsManager.authToken)
                 .isNull()
@@ -43,11 +42,11 @@ class UserCredsManagerTest {
         val token = "12345"
 
         `when`(sharedPrefs.edit()).thenReturn(sharedPrefsEditor)
-        `when`(sharedPrefsEditor.putString(SharedPrefersKeys.userAuthTokenKey, token)).thenReturn(sharedPrefsEditor)
+        `when`(sharedPrefsEditor.putString(SharedPrefersKeys.USER_AUTH_TOKEN, token)).thenReturn(sharedPrefsEditor)
 
         credsManager.authToken = token
 
-        verify(sharedPrefsEditor).putString(SharedPrefersKeys.userAuthTokenKey, token)
+        verify(sharedPrefsEditor).putString(SharedPrefersKeys.USER_AUTH_TOKEN, token)
         verify(sharedPrefsEditor).commit()
     }
 

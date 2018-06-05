@@ -3,7 +3,7 @@ package com.levibostian.androidblanky.service.module
 import android.content.Context
 import com.levibostian.androidblanky.module.RepositoryModule
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
 import com.levibostian.androidblanky.service.repository.ReposRepository

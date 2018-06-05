@@ -1,15 +1,13 @@
 package com.levibostian.androidblanky.service.repository
 
 import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.ResponseProcessor
+import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.teller.repository.OnlineRepository
 import com.levibostian.teller.type.AgeOfData
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.Function
-import retrofit2.adapter.rxjava2.Result
 
 class ReposRepository(private val responseProcessor: ResponseProcessor,
                       private val service: GitHubService,
