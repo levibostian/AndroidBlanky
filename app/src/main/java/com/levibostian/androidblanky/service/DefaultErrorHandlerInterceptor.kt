@@ -6,7 +6,8 @@ import okhttp3.Response
 import org.greenrobot.eventbus.EventBus
 import android.net.ConnectivityManager
 import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.service.error.NoInternetConnectionException
+import com.levibostian.androidblanky.service.error.network.NoInternetConnectionException
+import com.levibostian.androidblanky.service.error.network.UnauthorizedException
 import com.levibostian.androidblanky.service.event.LogoutUserEvent
 
 class DefaultErrorHandlerInterceptor(private val context: Context,
@@ -22,7 +23,10 @@ class DefaultErrorHandlerInterceptor(private val context: Context,
         if (!response.isSuccessful) {
             val statusCode = response.code()
             when (statusCode) {
-                401 -> eventbus.post(LogoutUserEvent())
+                401 -> {
+                    eventbus.post(LogoutUserEvent())
+                    throw UnauthorizedException(context.getString(R.string.error_401_response_code))
+                }
             }
         }
 

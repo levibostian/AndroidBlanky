@@ -2,8 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.levibostian.androidblanky">
 
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" android:maxSdkVersion="22"/>
+    <uses-permission
+        android:name="android.permission.GET_ACCOUNTS"
+        android:maxSdkVersion="22"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission
+        android:name="android.permission.MANAGE_ACCOUNTS"
+        android:maxSdkVersion="22"/>
+    <uses-permission
+        android:name="android.permission.USE_CREDENTIALS"
+        android:maxSdkVersion="22"/>
 
     <application
         android:name=".view.ui.MainApplication"
@@ -12,7 +23,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <meta-data android:name="android.max_aspect" android:value="2.1" />
-        <activity android:name="com.levibostian.androidblanky.view.ui.activity.LaunchActivity">
+        <activity android:name=".view.ui.activity.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -21,6 +32,7 @@
         <activity android:name=".view.ui.activity.MainActivity"/>
         <activity android:name=".view.ui.activity.LicensesActivity"/>
         <activity android:name=".view.ui.activity.SettingsActivity"/>
+        <activity android:name=".view.ui.activity.auth.AuthenticatorActivity"/>
         <receiver android:name=".service.receiver.AppFirstLaunchBroadcastReceiver"  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH"/>
@@ -36,6 +48,12 @@
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
+        </service>
+        <service android:name=".service.service.auth.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
         </service>
         <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. See README(https://goo.gl/l4GJaQ) for more. -->
         <meta-data

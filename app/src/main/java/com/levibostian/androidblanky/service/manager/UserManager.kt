@@ -1,20 +1,40 @@
 package com.levibostian.androidblanky.service.manager
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.levibostian.androidblanky.service.auth.AccountAuthenticator
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.pendingtasks.UpdateFcmTokenPendingTask
 import com.levibostian.wendy.service.Wendy
 
-class UserManager(private val context: Context, private val sharedPrefs: SharedPreferences) {
+class UserManager(private val context: Context,
+                  private val sharedPrefs: SharedPreferences,
+                  private val accountManager: AccountManager) {
 
-    fun isUserLoggedIn(): Boolean = id != null
+    fun isUserLoggedIn(): Boolean {
+        return (id != null) && (getAccount() != null)
+    }
+
+    fun getAccount(): Account? {
+        return accountManager.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE).getOrNull(0)
+    }
 
     fun logout() {
         id = null
+        FirebaseAnalytics.getInstance(context).setUserId(null)
     }
+
+    var authToken: String? = null
+        get() {
+            getAccount()?.let { account ->
+                return accountManager.peekAuthToken(account, AccountAuthenticator.ACCOUNT_TYPE)
+            }
+            return null
+        }
 
     var id: String?
         get() = sharedPrefs.getString(SharedPrefersKeys.USER_ID, null)

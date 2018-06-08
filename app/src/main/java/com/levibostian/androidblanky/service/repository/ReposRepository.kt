@@ -18,22 +18,16 @@ class ReposRepository(private val responseProcessor: ResponseProcessor,
     override fun fetchFreshData(requirements: GetRequirements): Single<FetchResponse<List<RepoModel>>> {
         return service.listRepos(requirements.username)
                 .map { result ->
-                    val fetchResponse: FetchResponse<List<RepoModel>>
                     val responseError: Throwable? = responseProcessor.process(result)
 
-                    if (responseError != null) {
-                        fetchResponse = FetchResponse.fail(responseError)
+                    val fetchResponse: FetchResponse<List<RepoModel>> = if (responseError != null) {
+                        FetchResponse.fail(responseError)
                     } else {
                         val response = result.response()!!
-                        fetchResponse = if (!response.isSuccessful) {
+                        if (!response.isSuccessful) {
                             when (response.code()) {
-                                404 -> {
-                                    FetchResponse.fail("The username ${requirements.username} does not exist. Try another one.")
-                                }
-                                else -> {
-                                    // I do not like when apps say, "Unknown error. Please try again". It's terrible to do. But if it ever happens, that means you need to handle more HTTP status codes. Above are the only ones that I know GitHub will return. They don't document the rest of them, I don't think?
-                                    FetchResponse.fail("Unknown error. Please, try again.")
-                                }
+                                404 -> FetchResponse.fail("The username ${requirements.username} does not exist. Try another one.")
+                                else -> FetchResponse.fail(responseProcessor.unhandledHttpResult(result))
                             }
                         } else {
                             FetchResponse.success(response.body()!!)

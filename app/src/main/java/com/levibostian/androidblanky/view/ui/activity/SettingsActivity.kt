@@ -26,7 +26,7 @@ class SettingsActivity: AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            fragmentManager.beginTransaction().add(R.id.activity_toolbar_fragment_container, SettingsFragment.getInstance()).commit()
+            supportFragmentManager.beginTransaction().add(R.id.activity_toolbar_fragment_container, SettingsFragment.getInstance()).commit()
         }
     }
 

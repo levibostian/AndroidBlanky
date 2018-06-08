@@ -23,4 +23,20 @@
     <string name="enable_analytics">Enable analytics</string>
     <string name="analytics_settings_page_summary">Allow app to collect my basic activity to help improve the app.</string>
     <string name="logout">Logout</string>
+    <string name="fatal_network_error_message">Sorry! There was an error. The team has been notified to fix it. Try again in a day or two.</string>
+    <string name="exchange_passwordless_token_auth_token_loading_message">Finishing logging you in.\nIt shouldn\'t take too long…</string>
+    <string name="enter_email_address">Enter email address</string>
+    <string name="done">Done</string>
+    <string name="login_message">Enter your email address below to begin.</string>
+    <string name="welcome">Welcome!</string>
+    <string name="email_sent">Email sent</string>
+    <string name="check_email_to_finish_login">Check your email to finish the login process.</string>
+    <string name="ok">OK</string>
+    <string name="logging_out">Logging out of your account…</string>
+    <string name="clearing_data">Preparing for login…</string>
+    <string name="error_401_response_code">Sorry! You must logout, login to your account, and try again.</string>
+    <string name="sure_logout">Are you sure you want to logout?</string>
+    <string name="sure_logout_message">Are you sure you want to logout of your %s account? If yes, the data for the %s account will be deleted from the device and you will be prompted to login to another account.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

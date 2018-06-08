@@ -1,5 +1,6 @@
 package com.levibostian.androidblanky.view.ui.activity
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -7,19 +8,23 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.widget.ProgressBar
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.android.installreferrer.api.ReferrerDetails
 import com.crashlytics.android.answers.FirebaseAnalyticsEvent
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.service.event.LogoutUserEvent
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.util.InstallReferrerProcessor
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
+import com.levibostian.wendy.service.Wendy
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
@@ -77,10 +82,24 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+
+        // Users can remove accounts in the settings app on the device. Check if they did while the app was in the background. 
+        if (!userManager.isUserLoggedIn()) {
+            EventBus.getDefault().post(LogoutUserEvent())
+        }
+    }
+
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        super.onPause()
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(event: LogoutUserEvent) {
-        userManager.logout()
-        startActivity(LaunchActivity.getIntent(this))
+        startActivity(LaunchActivity.getIntent(this, true))
         finish()
     }
 

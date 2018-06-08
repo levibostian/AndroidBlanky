@@ -1,5 +1,6 @@
 package com.levibostian.androidblanky.service.module
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -13,8 +14,8 @@ import javax.inject.Singleton
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
 import com.levibostian.androidblanky.service.model.AppConstants
-import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.AppendHeadersInterceptor
+import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.util.ResponseProcessor
@@ -33,13 +34,13 @@ import java.util.*
 
 @Module class AppServiceModule(val application: MainApplication): ServiceModule {
 
-    @Provides @Singleton override fun provideRetrofit(credsManager: UserCredsManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
+    @Provides @Singleton override fun provideRetrofit(userManager: UserManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         val client = OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(defaultErrorHandlerInterceptor)
-                .addNetworkInterceptor(AppendHeadersInterceptor(credsManager))
+                .addNetworkInterceptor(AppendHeadersInterceptor(userManager))
                 .build()
         val moshi = Moshi.Builder()
                 .add(Date::class.java, Rfc3339DateJsonAdapter())
@@ -77,8 +78,8 @@ import java.util.*
         return RxSharedPreferencesWrapper(sharedPreferences)
     }
 
-    @Provides override fun provideDatabaseManager(userManager: UserManager): DatabaseManager {
-        return DatabaseManager(userManager)
+    @Provides override fun provideDatabaseManager(): DatabaseManager {
+        return DatabaseManager()
     }
 
     @Provides override fun provideDatabase(databaseManager: DatabaseManager): Database {
@@ -87,6 +88,10 @@ import java.util.*
 
     @Provides override fun provideResponseProcessor(): ResponseProcessor {
         return ResponseProcessor(application)
+    }
+
+    @Provides override fun provideDataDestroyer(db: Database, accountManager: AccountManager, userManager: UserManager, sharedPreferences: SharedPreferences): DataDestroyer {
+        return DataDestroyer(db, accountManager, userManager, sharedPreferences)
     }
 
 }

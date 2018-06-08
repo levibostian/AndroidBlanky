@@ -86,7 +86,6 @@ class MainFragment : Fragment() {
             }
             R.id.logout -> {
                 eventBus.post(LogoutUserEvent())
-                Toast.makeText(activity!!, "Logout successful!", Toast.LENGTH_LONG).show()
                 true
             }
             else -> {

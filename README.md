@@ -8,13 +8,13 @@ Nodejs API developer? I have [a boilerplate project for you!](https://github.com
 
 # What is AndroidBlanky?
 
-AndroidBlanky is an Android app. It's a very simple Android app that includes a collection of libraries, configurations, and architecture decisions for all of the apps that I build. So whenever I want to build a new Android, instead of creating a new Android Studio project and spending a bunch of time configuring it to include all my libraries, configurations, and architecture decisions in it that I want, I simply clone this repo, do some editing to the project, and I am off to building my app!
+AndroidBlanky is an Android app. It's a very simple Android app that includes a collection of libraries, configurations, and architecture decisions for all of the apps that I build. So whenever I want to build a new Android, instead of creating a new Android Studio project and spending a bunch of time configuring it to include all my libraries, configurations, and architecture decisions in it that I want, I simply clone this repo, do some editing to the project, and I accountManager off to building my app!
 
 # Why use AndroidBlanky?
 
 You know the feeling when you go to begin a new project. The day you begin a project is spent on just setting up your project, configuring it, and getting your environment all setup. It takes hours to days to complete!
 
-AndroidBlanky works to avoid that. By having a blank Android app already created, I am able to copy it and I am ready to jump right into developing my new app. AndroidBlanky works to get you to building your app within minutes instead of hours or days.
+AndroidBlanky works to avoid that. By having a blank Android app already created, I accountManager able to copy it and I accountManager ready to jump right into developing my new app. AndroidBlanky works to get you to building your app within minutes instead of hours or days.
 
 # What is included in AndroidBlanky?
 
@@ -63,6 +63,9 @@ Configure: None :) You can [configure custom methods or pieces of code to be tra
 * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) - Receive push notifications and display them in your app.
 Configure: Open the `UpdateFcmTokenPendingTask` file and edit `runTask()` with code to send up the FCM token to your own server.
 You can also edit the `NotificationChannelManager` to configure your notification channels. The announcement channel is the default channel that FCM uses for notifications from the console.
+
+* [Firebase Dynamic Links](https://firebase.google.com/docs/dynamic-links/) - Enable logging into your mobile app via passwordless login by having your backend API email your user a login token that is then exchanged with an access token. Launch the app from a Dynamic Link.
+Configure: Follow the directions for [Set up Firebase and the Dynamic Links SDK](https://firebase.google.com/docs/dynamic-links/android/receive).
 
 * [Fastlane](https://fastlane.tools/) - Distributing the app to the Play Store. Pretty much automates tasks for me.
 Configure: There is a section in this README for Fastlane under Getting Started.
@@ -123,21 +126,23 @@ Setup your CI server
 * Edit 'res/values/strings.xml' file to edit the strings put in place.
 * Use the Android Studio Asset Studio to generate [Adaptive launch icons](https://developer.android.com/guide/practices/ui_guidelines/icon_design_adaptive) for your app.
 * Go into the `LaunchActivity`. This is where the logic is around launching your app depending on if the user is logged in or not. Edit it to your liking.
+* There are some `// TODO` items throughout the project. In Android Studio, open the `TODO` panel to find them.
 
-## Generate app icons
+# Recommended tasks to do after setup:
 
-* Create a 128x128px icon and put into `fastlane/metadata/icons/app_icon.png`. Then run `fastlane app_icon` to generate them.
+* [Implement AutoFill for Views](https://developer.android.com/guide/topics/text/autofill).
+* [Configure Auto Backup](https://developer.android.com/guide/topics/data/autobackup) if you have files or directories you don't need to backup.
 
 # Release app to Play Store
 
-AndroidBlanky uses [Fastlane](https://fastlane.tools/) to distribute apps to the Play Store for beta testing and production releases.
+AndroidBlanky uses [Fastlane](https://fastlane.tools/) and [Travis CI](https://travis-ci.com/) to distribute apps to the Play Store for beta testing and production releases.
 
 When creating build to release to Play Store:
 
 * [Create a keystore file](keystores/README.md).
 * Edit your `app/build.gradle` file editing the `signingConfig` section with the passwords and location to your keystore file.
 * Manually create a new Android app in the [Play Console](https://play.google.com/apps/publish). For Fastlane to push an app, it must exist first in your Play Console account.
-* Edit the `prod_deploy` section of `fastlane/Fastfile` to set it up for your account.
+* Have Travis build and deploy your apps for you automatically! Everything is all setup and ready to go after you setup Travis for the first time.
 
 # Tests
 

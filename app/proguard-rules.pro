@@ -25,7 +25,7 @@
 -dontwarn retrofit2.Platform$Java8 # Platform used when running on Java 8 VMs. Will not be used at runtime.
 -keepattributes Signature # Retain generic type information for use by reflection by converters and adapters.
 -keepattributes Exceptions # Retain declared checked exceptions for use by a Proxy instance.
-# Update: 5-22-18 I am commenting these out to see if they are needed anymore. They do not exist on the website docs.
+# Update: 5-22-18 I accountManager commenting these out to see if they are needed anymore. They do not exist on the website docs.
 #-dontwarn okio.**
 #-dontwarn retrofit2.Platform$Java8
 

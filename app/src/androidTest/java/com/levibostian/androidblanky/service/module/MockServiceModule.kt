@@ -12,7 +12,6 @@ import dagger.Provides
 import javax.inject.Singleton
 import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.util.ResponseProcessor
-import com.levibostian.androidblanky.service.manager.UserCredsManager
 import com.levibostian.androidblanky.service.model.AppConstants
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import okhttp3.OkHttpClient
@@ -21,7 +20,7 @@ import retrofit2.Retrofit
 
 @Module class MockServiceModule(val application: MainApplication): ServiceModule {
 
-    @Provides override fun provideRetrofit(credsManager: UserCredsManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
+    @Provides override fun provideRetrofit(defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
         val client = OkHttpClient.Builder()
                 .build()
 

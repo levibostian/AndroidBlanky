@@ -1,16 +1,16 @@
 package com.levibostian.androidblanky.view.ui.activity
 
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
-import com.artitk.licensefragment.RecyclerViewLicenseFragment
 import com.artitk.licensefragment.model.License
 import com.artitk.licensefragment.model.LicenseID
 import com.artitk.licensefragment.model.LicenseType
+import com.artitk.licensefragment.support.v4.RecyclerViewLicenseFragment
 import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.R.id.activity_toolbar_toolbar
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
@@ -31,7 +31,7 @@ class LicensesActivity: AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            fragmentManager.beginTransaction().add(R.id.activity_toolbar_fragment_container, getLicensesFragment()).commit()
+            supportFragmentManager.beginTransaction().add(R.id.activity_toolbar_fragment_container, getLicensesFragment()).commit()
         }
     }
 

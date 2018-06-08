@@ -33,17 +33,6 @@ platform :android do
     notification(subtitle: "UI Tests PASS!", message: "UI Tests PASS!")
   end
 
-  desc "Install dev build to connected device"
-  lane :install_dev do
-    gradle(
-      task: "install",
-      flavor: "Development",
-      build_type: "Debug",
-      flags: "--offline -PminSdk=22"
-    )
-    notification(subtitle: "Dev installed", message: "Done installing dev release to device.")
-  end
-
   desc "Submit beta build to the Play Store"
   lane :beta do
     changelog = File.read("./release_notes.txt")
