@@ -16,7 +16,7 @@ class UserManager(private val context: Context,
                   private val accountManager: AccountManager) {
 
     fun isUserLoggedIn(): Boolean {
-        return (id != null) && (getAccount() != null)
+        return (id != null) && (getAccount() != null) && (authToken != null)
     }
 
     fun getAccount(): Account? {

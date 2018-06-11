@@ -23,6 +23,7 @@ repositories {
 
 android {
     compileSdkVersion 28
+    buildToolsVersion "28.0.0"
 
     packagingOptions {
         exclude 'META-INF/ASL2.0'
@@ -106,7 +107,7 @@ dependencies {
     implementation 'com.github.levibostian:teller-android:0.0.1'
 
     // Wendy
-    implementation 'com.github.levibostian:wendy-android:0.1.3-alpha'
+    implementation 'com.github.levibostian:wendy-android:0.2.0-alpha'
 
     // Firebase
     implementation "com.google.firebase:firebase-core:16.0.0"

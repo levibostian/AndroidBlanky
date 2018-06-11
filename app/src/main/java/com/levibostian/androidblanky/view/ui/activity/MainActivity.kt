@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         EventBus.getDefault().register(this)
 
-        // Users can remove accounts in the settings app on the device. Check if they did while the app was in the background. 
+        // Users can remove accounts in the settings app on the device. Check if they did while the app was in the background.
         if (!userManager.isUserLoggedIn()) {
             EventBus.getDefault().post(LogoutUserEvent())
         }

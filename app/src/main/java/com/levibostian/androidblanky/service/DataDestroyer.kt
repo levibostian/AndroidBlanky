@@ -35,7 +35,7 @@ class DataDestroyer(private val db: Database,
                 accountManager.invalidateAuthToken(AccountAuthenticator.ACCOUNT_TYPE, it)
             }
             if (Build.VERSION.SDK_INT >= LOLLIPOP_MR1) {
-                accountManager.removeAccount(account, null, null, null)
+                accountManager.removeAccountExplicitly(account)
             } else {
                 accountManager.removeAccount(account, null, null)
             }
@@ -47,31 +47,26 @@ class DataDestroyer(private val db: Database,
         sharedPreferences.edit().clear().commit()
     }
 
-    fun destroyWendy() {
+    fun destroyWendy(complete: () -> Unit?) {
+        Wendy.shared.clear(complete)
     }
 
     private class DataDestroyerDestroyAllAsyncTask(private val destroyer: DataDestroyer, private val complete: (error: Throwable?) -> Unit?): AsyncTask<Unit?, Unit?, Unit?>() {
-
-        private var doInBackgroundException: Throwable? = null
 
         override fun doInBackground(vararg p: Unit?): Unit? {
             try {
                 destroyer.destroySqlite()
                 destroyer.destroyAccountManagerAccounts()
                 destroyer.destroySharedPreferences()
-                destroyer.destroyWendy()
                 destroyer.userManager.logout()
+                destroyer.destroyWendy({
+                    complete(null)
+                })
             } catch (e: Throwable) {
-                doInBackgroundException = e
+                complete(e)
             }
 
             return null
-        }
-
-        override fun onPostExecute(result: Unit?) {
-            super.onPostExecute(result)
-
-            complete(doInBackgroundException)
         }
 
     }
