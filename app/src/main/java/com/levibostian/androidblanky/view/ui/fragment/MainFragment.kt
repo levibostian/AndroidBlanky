@@ -26,6 +26,7 @@ import com.levibostian.androidblanky.view.ui.activity.LicensesActivity
 import com.levibostian.androidblanky.view.ui.activity.MainActivity
 import com.levibostian.androidblanky.view.ui.activity.SettingsActivity
 import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
+import com.levibostian.androidblanky.view.ui.dialog.AreYouSureLogoutWendyDialogFragment
 import com.levibostian.androidblanky.view.ui.extensions.closeKeyboard
 import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
@@ -51,6 +52,8 @@ class MainFragment : Fragment() {
     @Inject lateinit var eventBus: EventBus
 
     companion object {
+        const val ARE_YOU_SURE_LOGOUT_DIALOG_FRAGMENT_TAG = "MainFragment_ARE_YOU_SURE_LOGOUT_DIALOG_FRAGMENT_TAG"
+
         fun newInstance(): MainFragment {
             val fragment = MainFragment()
             val bundle = Bundle()
@@ -85,7 +88,11 @@ class MainFragment : Fragment() {
                 true
             }
             R.id.logout -> {
-                eventBus.post(LogoutUserEvent())
+                AreYouSureLogoutWendyDialogFragment.getInstance(object : AreYouSureLogoutWendyDialogFragment.Listener {
+                    override fun logout() {
+                        eventBus.post(LogoutUserEvent())
+                    }
+                }).show(fragmentManager, ARE_YOU_SURE_LOGOUT_DIALOG_FRAGMENT_TAG)
                 true
             }
             else -> {

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="14dp"
+              android:gravity="center">
+
+    <TextView
+        android:id="@+id/are_you_sure_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:paddingBottom="8dp"
+        android:text="@string/are_you_sure_dialog_message"/>
+
+    <LinearLayout
+        android:id="@+id/are_you_sure_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/are_you_sure_syncing_changes_now"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/are_you_sure_done_imageview"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@drawable/ic_check_circle_green_24dp"/>
+
+    <TextView
+        android:id="@+id/are_you_sure_logout_anyway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/log_out_anyway"/>
+
+</LinearLayout>

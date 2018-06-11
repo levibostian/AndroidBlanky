@@ -22,7 +22,7 @@
     <string name="privacy">Privacy</string>
     <string name="enable_analytics">Enable analytics</string>
     <string name="analytics_settings_page_summary">Allow app to collect my basic activity to help improve the app.</string>
-    <string name="logout">Logout</string>
+    <string name="log_out">Log out</string>
     <string name="fatal_network_error_message">Sorry! There was an error. The team has been notified to fix it. Try again in a day or two.</string>
     <string name="exchange_passwordless_token_auth_token_loading_message">Finishing logging you in.\nIt shouldn\'t take too long…</string>
     <string name="enter_email_address">Enter email address</string>
@@ -34,9 +34,18 @@
     <string name="ok">OK</string>
     <string name="logging_out">Logging out of your account…</string>
     <string name="clearing_data">Preparing for login…</string>
-    <string name="error_401_response_code">Sorry! You must logout, login to your account, and try again.</string>
-    <string name="sure_logout">Are you sure you want to logout?</string>
-    <string name="sure_logout_message">Are you sure you want to logout of your %s account? If yes, the data for the %s account will be deleted from the device and you will be prompted to login to another account.</string>
+    <string name="error_401_response_code">Sorry! You must log out, login to your account, and try again.</string>
+    <string name="sure_logout">Are you sure you want to log out?</string>
+    <string name="sure_logout_message">Are you sure you want to log out of your %s account? If yes, the data for the %s account will be deleted from the device and you will be prompted to login to another account.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="are_you_sure_dialog_message">You have changes in the app that have not synced yet. You will lose your changes if you log out now.</string>
+    <string name="are_you_sure_data_safe_dialog_message">All of your data has been synced. You are now safe to log out.</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_you_sure_syncing_changes_now">Syncing changes now…</string>
+    <string name="are_you_sure_no_network_connection">You have changes in the app that have not been synced yet. We tried to sync them automatically for you, but you are not connected to the Internet. Connect, then try again.</string>
+    <string name="are_you_sure_finished_sync_errors_message">We tried to sync all of your changes, but there were some errors that need resolved. Check for errors in the app and try again.</string>
+    <string name="log_out_anyway">Log out anyway?</string>
+    <string name="are_you_sure_log_out">Are you sure you want to log out?</string>
+    <string name="warning">Warning</string>
 </resources>

@@ -62,12 +62,12 @@ class LaunchActivity: Activity() {
         val userAccount = userManager.getAccount()
         if (userAccount == null || logoutOfAccount) { // The AccountAuthenticator's addAccount() function will simply launch an intent to launch the AuthenticatorActivity where it handles logging you out. If AccountAuthenticator is ever updated (there is a comment where), this code needs to be updated too to delete some data or something to trigger the logout process and THEN calling accountManager.addAccount().
             accountManager.addAccount(AccountAuthenticator.ACCOUNT_TYPE, null, null, null, this, {
-                if (it.isDone && it.result.getString(AccountManager.KEY_ACCOUNT_NAME) != null) startActivity(MainActivity.getIntent(this))
+                if (it.isDone && !it.isCancelled && it.result.getString(AccountManager.KEY_ACCOUNT_NAME) != null) startActivity(MainActivity.getIntent(this))
                 finish()
             }, null)
         } else {
             accountManager.getAuthToken(userAccount, AccountAuthenticator.ACCOUNT_TYPE, null, this, {
-                if (it.isDone && it.result.getString(AccountManager.KEY_AUTHTOKEN) != null) startActivity(MainActivity.getIntent(this))
+                if (it.isDone && !it.isCancelled && it.result.getString(AccountManager.KEY_AUTHTOKEN) != null) startActivity(MainActivity.getIntent(this))
                 finish()
             }, null)
         }

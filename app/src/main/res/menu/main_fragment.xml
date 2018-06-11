@@ -5,5 +5,5 @@
     <item android:id="@+id/open_source_licenses"
           android:title="@string/open_source_licenses"/>
     <item android:id="@+id/logout"
-          android:title="@string/logout"/>
+          android:title="@string/log_out"/>
 </menu>

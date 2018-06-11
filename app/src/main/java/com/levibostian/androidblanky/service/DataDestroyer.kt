@@ -48,10 +48,12 @@ class DataDestroyer(private val db: Database,
     }
 
     fun destroyWendy(complete: () -> Unit?) {
-        Wendy.shared.clear(complete)
+        Wendy.shared.clearAsync(complete)
     }
 
     private class DataDestroyerDestroyAllAsyncTask(private val destroyer: DataDestroyer, private val complete: (error: Throwable?) -> Unit?): AsyncTask<Unit?, Unit?, Unit?>() {
+
+        private var doInBackgroundError: Throwable? = null
 
         override fun doInBackground(vararg p: Unit?): Unit? {
             try {
@@ -59,14 +61,18 @@ class DataDestroyer(private val db: Database,
                 destroyer.destroyAccountManagerAccounts()
                 destroyer.destroySharedPreferences()
                 destroyer.userManager.logout()
-                destroyer.destroyWendy({
-                    complete(null)
-                })
+                Wendy.shared.clear()
             } catch (e: Throwable) {
-                complete(e)
+                doInBackgroundError = e
             }
 
             return null
+        }
+
+        override fun onPostExecute(result: Unit?) {
+            super.onPostExecute(result)
+
+            complete(doInBackgroundError)
         }
 
     }

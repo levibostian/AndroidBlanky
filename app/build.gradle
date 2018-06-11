@@ -107,7 +107,7 @@ dependencies {
     implementation 'com.github.levibostian:teller-android:0.0.1'
 
     // Wendy
-    implementation 'com.github.levibostian:wendy-android:0.2.0-alpha'
+    implementation 'com.github.levibostian:Wendy-Android:0.2.1-alpha'
 
     // Firebase
     implementation "com.google.firebase:firebase-core:16.0.0"
