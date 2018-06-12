@@ -51,4 +51,6 @@
     <string name="unlock">Unlock</string>
     <string name="want_to_login_to_a_different_account">Want to login to a different account?</string>
     <string name="unlock_account_message">We see you were previously logged into your account: %s.\n\nUnlock your account to get back to what you were doing or log into a new account.</string>
+    <string name="update_app_title">Update your %s app.</string>
+    <string name="update_app_message">Your %s app is a little too old. Update the app now for the latest features and security updates.</string>
 </resources>

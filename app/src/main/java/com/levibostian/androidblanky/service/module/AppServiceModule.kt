@@ -14,13 +14,14 @@ import javax.inject.Singleton
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
 import com.levibostian.androidblanky.service.model.AppConstants
-import com.levibostian.androidblanky.service.AppendHeadersInterceptor
+import com.levibostian.androidblanky.service.interceptor.AppendHeadersInterceptor
 import com.levibostian.androidblanky.service.DataDestroyer
-import com.levibostian.androidblanky.service.DefaultErrorHandlerInterceptor
+import com.levibostian.androidblanky.service.interceptor.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.db.manager.DatabaseManager
+import com.levibostian.androidblanky.service.interceptor.MissingDataResponseInterceptor
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
 import com.squareup.moshi.Moshi
@@ -34,12 +35,13 @@ import java.util.*
 
 @Module class AppServiceModule(val application: MainApplication): ServiceModule {
 
-    @Provides @Singleton override fun provideRetrofit(userManager: UserManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor): Retrofit {
+    @Provides @Singleton override fun provideRetrofit(userManager: UserManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor, missingDataResponseInterceptor: MissingDataResponseInterceptor): Retrofit {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         val client = OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(defaultErrorHandlerInterceptor)
+                .addInterceptor(missingDataResponseInterceptor)
                 .addNetworkInterceptor(AppendHeadersInterceptor(userManager))
                 .build()
         val moshi = Moshi.Builder()
@@ -53,6 +55,8 @@ import java.util.*
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
     }
+
+    @Provides override fun provideMissingDataResponseInterceptor(): MissingDataResponseInterceptor = MissingDataResponseInterceptor(application)
 
     @Provides override fun provideDefaultErrorHandlerInterceptor(connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor {
         return DefaultErrorHandlerInterceptor(application, eventBus, connectivityManager)

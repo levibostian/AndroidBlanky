@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky.service
+package com.levibostian.androidblanky.service.interceptor
 
 import android.content.Context
 import okhttp3.Interceptor
