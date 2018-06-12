@@ -16,7 +16,11 @@ class UserManager(private val context: Context,
                   private val accountManager: AccountManager) {
 
     fun isUserLoggedIn(): Boolean {
-        return (id != null) && (getAccount() != null) && (authToken != null)
+        return (id != null) && (getAccount() != null) && (authToken != null) && (email != null)
+    }
+
+    fun doesUserAccountNeedUnlocked(): Boolean {
+        return (id != null) && (email != null) && (getAccount() == null)
     }
 
     fun getAccount(): Account? {
@@ -25,6 +29,8 @@ class UserManager(private val context: Context,
 
     fun logout() {
         id = null
+        authToken = null
+        email = null
         FirebaseAnalytics.getInstance(context).setUserId(null)
     }
 
@@ -45,6 +51,11 @@ class UserManager(private val context: Context,
 
             doWorkAfterLoggedIn()
         }
+
+    var email: String?
+        get() = sharedPrefs.getString(SharedPrefersKeys.USER_EMAIL, null)
+        @SuppressLint("ApplySharedPref")
+        set(value) { sharedPrefs.edit().putString(SharedPrefersKeys.USER_EMAIL, value).commit() }
 
     var fcmPushNotificationToken: String?
         get() = sharedPrefs.getString(SharedPrefersKeys.FCM_PUSH_NOTIFICATION, null)

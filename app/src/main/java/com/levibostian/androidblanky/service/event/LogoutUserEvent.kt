@@ -1,3 +1,3 @@
 package com.levibostian.androidblanky.service.event
 
-class LogoutUserEvent
+class LogoutUserEvent(val lockAccount: Boolean)

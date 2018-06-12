@@ -18,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
         android:gravity="center">
 
         <TextView
@@ -30,6 +32,7 @@
             android:padding="8dp"/>
 
         <TextView
+            android:id="@+id/auth_activity_message_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_message"
@@ -43,12 +46,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_email_address"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="14dp"
             android:inputType="textEmailAddress"
             android:textColorHint="@android:color/white"
             android:textColor="@android:color/white"
             android:importantForAutofill="yes"/>
+
+        <TextView
+            android:id="@+id/auth_activity_email_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:gravity="center"
+            tools:text="email: you@example.com"/>
 
         <Button
             android:id="@+id/auth_activity_login_button"
@@ -56,6 +66,29 @@
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:text="@string/done"/>
+
+        <LinearLayout
+            android:id="@+id/auth_activity_logout_anyway_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="38dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:text="@string/want_to_login_to_a_different_account"/>
+
+            <Button
+                android:id="@+id/auth_activity_logout_anyway_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="@string/log_out"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

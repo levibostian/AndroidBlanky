@@ -53,15 +53,13 @@ class LaunchActivity: Activity() {
     }
 
     private fun launchStartupActivity(passwordlessToken: String?, logoutOfAccount: Boolean) {
-        if (passwordlessToken != null) {
-            startActivity(AuthenticatorActivity.getIntent(this, passwordlessToken, false))
-            finish()
-            return
-        }
-
         val userAccount = userManager.getAccount()
+
         if (userAccount == null || logoutOfAccount) { // The AccountAuthenticator's addAccount() function will simply launch an intent to launch the AuthenticatorActivity where it handles logging you out. If AccountAuthenticator is ever updated (there is a comment where), this code needs to be updated too to delete some data or something to trigger the logout process and THEN calling accountManager.addAccount().
-            accountManager.addAccount(AccountAuthenticator.ACCOUNT_TYPE, null, null, null, this, {
+            val addAccountOptions = Bundle()
+            passwordlessToken?.let { addAccountOptions.putString(AuthenticatorActivity.PASSWORDLESS_TOKEN, it) }
+
+            accountManager.addAccount(AccountAuthenticator.ACCOUNT_TYPE, null, null, addAccountOptions, this, {
                 if (it.isDone && !it.isCancelled && it.result.getString(AccountManager.KEY_ACCOUNT_NAME) != null) startActivity(MainActivity.getIntent(this))
                 finish()
             }, null)
@@ -74,7 +72,7 @@ class LaunchActivity: Activity() {
     }
 
     private fun getDynamicLinkIfExists(): Boolean {
-        intent.data?.getQueryParameter("passwordless_token")?.let {
+        intent?.data?.getQueryParameter("passwordless_token")?.let {
             launchStartupActivity(it, false)
             return true
         }

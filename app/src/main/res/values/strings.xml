@@ -33,7 +33,7 @@
     <string name="check_email_to_finish_login">Check your email to finish the login process.</string>
     <string name="ok">OK</string>
     <string name="logging_out">Logging out of your account…</string>
-    <string name="clearing_data">Preparing for login…</string>
+    <string name="preparing_for_login">Preparing for login…</string>
     <string name="error_401_response_code">Sorry! You must log out, login to your account, and try again.</string>
     <string name="sure_logout">Are you sure you want to log out?</string>
     <string name="sure_logout_message">Are you sure you want to log out of your %s account? If yes, the data for the %s account will be deleted from the device and you will be prompted to login to another account.</string>
@@ -48,4 +48,7 @@
     <string name="log_out_anyway">Log out anyway?</string>
     <string name="are_you_sure_log_out">Are you sure you want to log out?</string>
     <string name="warning">Warning</string>
+    <string name="unlock">Unlock</string>
+    <string name="want_to_login_to_a_different_account">Want to login to a different account?</string>
+    <string name="unlock_account_message">We see you were previously logged into your account: %s.\n\nUnlock your account to get back to what you were doing or log into a new account.</string>
 </resources>

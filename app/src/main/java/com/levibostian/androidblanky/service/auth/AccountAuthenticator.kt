@@ -23,14 +23,14 @@ class AccountAuthenticator(private val context: Context): AbstractAccountAuthent
         const val ACCOUNT_TYPE = "com.levibostian.androidblanky"
     }
 
-    override fun addAccount(response: AccountAuthenticatorResponse?, accountType: String?, authTokenType: String?, requiredFeatures: Array<out String>?, options: Bundle?): Bundle {
+    override fun addAccount(response: AccountAuthenticatorResponse, accountType: String, authTokenType: String?, requiredFeatures: Array<out String>?, options: Bundle?): Bundle {
         // The Intent inside of the returned Bundle here is what is passed to your AuthenticatorActivity so if there is data you need, send it.
         //
         // Note: This app is built to have 1 user logged in at one time. So, when addAccount is called, it will simply launch the AuthenticatorActivity where the activity will ask the user to logout of the existing account, if they are logged in already, or to simply login. If this function here is ever edited to allowing add multiple accounts, we will need to edit some of the LaunchActivity code too (there is a comment in there where).
-        return getAuthenticatorActivityIntentBundle(response)
+        return getAuthenticatorActivityIntentBundle(response, options?.getString(AuthenticatorActivity.PASSWORDLESS_TOKEN, null))
     }
 
-    override fun getAuthToken(response: AccountAuthenticatorResponse?, account: Account?, authTokenType: String?, options: Bundle?): Bundle {
+    override fun getAuthToken(response: AccountAuthenticatorResponse, account: Account?, authTokenType: String?, options: Bundle?): Bundle {
         val accountManager = AccountManager.get(context)
         val authToken = accountManager.peekAuthToken(account, authTokenType)
 
@@ -42,12 +42,13 @@ class AccountAuthenticator(private val context: Context): AbstractAccountAuthent
             return result
         }
 
-        return getAuthenticatorActivityIntentBundle(response)
+        return getAuthenticatorActivityIntentBundle(response, null)
     }
 
-    private fun getAuthenticatorActivityIntentBundle(response: AccountAuthenticatorResponse?): Bundle {
-        val intent = AuthenticatorActivity.getIntent(context, null, false).apply {
-            response?.let { putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, it) }
+    private fun getAuthenticatorActivityIntentBundle(response: AccountAuthenticatorResponse, passwordlessToken: String?): Bundle {
+        val intent = AuthenticatorActivity.getIntent(context).apply {
+            putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
+            passwordlessToken?.let { putExtra(AuthenticatorActivity.PASSWORDLESS_TOKEN, it) }
         }
 
         val bundle = Bundle()

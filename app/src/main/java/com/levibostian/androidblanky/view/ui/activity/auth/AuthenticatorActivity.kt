@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.accounts.AccountManager
 import android.accounts.Account
 import android.app.Activity
-import android.app.ProgressDialog
 import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -27,17 +26,54 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
         const val PASSWORDLESS_TOKEN = "AuthenticatorActivity_PASSWORDLESS_TOKEN"
         const val FORCE_LOGOUT = "AuthenticatorActivity_FORCE_LOGOUT"
 
-        fun getIntent(context: Context, passwordlessToken: String?, forceLogout: Boolean): Intent {
-            return Intent(context, AuthenticatorActivity::class.java).apply {
-                passwordlessToken?.let { putExtra(PASSWORDLESS_TOKEN, it) }
-                putExtra(FORCE_LOGOUT, forceLogout)
-            }
-        }
+        fun getIntent(context: Context): Intent = Intent(context, AuthenticatorActivity::class.java)
     }
 
     @Inject lateinit var accountManager: AccountManager
     @Inject lateinit var userManager: UserManager
     @Inject lateinit var dataDestroyer: DataDestroyer
+
+    private var state: State? = null
+        set(value) {
+            field = value
+
+            when (value) {
+                AuthenticatorActivity.State.LOGGING_OUT_LOADING -> {
+                    auth_activity_loading_view.loadingText = getString(R.string.logging_out)
+                    auth_activity_login_view.visibility = View.GONE
+                    auth_activity_loading_view.visibility = View.VISIBLE
+                }
+                AuthenticatorActivity.State.LOGIN -> {
+                    auth_activity_login_view.visibility = View.VISIBLE
+                    auth_activity_loading_view.visibility = View.GONE
+                    auth_activity_email_textview.visibility = View.GONE
+                    auth_activity_email_edittext.visibility = View.VISIBLE
+                    auth_activity_login_button.text = getString(R.string.done)
+                    auth_activity_logout_anyway_view.visibility = View.GONE
+                    auth_activity_message_textview.text = getString(R.string.login_message)
+                }
+                AuthenticatorActivity.State.UNLOCK_ACCOUNT -> {
+                    auth_activity_login_view.visibility = View.VISIBLE
+                    auth_activity_loading_view.visibility = View.GONE
+                    auth_activity_email_textview.visibility = View.VISIBLE
+                    auth_activity_email_edittext.visibility = View.GONE
+                    auth_activity_login_button.text = getString(R.string.unlock)
+                    auth_activity_email_textview.text = String.format(Locale.getDefault(), "email: %s", userManager.email!!)
+                    auth_activity_logout_anyway_view.visibility = View.VISIBLE
+                    auth_activity_message_textview.text = String.format(Locale.getDefault(), getString(R.string.unlock_account_message), userManager.email!!)
+                }
+                AuthenticatorActivity.State.FIRST_TIME_LOGIN_LOADING -> {
+                    auth_activity_loading_view.loadingText = getString(R.string.preparing_for_login)
+                    auth_activity_login_view.visibility = View.GONE
+                    auth_activity_loading_view.visibility = View.VISIBLE
+                }
+                AuthenticatorActivity.State.PASSWORD_TOKEN_EXCHANGE -> {
+                    auth_activity_loading_view.loadingText = getString(R.string.exchange_passwordless_token_auth_token_loading_message)
+                    auth_activity_login_view.visibility = View.GONE
+                    auth_activity_loading_view.visibility = View.VISIBLE
+                }
+            }
+        }
 
     private var passwordlessToken: String? = null
     private var forceLogout: Boolean = false
@@ -50,39 +86,51 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
         setContentView(R.layout.activity_authenticator)
         setupViews()
 
-        passwordlessToken = intent.extras?.getString(PASSWORDLESS_TOKEN) ?: icicle?.getString(PASSWORDLESS_TOKEN)
+        passwordlessToken = intent?.extras?.getString(PASSWORDLESS_TOKEN) ?: icicle?.getString(PASSWORDLESS_TOKEN)
         if (passwordlessToken != null) {
-            showLoadingView(getString(R.string.exchange_passwordless_token_auth_token_loading_message))
+            state = State.PASSWORD_TOKEN_EXCHANGE
 
-            // TODO call server to exchange token with a auth token
+            // TODO call server to exchange token with a auth token. Do this in a ViewModel!
             // TODO call finishLogin() after getting the auth token and email from the server.
         } else {
-            fun deleteAllDataAndStartLogin(message: String) {
-                showLoadingView(message)
-                dataDestroyer.destroyAll({
-                    showLoginView()
-                })
-            }
-
-            forceLogout = intent.extras?.getBoolean(FORCE_LOGOUT) ?: icicle?.getBoolean(FORCE_LOGOUT) ?: false
-            if (!forceLogout && userManager.isUserLoggedIn()) {
-                val loggedInUserEmail: String = userManager.getAccount()!!.name
-                AlertDialog.Builder(this)
-                        .setTitle(R.string.sure_logout)
-                        .setMessage(String.format(Locale.getDefault(), getString(R.string.sure_logout_message), loggedInUserEmail, loggedInUserEmail))
-                        .setPositiveButton(R.string.yes, { dialog, which ->
-                            deleteAllDataAndStartLogin(getString(R.string.logging_out))
-                        })
-                        .setNegativeButton(R.string.no, { dialog, which ->
-                            dialog.dismiss()
-                            finish()
-                        })
-                        .show()
-            } else {
-                val clearDataMessage = getString(if (forceLogout) R.string.logging_out else R.string.clearing_data)
-                deleteAllDataAndStartLogin(clearDataMessage)
+            forceLogout = intent?.extras?.getBoolean(FORCE_LOGOUT) ?: icicle?.getBoolean(FORCE_LOGOUT) ?: false
+            when {
+                forceLogout -> {
+                    state = State.LOGGING_OUT_LOADING
+                    dataDestroyer.destroyAll({
+                        state = State.LOGIN
+                    })
+                }
+                userManager.isUserLoggedIn() -> // Activity launched with intent of logging the user out since they are still technically logged in.
+                    confirmIfUserWantsToLogout()
+                userManager.doesUserAccountNeedUnlocked() -> // User not logged in, but account data exists (user installed app and Android restored a previous data backup, or a 401 http status code). Re-prompt them to login to "unlock" their account and data.
+                    state = State.UNLOCK_ACCOUNT
+                else -> { // We are showing this activity for the first login.
+                    state = State.FIRST_TIME_LOGIN_LOADING
+                    dataDestroyer.destroyAll({
+                        state = State.LOGIN
+                    })
+                }
             }
         }
+    }
+
+    private fun confirmIfUserWantsToLogout() {
+        val loggedInUserEmail: String = userManager.email!!
+        AlertDialog.Builder(this)
+                .setTitle(R.string.sure_logout)
+                .setMessage(String.format(Locale.getDefault(), getString(R.string.sure_logout_message), loggedInUserEmail, loggedInUserEmail))
+                .setPositiveButton(R.string.yes, { dialog, which ->
+                    state = State.LOGGING_OUT_LOADING
+                    dataDestroyer.destroyAll({
+                        state = State.LOGIN
+                    })
+                })
+                .setNegativeButton(R.string.no, { dialog, which ->
+                    dialog.dismiss()
+                    finish()
+                })
+                .show()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -94,13 +142,10 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
 
     private fun setupViews() {
         auth_activity_login_button.setOnClickListener {
-            val enteredEmail = auth_activity_email_edittext.text.toString()
-            if (enteredEmail.isBlank()) {
-                auth_activity_email_edittext.error = getString(R.string.enter_email_address)
-            } else {
-                // TODO send email up to server to have it begin login process. In this case, send an email in a "passwordless" fashion.
-
-                // TODO remove me below...
+            if (state == State.UNLOCK_ACCOUNT) {
+                // TODO Call API to send email and get auth token back for user.
+                
+                // TODO remove handler below.
                 Handler().postDelayed({ // Pretending that we got our email and auth token back from the server.
                     val email = "you@example.com"
                     val authToken = "12345"
@@ -115,25 +160,41 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
                             dialog.dismiss()
                         })
                         .show()
+            } else if (state == State.LOGIN) {
+                val enteredEmail = auth_activity_email_edittext.text.toString()
+                if (enteredEmail.isBlank()) {
+                    auth_activity_email_edittext.error = getString(R.string.enter_email_address)
+                } else {
+                    // TODO send email up to server to have it begin login process. In this case, send an email in a "passwordless" fashion.
+                    // TODO make sure to do this in a ViewModel!
+
+                    // TODO remove me below...
+                    Handler().postDelayed({ // Pretending that we got our email and auth token back from the server.
+                        val email = "you@example.com"
+                        val authToken = "12345"
+
+                        finishLogin("1", email, authToken)
+                    }, 4000)
+
+                    AlertDialog.Builder(this)
+                            .setTitle(R.string.email_sent)
+                            .setMessage(R.string.check_email_to_finish_login)
+                            .setPositiveButton(R.string.ok, { dialog, _ ->
+                                dialog.dismiss()
+                            })
+                            .show()
+                }
             }
         }
         auth_activity_loading_view.loadingTextView!!.setTextColor(ContextCompat.getColor(this, android.R.color.white))
-    }
-
-    private fun showLoadingView(message: String) {
-        auth_activity_loading_view.loadingText = message
-
-        auth_activity_login_view.visibility = View.GONE
-        auth_activity_loading_view.visibility = View.VISIBLE
-    }
-
-    private fun showLoginView() {
-        auth_activity_login_view.visibility = View.VISIBLE
-        auth_activity_loading_view.visibility = View.GONE
+        auth_activity_logout_anyway_button.setOnClickListener {
+            confirmIfUserWantsToLogout()
+        }
     }
 
     private fun finishLogin(userId: String, email: String, authToken: String) {
         userManager.id = userId
+        userManager.email = email
 
         val res = Intent()
         res.putExtra(AccountManager.KEY_ACCOUNT_NAME, email)
@@ -147,6 +208,14 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
         setAccountAuthenticatorResult(res.extras)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    private enum class State {
+        LOGGING_OUT_LOADING, // Logging the user out of the app.
+        FIRST_TIME_LOGIN_LOADING, // No data from backup, no logging out, first time logging in. Loading view before LOGIN.
+        LOGIN, // User logged out or it's their first time logging in.
+        UNLOCK_ACCOUNT, // User account does not exist in AccountManager, but data exists in the app. This means we need to show a UI for the user to login again to "unlock" their data.
+        PASSWORD_TOKEN_EXCHANGE // Activity launched with intent to exchange passwordless token with auth token.
     }
 
 }

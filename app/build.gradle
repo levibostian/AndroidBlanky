@@ -41,7 +41,7 @@ android {
 
         testInstrumentationRunner 'com.levibostian.androidblanky.AndroidTestTestRunner'
 
-        //multiDexEnabled true // don't need as not over dex limit yet.
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
 

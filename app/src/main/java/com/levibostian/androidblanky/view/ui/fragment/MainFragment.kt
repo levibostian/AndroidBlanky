@@ -90,7 +90,7 @@ class MainFragment : Fragment() {
             R.id.logout -> {
                 AreYouSureLogoutWendyDialogFragment.getInstance(object : AreYouSureLogoutWendyDialogFragment.Listener {
                     override fun logout() {
-                        eventBus.post(LogoutUserEvent())
+                        eventBus.post(LogoutUserEvent(false))
                     }
                 }).show(fragmentManager, ARE_YOU_SURE_LOGOUT_DIALOG_FRAGMENT_TAG)
                 true

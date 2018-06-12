@@ -8,6 +8,7 @@ object SharedPrefersKeys {
 
     const val USER_AUTH_TOKEN: String = "USER_AUTH_TOKEN"
     const val USER_ID: String = "USER_ID"
+    const val USER_EMAIL: String = "USER_EMAIL"
     const val FIRST_APP_LAUNCH: String = "FIRST_APP_LAUNCH"
     const val FCM_PUSH_NOTIFICATION: String = "FCM_PUSH_NOTIFICATION"
 

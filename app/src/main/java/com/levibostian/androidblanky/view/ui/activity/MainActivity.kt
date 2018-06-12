@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var userManager: UserManager
     @Inject lateinit var sharedPreferences: SharedPreferences
+    @Inject lateinit var dataDestroyer: DataDestroyer
 
     private lateinit var referrerClient: InstallReferrerClient
 
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
         // Users can remove accounts in the settings app on the device. Check if they did while the app was in the background.
         if (!userManager.isUserLoggedIn()) {
-            EventBus.getDefault().post(LogoutUserEvent())
+            EventBus.getDefault().post(LogoutUserEvent(true))
         }
     }
 
@@ -99,6 +100,8 @@ class MainActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(event: LogoutUserEvent) {
+        if (event.lockAccount) dataDestroyer.destroyAccountManagerAccounts()
+
         startActivity(LaunchActivity.getIntent(this, true))
         finish()
     }

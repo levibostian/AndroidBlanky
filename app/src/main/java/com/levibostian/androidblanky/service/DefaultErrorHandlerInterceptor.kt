@@ -9,6 +9,7 @@ import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.service.error.network.NoInternetConnectionException
 import com.levibostian.androidblanky.service.error.network.UnauthorizedException
 import com.levibostian.androidblanky.service.event.LogoutUserEvent
+import com.levibostian.androidblanky.service.manager.UserManager
 
 class DefaultErrorHandlerInterceptor(private val context: Context,
                                      private val eventbus: EventBus,
@@ -24,7 +25,7 @@ class DefaultErrorHandlerInterceptor(private val context: Context,
             val statusCode = response.code()
             when (statusCode) {
                 401 -> {
-                    eventbus.post(LogoutUserEvent())
+                    eventbus.post(LogoutUserEvent(true))
                     throw UnauthorizedException(context.getString(R.string.error_401_response_code))
                 }
             }
