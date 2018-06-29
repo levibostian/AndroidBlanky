@@ -3,9 +3,9 @@ package com.levibostian.androidblanky.view.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.view.ui.fragment.SettingsFragment
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*

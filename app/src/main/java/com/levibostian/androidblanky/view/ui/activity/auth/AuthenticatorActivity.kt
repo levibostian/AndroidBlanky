@@ -8,9 +8,9 @@ import android.accounts.AccountManager
 import android.accounts.Account
 import android.app.Activity
 import android.os.Handler
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import androidx.core.content.ContextCompat
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
@@ -97,9 +97,9 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
             when {
                 forceLogout -> {
                     state = State.LOGGING_OUT_LOADING
-                    dataDestroyer.destroyAll({
+                    dataDestroyer.destroyAll {
                         state = State.LOGIN
-                    })
+                    }
                 }
                 userManager.isUserLoggedIn() -> // Activity launched with intent of logging the user out since they are still technically logged in.
                     confirmIfUserWantsToLogout()
@@ -107,9 +107,9 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
                     state = State.UNLOCK_ACCOUNT
                 else -> { // We are showing this activity for the first login.
                     state = State.FIRST_TIME_LOGIN_LOADING
-                    dataDestroyer.destroyAll({
+                    dataDestroyer.destroyAll {
                         state = State.LOGIN
-                    })
+                    }
                 }
             }
         }
@@ -120,16 +120,16 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
         AlertDialog.Builder(this)
                 .setTitle(R.string.sure_logout)
                 .setMessage(String.format(Locale.getDefault(), getString(R.string.sure_logout_message), loggedInUserEmail, loggedInUserEmail))
-                .setPositiveButton(R.string.yes, { dialog, which ->
+                .setPositiveButton(R.string.yes) { dialog, which ->
                     state = State.LOGGING_OUT_LOADING
-                    dataDestroyer.destroyAll({
+                    dataDestroyer.destroyAll {
                         state = State.LOGIN
-                    })
-                })
-                .setNegativeButton(R.string.no, { dialog, which ->
+                    }
+                }
+                .setNegativeButton(R.string.no) { dialog, which ->
                     dialog.dismiss()
                     finish()
-                })
+                }
                 .show()
     }
 
@@ -156,9 +156,9 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
                 AlertDialog.Builder(this)
                         .setTitle(R.string.email_sent)
                         .setMessage(R.string.check_email_to_finish_login)
-                        .setPositiveButton(R.string.ok, { dialog, _ ->
+                        .setPositiveButton(R.string.ok) { dialog, _ ->
                             dialog.dismiss()
-                        })
+                        }
                         .show()
             } else if (state == State.LOGIN) {
                 val enteredEmail = auth_activity_email_edittext.text.toString()
@@ -179,9 +179,9 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
                     AlertDialog.Builder(this)
                             .setTitle(R.string.email_sent)
                             .setMessage(R.string.check_email_to_finish_login)
-                            .setPositiveButton(R.string.ok, { dialog, _ ->
+                            .setPositiveButton(R.string.ok) { dialog, _ ->
                                 dialog.dismiss()
-                            })
+                            }
                             .show()
                 }
             }

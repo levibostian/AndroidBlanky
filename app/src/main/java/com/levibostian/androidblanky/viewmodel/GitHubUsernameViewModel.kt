@@ -1,9 +1,9 @@
 package com.levibostian.androidblanky.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.LiveDataReactiveStreams
-import android.arch.lifecycle.ViewModel
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.ViewModel
 import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
 import com.levibostian.teller.datastate.LocalDataState
 import io.reactivex.BackpressureStrategy

@@ -1,7 +1,7 @@
 package com.levibostian.androidblanky.service.db.manager
 
-import android.arch.persistence.room.Room
 import android.content.Context
+import androidx.room.Room
 import com.levibostian.androidblanky.service.db.Database
 
 class DatabaseManager {

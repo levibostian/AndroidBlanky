@@ -1,8 +1,8 @@
 package com.levibostian.androidblanky.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.LiveDataReactiveStreams
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.ViewModel
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.model.RepoModel
