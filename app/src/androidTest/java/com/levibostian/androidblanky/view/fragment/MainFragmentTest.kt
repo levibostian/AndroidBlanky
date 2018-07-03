@@ -24,6 +24,7 @@ import com.levibostian.androidblanky.view.ui.TestMainApplication
 import org.mockito.*
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
+import com.levibostian.androidblanky.rule.ScreenshotOnErrorRule
 import com.levibostian.androidblanky.testing.SingleFragmentActivity
 import com.levibostian.androidblanky.util.ScreenshotUtil
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
@@ -48,6 +49,7 @@ class MainFragmentTest : AndroidIntegrationTestClass {
     @get:Rule val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
     @get:Rule val localeTestRule = LocaleTestRule() // fastlane can switch locales to take screenshots and test.
     @get:Rule val spoon = SpoonRule()
+    @get:Rule val screenshotOnErrorRule = ScreenshotOnErrorRule.getRule()
 
     private val repoOwner = RepoOwnerModel("login1")
     private val repo1 = RepoModel(1, "name1", repoOwner)
