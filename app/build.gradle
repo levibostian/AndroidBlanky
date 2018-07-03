@@ -14,6 +14,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "kotlin-allopen"
+apply plugin: "com.jaredsburrows.spoon"
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
@@ -25,6 +26,7 @@ repositories {
     mavenCentral()
     google()
     jcenter()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" } // For Spoon snapshot, until 2.0.0 is released
 }
 
 android {
@@ -237,6 +239,9 @@ dependencies {
 
     // Fastlane screengrab
     androidTestImplementation "tools.fastlane:screengrab:1.1.0"
+
+    // Spoon client (Only the client since a gradle plugin is what runs the jar app for us)
+    androidTestImplementation "com.squareup.spoon:spoon-client:2.0.0-SNAPSHOT"
 }
 
 configurations.all {

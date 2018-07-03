@@ -5,6 +5,7 @@ buildscript {
         jcenter()
         mavenCentral()
         maven { url "https://jitpack.io" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" } // For Spoon snapshot, until 2.0.0 is released
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0-beta02'
@@ -12,6 +13,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
         classpath 'com.google.gms:google-services:3.3.1'
         classpath 'com.google.firebase:firebase-plugins:1.1.5'
+        classpath "com.jaredsburrows:gradle-spoon-plugin:1.4.0"
     }
 }
 

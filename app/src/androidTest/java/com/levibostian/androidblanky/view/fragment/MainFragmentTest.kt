@@ -24,14 +24,15 @@ import com.levibostian.androidblanky.view.ui.TestMainApplication
 import org.mockito.*
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.levibostian.androidblanky.extensions.screenshot
 import com.levibostian.androidblanky.testing.SingleFragmentActivity
+import com.levibostian.androidblanky.util.ScreenshotUtil
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.TestViewModelFactory
 import com.levibostian.teller.datastate.LocalDataState
 import com.levibostian.teller.datastate.OnlineDataState
+import com.squareup.spoon.SpoonRule
 import org.hamcrest.CoreMatchers.not
 import java.util.*
 
@@ -46,6 +47,7 @@ class MainFragmentTest : AndroidIntegrationTestClass {
 
     @get:Rule val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
     @get:Rule val localeTestRule = LocaleTestRule() // fastlane can switch locales to take screenshots and test.
+    @get:Rule val spoon = SpoonRule()
 
     private val repoOwner = RepoOwnerModel("login1")
     private val repo1 = RepoModel(1, "name1", repoOwner)
@@ -56,6 +58,8 @@ class MainFragmentTest : AndroidIntegrationTestClass {
     private val githubUsernameLiveData: MutableLiveData<LocalDataState<String>> = MutableLiveData()
 
     private lateinit var application: TestMainApplication
+
+    private lateinit var screenshots: ScreenshotUtil
 
     @Before
     fun setup() {
@@ -69,6 +73,8 @@ class MainFragmentTest : AndroidIntegrationTestClass {
 
         `when`(reposViewModel.observeRepos()).thenReturn(reposLiveData)
         `when`(gitHubUsernameViewModel.observeUsername()).thenReturn(githubUsernameLiveData)
+
+        screenshots = ScreenshotUtil(activityRule.activity, spoon)
     }
 
     override fun getInstrumentation(): Instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -88,7 +94,7 @@ class MainFragmentTest : AndroidIntegrationTestClass {
 
         orientationPortrait()
 
-        screenshot("showReposDataListFetchingFresh")
+        screenshots.take("showReposDataListFetchingFresh")
         onView(withId(R.id.username_edittext))
                 .check(ViewAssertions.matches(ViewMatchers.withText(githubUsername)))
 

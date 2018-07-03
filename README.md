@@ -147,13 +147,11 @@ When creating build to release to Play Store:
 
 # Tests
 
-* Run JUnit unit tests:
+* Run JUnit unit tests via Android Studio or gradle as you normally would.
 
-`fastlane test`
+* Run Android instrumentation tests. You can use `bundle exec fastlane screengrab` when you want Fastlane to capture screenshots for you that you want to use for releasing to the Play Store.
 
-* Run Android Espresso tests and take screenshots:
-
-`fastlane android_test`
+Or, you can use `./gradlew spoonDevelopmentDebug` to run tests locally by running spoon. After spoon runs, you can browse to "app/build/spoon-output/" to see the result of your tests in a very nice HTML page. If this is broken, however, you may still use Android Studio to run the tests however, you will not get any screenshots.
 
 ## Author
 
