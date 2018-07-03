@@ -1,15 +1,17 @@
 package com.levibostian.androidblanky.service.db.migrations
 
-import android.support.test.runner.AndroidJUnit4
 import org.junit.Rule
 import org.junit.runner.RunWith
-import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory
-import android.support.test.InstrumentationRegistry
-import android.arch.persistence.room.testing.MigrationTestHelper
 import com.levibostian.androidblanky.service.db.Database
+import androidx.room.testing.MigrationTestHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
+import androidx.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
+import com.google.common.truth.Truth
 import org.junit.Test
-import java.io.IOException
-import android.arch.persistence.db.SupportSQLiteDatabase
+
+import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {
@@ -18,9 +20,12 @@ class MigrationTest {
         private const val TEST_DB = "migration-test"
     }
 
-    @Rule var helper: MigrationTestHelper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(), Database::class.java.canonicalName, FrameworkSQLiteOpenHelperFactory())
+    @get:Rule var helper: MigrationTestHelper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(), Database::class.java.canonicalName, FrameworkSQLiteOpenHelperFactory())
 
-//    @Test fun migrate1to2() {
+    @Test
+    fun migrate1to2() {
+        Truth.assertThat("delete me when want to write actual test").isEqualTo("delete me when want to write actual test")
+
 //        var db = helper.createDatabase(TEST_DB, 1)
 //
 //        // db has schema version 1. insert some data using SQL queries.
@@ -36,6 +41,6 @@ class MigrationTest {
 //
 //        // MigrationTestHelper automatically verifies the schema changes,
 //        // but you need to validate that the data was migrated properly.
-//    }
+    }
 
 }

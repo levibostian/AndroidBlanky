@@ -48,6 +48,7 @@ AndroidBlanky works to avoid that. By having a blank Android app already created
 * [Android testing support library](https://developer.android.com/training/testing/) - To run unit, integration, and UI tests for Android.
 * [Espresso](https://developer.android.com/training/testing/espresso/) - Create UI tests on Android.
 * [Fastlane screengrab](https://docs.fastlane.tools/actions/screengrab/) - Take screenshots of app during UI tests to help debug UI tests and to use for creating screenshots for the Play Store.
+* [Kotlin all-open plugin](https://kotlinlang.org/docs/reference/compiler-plugins.html#all-open-compiler-plugin) - Marks classes and functions as open instead of final in debug (test) code and keeps it final in production code.
 
 ### Tools and services:
 

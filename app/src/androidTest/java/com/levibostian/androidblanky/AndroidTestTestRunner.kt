@@ -10,10 +10,9 @@ import android.app.KeyguardManager
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.support.test.runner.AndroidJUnitRunner
 import android.content.Intent
 import android.os.Bundle
-import android.support.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnitRunner
 import com.levibostian.androidblanky.view.ui.TestMainApplication
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy

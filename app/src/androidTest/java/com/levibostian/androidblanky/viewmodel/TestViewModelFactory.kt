@@ -7,16 +7,17 @@ import com.levibostian.androidblanky.service.repository.ReposRepository
 import com.levibostian.androidblanky.testing.OpenForTesting
 
 @OpenForTesting
-class ViewModelFactory(private val repoRepository: ReposRepository,
-                       private val gitHubUsernameRepository: GitHubUsernameRepository) : ViewModelProvider.Factory {
+class TestViewModelFactory(private val repoRepository: ReposRepository,
+                           private val gitHubUsernameRepository: GitHubUsernameRepository) : ViewModelProvider.Factory {
+
+    var models: List<ViewModel> = emptyList()
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ReposViewModel::class.java)) {
-            return ReposViewModel(repoRepository) as T
-        }
-        if (modelClass.isAssignableFrom(GitHubUsernameViewModel::class.java)) {
-            return GitHubUsernameViewModel(gitHubUsernameRepository) as T
+        for (model in models) {
+            if (modelClass.isAssignableFrom(model::class.java)) {
+                return model as T
+            }
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

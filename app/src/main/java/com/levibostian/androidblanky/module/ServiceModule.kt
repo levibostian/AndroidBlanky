@@ -3,9 +3,12 @@ package com.levibostian.androidblanky.module
 import android.accounts.AccountManager
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.service.interceptor.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.service.analytics.AppAnalytics
+import com.levibostian.androidblanky.service.dao.ReposDao
 import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.db.manager.DatabaseManager
@@ -33,12 +36,10 @@ interface ServiceModule {
 
     fun provideRxSharedPreferences(sharedPreferences: SharedPreferences): RxSharedPreferencesWrapper
 
-    fun provideDatabaseManager(): DatabaseManager
-
-    fun provideDatabase(databaseManager: DatabaseManager): Database
-
     fun provideResponseProcessor(): ResponseProcessor
 
     fun provideDataDestroyer(db: Database, accountManager: AccountManager, userManager: UserManager, sharedPreferences: SharedPreferences): DataDestroyer
+
+    fun provideAppAnalytics(): AppAnalytics
 
 }

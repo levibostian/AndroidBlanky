@@ -7,11 +7,13 @@ import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.repository.ReposRepository
+import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.teller.datastate.OnlineDataState
 import io.reactivex.BackpressureStrategy
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+@OpenForTesting
 class ReposViewModel(private val reposRepository: ReposRepository): ViewModel() {
 
     fun setUsername(username: String) {

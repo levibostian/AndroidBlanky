@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.levibostian.androidblanky.service.analytics.AppAnalytics
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.pendingtasks.UpdateFcmTokenPendingTask
@@ -13,7 +14,8 @@ import com.levibostian.wendy.service.Wendy
 
 class UserManager(private val context: Context,
                   private val sharedPrefs: SharedPreferences,
-                  private val accountManager: AccountManager) {
+                  private val accountManager: AccountManager,
+                  private val analytics: AppAnalytics) {
 
     fun isUserLoggedIn(): Boolean {
         return (id != null) && (getAccount() != null) && (authToken != null) && (email != null)
@@ -31,7 +33,7 @@ class UserManager(private val context: Context,
         id = null
         authToken = null
         email = null
-        FirebaseAnalytics.getInstance(context).setUserId(null)
+        analytics.setUserId(null)
     }
 
     var authToken: String? = null
@@ -47,7 +49,7 @@ class UserManager(private val context: Context,
         @SuppressLint("ApplySharedPref")
         set(value) {
             sharedPrefs.edit().putString(SharedPrefersKeys.USER_ID, value).commit()
-            FirebaseAnalytics.getInstance(context).setUserId(id)
+            analytics.setUserId(value)
 
             doWorkAfterLoggedIn()
         }

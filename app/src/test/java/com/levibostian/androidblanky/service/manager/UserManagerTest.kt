@@ -1,9 +1,12 @@
 package com.levibostian.androidblanky.service.manager
 
+import android.accounts.AccountManager
 import android.annotation.SuppressLint
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import android.content.Context
 import android.content.SharedPreferences
 import com.google.common.truth.Truth
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.levibostian.androidblanky.service.analytics.AppAnalytics
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import org.junit.Before
@@ -19,11 +22,11 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class UserManagerTest {
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
-
+    @Mock private lateinit var context: Context
     @Mock private lateinit var sharedPrefs: SharedPreferences
+    @Mock private lateinit var accountManager: AccountManager
     @Mock private lateinit var sharedPrefsEditor: SharedPreferences.Editor
+    @Mock private lateinit var appAnalytics: AppAnalytics
 
     @Captor private lateinit var userArgumentCaptor: ArgumentCaptor<RepoModel>
 
@@ -31,7 +34,7 @@ class UserManagerTest {
 
     @Before
     fun setUp() {
-        manager = UserManager(sharedPrefs)
+        manager = UserManager(context, sharedPrefs, accountManager, appAnalytics)
     }
 
     @Test
@@ -52,6 +55,7 @@ class UserManagerTest {
 
         manager.id = id
 
+        Mockito.verify(appAnalytics).setUserId(id)
         Mockito.verify(sharedPrefsEditor).putString(SharedPrefersKeys.USER_ID, id)
         Mockito.verify(sharedPrefsEditor).commit()
     }

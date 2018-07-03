@@ -18,9 +18,10 @@ import com.levibostian.androidblanky.service.interceptor.AppendHeadersIntercepto
 import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.service.interceptor.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.GitHubService
+import com.levibostian.androidblanky.service.analytics.AppAnalytics
+import com.levibostian.androidblanky.service.analytics.FirebaseAppAnalytics
 import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
-import com.levibostian.androidblanky.service.db.manager.DatabaseManager
 import com.levibostian.androidblanky.service.interceptor.MissingDataResponseInterceptor
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
@@ -82,14 +83,6 @@ import java.util.*
         return RxSharedPreferencesWrapper(sharedPreferences)
     }
 
-    @Provides override fun provideDatabaseManager(): DatabaseManager {
-        return DatabaseManager()
-    }
-
-    @Provides override fun provideDatabase(databaseManager: DatabaseManager): Database {
-        return databaseManager.dbInstance(application)
-    }
-
     @Provides override fun provideResponseProcessor(): ResponseProcessor {
         return ResponseProcessor(application)
     }
@@ -97,5 +90,7 @@ import java.util.*
     @Provides override fun provideDataDestroyer(db: Database, accountManager: AccountManager, userManager: UserManager, sharedPreferences: SharedPreferences): DataDestroyer {
         return DataDestroyer(db, accountManager, userManager, sharedPreferences)
     }
+
+    @Provides override fun provideAppAnalytics(): AppAnalytics = FirebaseAppAnalytics(application)
 
 }

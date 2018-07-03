@@ -7,12 +7,14 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.levibostian.androidblanky.BuildConfig
 import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 import com.levibostian.androidblanky.service.pendingtasks.PendingTasksFactory
+import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.teller.Teller
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.service.Wendy
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
+@OpenForTesting
 class MainApplication : Application() {
 
     val component: ApplicationComponent by lazy { getApplicationComponent() }

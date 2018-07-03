@@ -1,22 +1,16 @@
 package com.levibostian.androidblanky.view.fragment
 
 import android.app.Instrumentation
-import android.content.SharedPreferences
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.assertion.ViewAssertions
-import android.support.test.espresso.matcher.ViewMatchers
-import android.support.test.espresso.matcher.ViewMatchers.*
-import org.hamcrest.Matchers.not
 import android.support.test.filters.SdkSuppress
-import com.levibostian.androidblanky.view.ui.activity.MainActivity
-import android.support.test.rule.ActivityTestRule
+import androidx.lifecycle.MutableLiveData
 import org.junit.Rule
-import android.support.test.runner.AndroidJUnit4
-import com.f2prateek.rx.preferences2.Preference
+import androidx.lifecycle.ViewModelProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.rule.ActivityTestRule
 import com.levibostian.androidblanky.*
-import com.levibostian.androidblanky.service.GitHubService
-import io.reactivex.Observable
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Before
@@ -24,37 +18,42 @@ import tools.fastlane.screengrab.locale.LocaleTestRule
 import tools.fastlane.screengrab.Screengrab
 import javax.inject.Inject
 import org.mockito.Mockito.*
-import com.levibostian.androidblanky.service.model.OwnerModel
 import com.levibostian.androidblanky.service.model.RepoModel
-import com.levibostian.androidblanky.service.model.SharedPrefersKeys
-import com.levibostian.androidblanky.service.wrapper.RxSharedPreferencesWrapper
+import com.levibostian.androidblanky.service.model.RepoOwnerModel
 import com.levibostian.androidblanky.view.ui.TestMainApplication
-import io.reactivex.Single
-import io.reactivex.rxkotlin.toSingle
-import khronos.Dates
-import khronos.minutes
 import org.mockito.*
-import retrofit2.Response
-import retrofit2.adapter.rxjava2.Result
+import androidx.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
+import com.levibostian.androidblanky.extensions.screenshot
+import com.levibostian.androidblanky.testing.SingleFragmentActivity
+import com.levibostian.androidblanky.view.ui.fragment.MainFragment
+import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
+import com.levibostian.androidblanky.viewmodel.ReposViewModel
+import com.levibostian.androidblanky.viewmodel.TestViewModelFactory
+import com.levibostian.teller.datastate.LocalDataState
+import com.levibostian.teller.datastate.OnlineDataState
+import org.hamcrest.CoreMatchers.not
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @SdkSuppress(minSdkVersion = 18)
 class MainFragmentTest : AndroidIntegrationTestClass {
 
-    @Inject lateinit var gitHubService: GitHubService
-    @Inject lateinit var sharedPrefs: SharedPreferences
-    @Inject lateinit var rxSharedPrefsWrapper: RxSharedPreferencesWrapper
-    @Inject lateinit var realmInstanceManager: RealmInstanceManager
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Mock private lateinit var preference: Preference<String>
-    @Mock private lateinit var sharedPrefsEditor: SharedPreferences.Editor
+    @Mock private lateinit var gitHubUsernameViewModel: GitHubUsernameViewModel
+    @Mock private lateinit var reposViewModel: ReposViewModel
 
-    @get:Rule open val main = ActivityTestRule(MainActivity::class.java, false, false)
-    @get:Rule open val localeTestRule = LocaleTestRule() // fastlane can switch locales to take screenshots and test.
+    @get:Rule val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
+    @get:Rule val localeTestRule = LocaleTestRule() // fastlane can switch locales to take screenshots and test.
 
-    private val repo1 = RepoModel("name1", "description1", OwnerModel("login1"))
-    private val repo2 = RepoModel("name2", "description2", OwnerModel("login2"))
-    private val repo3 = RepoModel("name3", "description3", OwnerModel("login3"))
+    private val repoOwner = RepoOwnerModel("login1")
+    private val repo1 = RepoModel(1, "name1", repoOwner)
+    private val repo2 = RepoModel(2, "name2", repoOwner)
+    private val repo3 = RepoModel(3, "name3", repoOwner)
+
+    private val reposLiveData: MutableLiveData<OnlineDataState<List<RepoModel>>> = MutableLiveData()
+    private val githubUsernameLiveData: MutableLiveData<LocalDataState<String>> = MutableLiveData()
 
     private lateinit var application: TestMainApplication
 
@@ -66,165 +65,35 @@ class MainFragmentTest : AndroidIntegrationTestClass {
         application = instrumentation.targetContext.applicationContext as TestMainApplication
         (application.component as MockApplicationComponent).inject(this)
 
-        RealmInstanceManager.getInMemory().executeTransaction { realm -> realm.deleteAll()}
+        (viewModelFactory as TestViewModelFactory).models = listOf(gitHubUsernameViewModel, reposViewModel)
 
-        instrumentation.runOnMainSync { // Make sure to run this on the instrumentation UI thread or Realm will give you an error saying that "you cannot close a realm instance from another thread that created it" even though my app code is calling from the UI thread. This asserts the Realm instances are created on the UI thread.
-            `when`(realmInstanceManager.getDefault()).thenAnswer { RealmInstanceManager.getInMemory() }
-            `when`(sharedPrefs.edit()).thenReturn(sharedPrefsEditor)
-        }
+        `when`(reposViewModel.observeRepos()).thenReturn(reposLiveData)
+        `when`(gitHubUsernameViewModel.observeUsername()).thenReturn(githubUsernameLiveData)
     }
 
     override fun getInstrumentation(): Instrumentation = InstrumentationRegistry.getInstrumentation()
 
     private fun launchActivity() {
-        main.launchActivity(null)
+        activityRule.activity.setFragment(MainFragment.newInstance())
     }
 
-    @Test fun showReposDataListFetchingFresh() {
-        RealmInstanceManager.getInMemory().executeTransaction { realm ->
-            realm.insertOrUpdate(listOf(repo1, repo2, repo3))
-        }
-        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(10.minutes.ago.time)
-        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
-        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
-        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Single.never())
-        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
+    @Test
+    fun test_showReposDataListFetchingFresh() {
+        val githubUsername = repo1.owner.name
+
+        reposLiveData.postValue(OnlineDataState.data(listOf(repo1), Date()))
+        githubUsernameLiveData.postValue(LocalDataState.data(githubUsername))
 
         launchActivity()
 
         orientationPortrait()
 
-        Screengrab.screenshot("showReposDataListFetchingFresh")
-        onView(withId(R.id.fragment_main_username_textview))
-                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
+        screenshot("showReposDataListFetchingFresh")
+        onView(withId(R.id.username_edittext))
+                .check(ViewAssertions.matches(ViewMatchers.withText(githubUsername)))
 
-        onView(withText(repo1.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
-
-        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(isDisplayed()))
-
-        verify(sharedPrefsEditor, com.nhaarman.mockito_kotlin.never()).commit()
-    }
-
-    @Test fun showReposDataListNotFetchingFreshData() {
-        RealmInstanceManager.getInMemory().executeTransaction { realm ->
-            realm.insertOrUpdate(listOf(repo1, repo2, repo3))
-        }
-
-        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(Dates.today.time)
-        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
-        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
-        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf(repo1, repo2, repo3))).toSingle())
-        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
-
-        launchActivity()
-
-        orientationPortrait()
-
-        Screengrab.screenshot("showReposDataListNotFetchingFreshData")
-        onView(withId(R.id.fragment_main_username_textview))
-                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
-
-        onView(withText(repo1.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
-
-        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(not(isDisplayed())))
-
-        verify(sharedPrefsEditor, com.nhaarman.mockito_kotlin.never()).commit()
-    }
-
-    @Test fun showReposDataListOrientationChange() {
-        RealmInstanceManager.getInMemory().executeTransaction { realm ->
-            realm.insertOrUpdate(listOf(repo1, repo2, repo3))
-        }
-
-        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(Dates.today.time)
-        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
-        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
-        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf(repo1, repo2, repo3))).toSingle())
-        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
-
-        launchActivity()
-
-        orientationPortrait()
-
-        onView(withId(R.id.fragment_main_username_textview))
-                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
-
-        onView(withText(repo1.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
-
-        verify(sharedPrefsEditor, com.nhaarman.mockito_kotlin.never()).commit()
-
-        orientationLandscape()
-
-        Screengrab.screenshot("showReposDataListOrientationChange")
-        onView(withId(R.id.fragment_main_username_textview))
-                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
-
-        onView(withText(repo1.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo2.full_name)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(repo3.full_name)).check(ViewAssertions.matches(isDisplayed()))
-    }
-
-    @Test fun showEmptyListFetchingNewData() {
-        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(10.minutes.ago.time)
-        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
-        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
-        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Single.never())
-        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
-
-        launchActivity()
-
-        orientationPortrait()
-
-        Screengrab.screenshot("showEmptyListFetchingNewData")
-        onView(withId(R.id.fragment_main_username_textview))
-                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
-
-        onView(withText(application.getString(R.string.user_no_repos))).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(isDisplayed()))
-    }
-
-    @Test fun showEmptyListNotFetchingNewData() {
-        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(Dates.today.time)
-        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
-        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
-        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Result.response(Response.success(listOf<RepoModel>())).toSingle())
-        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
-
-        launchActivity()
-
-        orientationPortrait()
-
-        Screengrab.screenshot("showEmptyListNotFetchingNewData")
-        onView(withId(R.id.fragment_main_username_textview))
-                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
-
-        onView(withText(application.getString(R.string.user_no_repos))).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(not(isDisplayed())))
-    }
-
-    @Test fun showLoadingView() {
-        `when`(sharedPrefs.getLong(SharedPrefersKeys.lastTimeReposFetchedKey, 0)).thenReturn(0)
-        `when`(rxSharedPrefsWrapper.getString(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.gitHubUsernameKey))).thenReturn(preference)
-        `when`(preference.asObservable()).thenReturn(Observable.create { it.onNext("levibostian") })
-        `when`(gitHubService.getRepos(com.nhaarman.mockito_kotlin.eq("levibostian"))).thenReturn(Single.never())
-        `when`(sharedPrefsEditor.putLong(com.nhaarman.mockito_kotlin.eq(SharedPrefersKeys.lastTimeReposFetchedKey), ArgumentMatchers.anyLong())).thenReturn(sharedPrefsEditor)
-
-        launchActivity()
-
-        orientationPortrait()
-
-        Screengrab.screenshot("showLoadingView")
-        onView(withId(R.id.fragment_main_username_textview))
-                .check(ViewAssertions.matches(ViewMatchers.withText("levibostian")))
-
-        onView(withText(application.getString(R.string.loading_repos))).check(ViewAssertions.matches(isDisplayed()))
-        onView(withText(application.getString(R.string.fetching_new_data))).check(ViewAssertions.matches(not(isDisplayed())))
+        onView(withText(repo1.name))
+                .check(ViewAssertions.matches(isDisplayed()))
     }
 
 }

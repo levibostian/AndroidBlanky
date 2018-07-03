@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.levibostian.androidblanky.service.GitHubService
@@ -47,7 +48,7 @@ class MainFragment : Fragment() {
 
     @Inject lateinit var service: GitHubService
     @Inject lateinit var db: Database
-    @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var eventBus: EventBus
 
     companion object {

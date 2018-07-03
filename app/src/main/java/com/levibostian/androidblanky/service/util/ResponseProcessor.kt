@@ -6,10 +6,12 @@ import com.levibostian.androidblanky.service.error.network.NetworkConnectionIssu
 import com.levibostian.androidblanky.service.error.network.NoInternetConnectionException
 import com.levibostian.androidblanky.service.error.network.ServerErrorException
 import com.levibostian.androidblanky.service.error.network.UnauthorizedException
+import com.levibostian.androidblanky.testing.OpenForTesting
 import retrofit2.adapter.rxjava2.Result
 import timber.log.Timber
 import java.io.IOException
 
+@OpenForTesting
 class ResponseProcessor(private val context: Context) {
 
     fun <RESPONSE> process(result: Result<RESPONSE>): Throwable? {

@@ -10,18 +10,20 @@ import android.os.Handler
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
 import com.levibostian.androidblanky.service.db.Database
 import com.levibostian.androidblanky.service.manager.UserManager
+import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.wendy.service.Wendy
 
+@OpenForTesting
 class DataDestroyer(private val db: Database,
                     private val accountManager: AccountManager,
                     private val userManager: UserManager,
                     private val sharedPreferences: SharedPreferences) {
 
     fun destroyAll(complete: (() -> Unit)?) {
-        DataDestroyerDestroyAllAsyncTask(this, { error ->
+        DataDestroyerDestroyAllAsyncTask(this) { error ->
             error?.let { throw it }
             complete?.invoke()
-        }).execute()
+        }.execute()
     }
 
     fun destroySqlite() {

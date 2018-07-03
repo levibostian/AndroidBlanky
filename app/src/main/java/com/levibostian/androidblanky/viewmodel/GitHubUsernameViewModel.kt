@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
 import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
+import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.teller.datastate.LocalDataState
 import io.reactivex.BackpressureStrategy
 
+@OpenForTesting
 class GitHubUsernameViewModel(private val repository: GitHubUsernameRepository): ViewModel() {
 
     fun setUsername(username: String) {
