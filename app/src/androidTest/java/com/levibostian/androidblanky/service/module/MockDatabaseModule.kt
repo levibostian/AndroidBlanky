@@ -1,6 +1,7 @@
 package com.levibostian.androidblanky.service.module
 
 import android.accounts.AccountManager
+import android.app.Application
 import android.content.SharedPreferences
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.view.ui.MainApplication
@@ -29,9 +30,9 @@ import okhttp3.OkHttpClient
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 
-@Module class MockDatabaseModule(val application: MainApplication): DatabaseModule {
+@Module class MockDatabaseModule: DatabaseModule {
 
-    @Provides @Singleton override fun provideDatabase(): Database {
+    @Provides @Singleton override fun provideDatabase(application: Application): Database {
         val context = InstrumentationRegistry.getTargetContext()
         return Room.inMemoryDatabaseBuilder(context, Database::class.java).build()
     }

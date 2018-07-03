@@ -1,6 +1,7 @@
 package com.levibostian.androidblanky.module
 
 import android.accounts.AccountManager
+import android.app.Application
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -22,24 +23,24 @@ interface ServiceModule {
 
     fun provideRetrofit(userManager: UserManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor, missingDataResponseInterceptor: MissingDataResponseInterceptor): Retrofit
 
-    fun provideDefaultErrorHandlerInterceptor(connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor
+    fun provideDefaultErrorHandlerInterceptor(application: Application, connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor
 
-    fun provideMissingDataResponseInterceptor(): MissingDataResponseInterceptor
+    fun provideMissingDataResponseInterceptor(application: Application): MissingDataResponseInterceptor
 
     fun provideEventbus(): EventBus
 
-    fun provideConnectivityManager(): ConnectivityManager
+    fun provideConnectivityManager(application: Application): ConnectivityManager
 
     fun provideService(retrofit: Retrofit): GitHubService
 
-    fun provideSharedPreferences(): SharedPreferences
+    fun provideSharedPreferences(application: Application): SharedPreferences
 
     fun provideRxSharedPreferences(sharedPreferences: SharedPreferences): RxSharedPreferencesWrapper
 
-    fun provideResponseProcessor(): ResponseProcessor
+    fun provideResponseProcessor(application: Application): ResponseProcessor
 
     fun provideDataDestroyer(db: Database, accountManager: AccountManager, userManager: UserManager, sharedPreferences: SharedPreferences): DataDestroyer
 
-    fun provideAppAnalytics(): AppAnalytics
+    fun provideAppAnalytics(application: Application): AppAnalytics
 
 }

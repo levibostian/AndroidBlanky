@@ -1,6 +1,7 @@
 package com.levibostian.androidblanky.service.module
 
 import android.accounts.AccountManager
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -34,7 +35,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
-@Module class AppServiceModule(val application: MainApplication): ServiceModule {
+@Module class AppServiceModule: ServiceModule {
 
     @Provides @Singleton override fun provideRetrofit(userManager: UserManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor, missingDataResponseInterceptor: MissingDataResponseInterceptor): Retrofit {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -57,9 +58,9 @@ import java.util.*
                 .build()
     }
 
-    @Provides override fun provideMissingDataResponseInterceptor(): MissingDataResponseInterceptor = MissingDataResponseInterceptor(application)
+    @Provides override fun provideMissingDataResponseInterceptor(application: Application): MissingDataResponseInterceptor = MissingDataResponseInterceptor(application)
 
-    @Provides override fun provideDefaultErrorHandlerInterceptor(connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor {
+    @Provides override fun provideDefaultErrorHandlerInterceptor(application: Application, connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor {
         return DefaultErrorHandlerInterceptor(application, eventBus, connectivityManager)
     }
 
@@ -67,7 +68,7 @@ import java.util.*
         return EventBus.getDefault()
     }
 
-    @Provides override fun provideConnectivityManager(): ConnectivityManager {
+    @Provides override fun provideConnectivityManager(application: Application): ConnectivityManager {
         return application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
@@ -75,7 +76,7 @@ import java.util.*
         return retrofit.create(GitHubService::class.java)
     }
 
-    @Provides override fun provideSharedPreferences(): SharedPreferences {
+    @Provides override fun provideSharedPreferences(application: Application): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(application)
     }
 
@@ -83,7 +84,7 @@ import java.util.*
         return RxSharedPreferencesWrapper(sharedPreferences)
     }
 
-    @Provides override fun provideResponseProcessor(): ResponseProcessor {
+    @Provides override fun provideResponseProcessor(application: Application): ResponseProcessor {
         return ResponseProcessor(application)
     }
 
@@ -91,6 +92,6 @@ import java.util.*
         return DataDestroyer(db, accountManager, userManager, sharedPreferences)
     }
 
-    @Provides override fun provideAppAnalytics(): AppAnalytics = FirebaseAppAnalytics(application)
+    @Provides override fun provideAppAnalytics(application: Application): AppAnalytics = FirebaseAppAnalytics(application)
 
 }

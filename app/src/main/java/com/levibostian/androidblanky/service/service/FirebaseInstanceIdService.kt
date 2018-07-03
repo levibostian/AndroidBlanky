@@ -4,6 +4,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService
 import com.google.firebase.iid.FirebaseInstanceId
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.view.ui.MainApplication
+import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class FirebaseInstanceIdService: FirebaseInstanceIdService() {
@@ -11,7 +12,7 @@ class FirebaseInstanceIdService: FirebaseInstanceIdService() {
     @Inject lateinit var userManager: UserManager
 
     override fun onTokenRefresh() {
-        (application as MainApplication).component.inject(this)
+        AndroidInjection.inject(this)
 
         userManager.fcmPushNotificationToken = FirebaseInstanceId.getInstance().token
     }

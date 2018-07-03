@@ -1,5 +1,6 @@
 package com.levibostian.androidblanky.service.db.module
 
+import android.app.Application
 import androidx.room.Room
 import com.levibostian.androidblanky.module.DatabaseModule
 import com.levibostian.androidblanky.module.ServiceModule
@@ -11,9 +12,9 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module class AppDatabaseModule(val application: MainApplication): DatabaseModule {
+@Module class AppDatabaseModule: DatabaseModule {
 
-    @Provides override fun provideDatabase(): Database {
+    @Provides override fun provideDatabase(application: Application): Database {
         return DatabaseManager().dbInstance(application)
     }
 

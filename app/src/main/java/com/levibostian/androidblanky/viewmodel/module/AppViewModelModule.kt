@@ -10,7 +10,7 @@ import com.levibostian.androidblanky.viewmodel.ViewModelFactory
 import dagger.Module
 import dagger.Provides
 
-@Module class AppViewModelModule(private val context: Context): ViewModelModule {
+@Module class AppViewModelModule: ViewModelModule {
 
     @Provides override fun provideViewModelFactory(repoRepository: ReposRepository,
                                                    gitHubUsernameRepository: GitHubUsernameRepository): ViewModelProvider.Factory {

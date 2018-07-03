@@ -12,7 +12,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module class MockViewModelModule(private val context: Context): ViewModelModule {
+@Module class MockViewModelModule: ViewModelModule {
 
     @Provides @Singleton override fun provideViewModelFactory(repoRepository: ReposRepository,
                                                               gitHubUsernameRepository: GitHubUsernameRepository): ViewModelProvider.Factory {

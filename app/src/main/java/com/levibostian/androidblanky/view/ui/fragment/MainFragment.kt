@@ -33,6 +33,8 @@ import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.ViewModelFactory
 import com.levibostian.teller.datastate.listener.LocalDataStateListener
 import com.levibostian.teller.datastate.listener.OnlineDataStateListener
+import dagger.android.AndroidInjection
+import dagger.android.support.AndroidSupportInjection
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -63,10 +65,14 @@ class MainFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (activity!!.application as MainApplication).component.inject(this)
         reposViewModel = ViewModelProviders.of(this, viewModelFactory).get(ReposViewModel::class.java)
         gitHubUsernameViewModel = ViewModelProviders.of(this, viewModelFactory).get(GitHubUsernameViewModel::class.java)
 

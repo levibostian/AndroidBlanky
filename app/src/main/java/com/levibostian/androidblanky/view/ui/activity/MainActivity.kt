@@ -22,6 +22,7 @@ import com.levibostian.androidblanky.service.util.InstallReferrerProcessor
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 import com.levibostian.wendy.service.Wendy
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -43,9 +44,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var referrerClient: InstallReferrerClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-
-        (application as MainApplication).component.inject(this)
 
         setContentView(R.layout.activity_toolbar_fragment_container)
         setSupportActionBar(activity_toolbar_toolbar as Toolbar)

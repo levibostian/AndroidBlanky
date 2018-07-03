@@ -1,6 +1,7 @@
 package com.levibostian.androidblanky.service.module
 
 import android.accounts.AccountManager
+import android.app.Application
 import android.content.SharedPreferences
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.view.ui.MainApplication
@@ -29,7 +30,7 @@ import okhttp3.OkHttpClient
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 
-@Module class MockServiceModule(val application: MainApplication): ServiceModule {
+@Module class MockServiceModule: ServiceModule {
 
     @Provides override fun provideRetrofit(userManager: UserManager, defaultErrorHandlerInterceptor: DefaultErrorHandlerInterceptor, missingDataResponseInterceptor: MissingDataResponseInterceptor): Retrofit {
         val client = OkHttpClient.Builder()
@@ -40,17 +41,17 @@ import retrofit2.Retrofit
                 .build()
     }
 
-    @Provides override fun provideDefaultErrorHandlerInterceptor(connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor {
+    @Provides override fun provideDefaultErrorHandlerInterceptor(application: Application, connectivityManager: ConnectivityManager, eventBus: EventBus): DefaultErrorHandlerInterceptor {
         return DefaultErrorHandlerInterceptor(application, eventBus, connectivityManager)
     }
 
     @Provides override fun provideEventbus(): EventBus = EventBus.getDefault()
 
-    @Provides override fun provideConnectivityManager(): ConnectivityManager {
+    @Provides override fun provideConnectivityManager(application: Application): ConnectivityManager {
         return application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    @Provides override fun provideMissingDataResponseInterceptor(): MissingDataResponseInterceptor {
+    @Provides override fun provideMissingDataResponseInterceptor(application: Application): MissingDataResponseInterceptor {
         return MissingDataResponseInterceptor(application)
     }
 
@@ -60,10 +61,10 @@ import retrofit2.Retrofit
 
     @Provides @Singleton override fun provideRxSharedPreferences(sharedPreferences: SharedPreferences): RxSharedPreferencesWrapper = Mockito.mock(RxSharedPreferencesWrapper::class.java)
 
-    @Provides @Singleton override fun provideSharedPreferences(): SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+    @Provides @Singleton override fun provideSharedPreferences(application: Application): SharedPreferences = Mockito.mock(SharedPreferences::class.java)
 
-    @Provides @Singleton override fun provideResponseProcessor(): ResponseProcessor = Mockito.mock(ResponseProcessor::class.java)
+    @Provides @Singleton override fun provideResponseProcessor(application: Application): ResponseProcessor = Mockito.mock(ResponseProcessor::class.java)
 
-    @Provides @Singleton override fun provideAppAnalytics(): AppAnalytics = Mockito.mock(AppAnalytics::class.java)
+    @Provides @Singleton override fun provideAppAnalytics(application: Application): AppAnalytics = Mockito.mock(AppAnalytics::class.java)
 
 }

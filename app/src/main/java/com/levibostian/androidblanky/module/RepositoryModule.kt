@@ -1,5 +1,6 @@
 package com.levibostian.androidblanky.module
 
+import android.app.Application
 import com.levibostian.androidblanky.service.GitHubService
 import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.service.db.Database
@@ -13,6 +14,6 @@ interface RepositoryModule {
 
     fun provideRepoRepository(responseProcessor: ResponseProcessor, service: GitHubService, db: Database): ReposRepository
 
-    fun provideGithubUsernameRepository(): GitHubUsernameRepository
+    fun provideGithubUsernameRepository(application: Application): GitHubUsernameRepository
 
 }

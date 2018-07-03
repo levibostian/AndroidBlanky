@@ -16,6 +16,7 @@ import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.view.ui.MainApplication
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_authenticator.*
 import java.util.*
 import javax.inject.Inject
@@ -79,9 +80,8 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
     private var forceLogout: Boolean = false
 
     override fun onCreate(icicle: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(icicle)
-
-        (application as MainApplication).component.inject(this)
 
         setContentView(R.layout.activity_authenticator)
         setupViews()

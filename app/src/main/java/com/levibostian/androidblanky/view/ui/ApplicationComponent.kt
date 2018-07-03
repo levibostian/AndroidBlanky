@@ -8,10 +8,5 @@ import com.levibostian.androidblanky.view.ui.activity.auth.AuthenticatorActivity
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 
 interface ApplicationComponent {
-    fun inject(mainFragment: MainFragment)
-    fun inject(launchActivity: LaunchActivity)
-    fun inject(mainActivity: MainActivity)
-    fun inject(firebaseInstanceIdService: FirebaseInstanceIdService)
-    fun inject(pendingTasksFactory: PendingTasksFactory)
-    fun inject(authenticatorActivity: AuthenticatorActivity)
+    fun inject(application: MainApplication)
 }

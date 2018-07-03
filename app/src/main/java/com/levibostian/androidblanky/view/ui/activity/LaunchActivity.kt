@@ -16,6 +16,7 @@ import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.view.ui.activity.auth.AuthenticatorActivity
+import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class LaunchActivity: Activity() {
@@ -35,9 +36,8 @@ class LaunchActivity: Activity() {
     @Inject lateinit var accountManager: AccountManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-
-        (application as MainApplication).component.inject(this)
 
         notificationChannelManager.createChannels()
 
