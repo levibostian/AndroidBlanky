@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import android.content.SharedPreferences
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 class GitHubUsernameRepository(private val context: Context): LocalRepository<String>() {
 

@@ -5,20 +5,23 @@ import androidx.lifecycle.ViewModelProvider
 import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
 import com.levibostian.androidblanky.service.repository.ReposRepository
 import com.levibostian.androidblanky.testing.OpenForTesting
+import javax.inject.Inject
+import javax.inject.Provider
 
 @OpenForTesting
-class ViewModelFactory(private val repoRepository: ReposRepository,
-                       private val gitHubUsernameRepository: GitHubUsernameRepository) : ViewModelProvider.Factory {
+class ViewModelFactory @Inject constructor(private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ReposViewModel::class.java)) {
-            return ReposViewModel(repoRepository) as T
+        val creator = creators[modelClass] ?: creators.entries.firstOrNull {
+            modelClass.isAssignableFrom(it.key)
+        }?.value ?: throw IllegalArgumentException("unknown model class $modelClass")
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return creator.get() as T
+        } catch (e: Exception) {
+            throw RuntimeException(e)
         }
-        if (modelClass.isAssignableFrom(GitHubUsernameViewModel::class.java)) {
-            return GitHubUsernameViewModel(gitHubUsernameRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 
 }

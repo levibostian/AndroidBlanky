@@ -8,9 +8,10 @@ import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
 import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.teller.datastate.LocalDataState
 import io.reactivex.BackpressureStrategy
+import javax.inject.Inject
 
 @OpenForTesting
-class GitHubUsernameViewModel(private val repository: GitHubUsernameRepository): ViewModel() {
+class GitHubUsernameViewModel @Inject constructor(private val repository: GitHubUsernameRepository): ViewModel() {
 
     fun setUsername(username: String) {
         repository.saveData(username)

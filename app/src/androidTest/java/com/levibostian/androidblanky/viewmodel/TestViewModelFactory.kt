@@ -5,10 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
 import com.levibostian.androidblanky.service.repository.ReposRepository
 import com.levibostian.androidblanky.testing.OpenForTesting
+import javax.inject.Inject
+import javax.inject.Provider
 
 @OpenForTesting
-class TestViewModelFactory(private val repoRepository: ReposRepository,
-                           private val gitHubUsernameRepository: GitHubUsernameRepository) : ViewModelProvider.Factory {
+class TestViewModelFactory : ViewModelProvider.Factory {
 
     var models: List<ViewModel> = emptyList()
 

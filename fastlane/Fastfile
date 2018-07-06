@@ -42,7 +42,7 @@ platform :android do
     gradle(task: ":app:bundleBetaRelease")
 
     upload_to_play_store(aab: "app/build/outputs/bundle/betaRelease/app.aab",
-               mapping: 'app/build/outputs/mapping/r8/beta/release/mapping.txt',
+               mapping: 'app/build/outputs/mapping/beta/release/mapping.txt',
                package_name: beta_package_name,
                metadata_path: "./fastlane/metadata/android/en-US/app/",
                json_key: './fastlane/metadata/google_play_dev.json',
@@ -62,7 +62,7 @@ platform :android do
     gradle(task: ":app:bundleProductionRelease")
 
     upload_to_play_store(aab: "app/build/outputs/bundle/productionRelease/app.aab",
-               mapping: 'app/build/outputs/mapping/r8/production/release/mapping.txt',
+               mapping: 'app/build/outputs/mapping/production/release/mapping.txt',
                package_name: prod_package_name,
                metadata_path: "./fastlane/metadata/android/en-US/app/",
                json_key: './fastlane/metadata/google_play_dev.json',
