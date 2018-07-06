@@ -29,10 +29,11 @@ object ScreenshotOnErrorRule {
                 // Take advantage of UiAutomator screenshot method
                 val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
                 val filename = description!!.className + "-" + description.methodName + ".png"
-                device.takeScreenshot(File(path, filename))
+                val filePath = File(path, filename)
+                device.takeScreenshot(filePath)
 
-                Log.d(BuildConfig.APPLICATION_ID, "Saved screenshot to $filename on test device at test failed.")
-                Log.d(BuildConfig.APPLICATION_ID, "View the screenshot with command: `adb pull $filename /tmp` to copy the image from your test device into the /tmp directory.")
+                Log.d(BuildConfig.APPLICATION_ID, "Saved screenshot as test failed.")
+                Log.d(BuildConfig.APPLICATION_ID, "View the screenshot with command: `adb pull $filePath /tmp` to copy the image from your test device into the /tmp directory.")
             }
         }
     }

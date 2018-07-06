@@ -26,6 +26,7 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.levibostian.androidblanky.rule.ScreenshotOnErrorRule
 import com.levibostian.androidblanky.testing.SingleFragmentActivity
+import com.levibostian.androidblanky.util.EspressoTestUtil
 import com.levibostian.androidblanky.util.ScreenshotUtil
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
@@ -77,6 +78,7 @@ class MainFragmentTest : AndroidIntegrationTestClass {
         `when`(gitHubUsernameViewModel.observeUsername()).thenReturn(githubUsernameLiveData)
 
         screenshots = ScreenshotUtil(activityRule.activity, spoon)
+        EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
 
     override fun getInstrumentation(): Instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -101,7 +103,7 @@ class MainFragmentTest : AndroidIntegrationTestClass {
                 .check(ViewAssertions.matches(ViewMatchers.withText(githubUsername)))
 
         onView(withText(repo1.name))
-                .check(ViewAssertions.matches(isDisplayed()))
+                .check(ViewAssertions.matches(not(isDisplayed())))
     }
 
 }
