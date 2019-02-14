@@ -1,7 +1,8 @@
 # AndroidBlanky
-Android boilerplate project I use for all the Android apps that I build. Clone the repo, edit some configurations, and get off to building your next awesome app!
 
-This project is *very* opinionated. It is not designed for the best practices, common libraries, and design patterns for the general public. It's designed for the apps that [I](https://github.com/levibostian/) build.
+Android starter template project I use for all the Android apps that I build. Clone the repo, edit some configurations, and get off to building your next awesome app!
+
+This project is *very* opinionated to my liking. Even though it has many best practices, I have tweaked it to my liking. It's designed for the apps that [I](https://github.com/levibostian/) build.
 
 iOS developer? I have [a boilerplate project for you!](https://github.com/levibostian/iosblanky)
 Nodejs API developer? I have [a boilerplate project for you!](https://github.com/levibostian/expressjsblanky)
@@ -47,7 +48,7 @@ AndroidBlanky works to avoid that. By having a blank Android app already created
 * [Mockito](https://github.com/mockito/mockito) - Mocking objects for testing.
 * [Android testing support library](https://developer.android.com/training/testing/) - To run unit, integration, and UI tests for Android.
 * [Espresso](https://developer.android.com/training/testing/espresso/) - Create UI tests on Android.
-* [Fastlane screengrab](https://docs.fastlane.tools/actions/screengrab/) - Take screenshots of app during UI tests to help debug UI tests and to use for creating screenshots for the Play Store.
+* [Fastlane screengrab](https://docs.fastlane.tools/actions/screengrab/) - Take screenshots of app during UI tests to help create screenshots for the Play Store.
 * [Kotlin all-open plugin](https://kotlinlang.org/docs/reference/compiler-plugins.html#all-open-compiler-plugin) - Marks classes and functions as open instead of final in debug (test) code and keeps it final in production code.
 
 ### Tools and services:
@@ -89,8 +90,11 @@ git init
 git config user.email "you@example.com"
 git config user.name "First Last"
 git add .; git commit -m "Initial commit. Created project from levibostian/AndroidBlanky boilerplate.";
-bundle install # This is a ruby tool, [Bundler](https://bundler.io/). This is for running [Fastlane](https://fastlane.tools/).
 ```
+
+You will need to have Ruby installed on your machine to run some of the development tools. An easy way to do this is by [installing rbenv](https://github.com/rbenv/rbenv#installation) on your machine and then running `rbenv install` to install the ruby version suggested by this project.
+
+After you install ruby, [install Bundler](https://bundler.io/), then finally install the development tools with the command `bundle install`.
 
 Now, open up the Android project in Android Studio. Everything should Gradle sync and build successfully.
 
@@ -150,8 +154,6 @@ When creating build to release to Play Store:
 * Run JUnit unit tests via Android Studio or gradle as you normally would.
 
 * Run Android instrumentation tests. You can use `bundle exec fastlane screengrab` when you want Fastlane to capture screenshots for you that you want to use for releasing to the Play Store.
-
-Or, you can use `./gradlew spoonDevelopmentDebug` to run tests locally by running spoon. After spoon runs, you can browse to "app/build/spoon-output/" to see the result of your tests in a very nice HTML page. If this is broken, however, you may still use Android Studio to run the tests however, you will not get any screenshots.
 
 ## Author
 
