@@ -15,7 +15,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Before
 import tools.fastlane.screengrab.locale.LocaleTestRule
-import tools.fastlane.screengrab.Screengrab
 import javax.inject.Inject
 import org.mockito.Mockito.*
 import com.levibostian.androidblanky.service.model.RepoModel
