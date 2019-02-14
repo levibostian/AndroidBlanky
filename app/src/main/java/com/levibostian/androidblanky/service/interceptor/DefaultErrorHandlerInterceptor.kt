@@ -31,7 +31,7 @@ class DefaultErrorHandlerInterceptor(private val context: Context,
             }
         }
 
-        return chain.proceed(request)
+        return response
     }
 
     private fun isOnline(): Boolean {
