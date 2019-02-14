@@ -11,28 +11,6 @@ platform :android do
     ENV["SLACK_URL"] = slack_room_url
   end
 
-  desc "Runs all tests. UI, Unit, all of em."
-    lane :test_all do
-      test()
-      android_tests()
-      notification(subtitle: "Tests PASS!", message: "Tests PASS!")
-    end
-
-  desc "Runs all unit tests"
-  lane :test do
-    gradle(task: "testDevelopmentDebugUnitTest")
-    notification(subtitle: "Tests PASS!", message: "Tests PASS!")
-  end
-
-  desc "Run Android tests while also taking screenshots"
-  lane :android_test do
-    # gradle(task: "clean")
-    gradle(task: "assemble", flavor: "Development", build_type: "Debug")
-    gradle(task: "assembleDevelopmentDebugAndroidTest")
-    screengrab
-    notification(subtitle: "UI Tests PASS!", message: "UI Tests PASS!")
-  end
-
   desc "Submit beta build to the Play Store"
   lane :beta do
     changelog = File.read("./release_notes.txt")
@@ -71,20 +49,6 @@ platform :android do
     add_git_tag(tag: android_get_version_name() + "_" + android_get_version_code(), message: changelog)
     push_git_tags(remote: gitRepo)
     slack(message: "Prod release " + prod_package_name + " to the Play Store successful!")
-  end
-
-  lane :app_icon do
-    android_appicon(appicon_image_file: 'fastlane/metadata/android/en-US/app/images/icon.png',
-      appicon_devices: [:phone, :tablet],
-      appicon_path: 'app/src/main/res/mipmap')
-  end
-
-  after_all do |lane|
-    # This block is called, only if the executed lane was successful
-
-    # slack(
-    #   message: "Successfully deployed new App Update."
-    # )
   end
 
   error do |lane, exception|

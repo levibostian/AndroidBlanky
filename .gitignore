@@ -12,7 +12,7 @@ fastlane/metadata/android/en-US/images/phoneScreenshots
 *.class
 
 # Generated files
-bin/
+# bin/
 gen/
 out/
 

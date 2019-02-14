@@ -69,6 +69,8 @@ You can also edit the `NotificationChannelManager` to configure your notificatio
 * [Firebase Dynamic Links](https://firebase.google.com/docs/dynamic-links/) - Enable logging into your mobile app via passwordless login by having your backend API email your user a login token that is then exchanged with an access token. Launch the app from a Dynamic Link.
 Configure: Follow the directions for [Set up Firebase and the Dynamic Links SDK](https://firebase.google.com/docs/dynamic-links/android/receive).
 
+* [Firebase Test Lab](https://firebase.google.com/docs/test-lab/) - Run UI integration tests on a real device using Firebase Test Lab. Tests get triggered to build from the CI server.
+
 * [Fastlane](https://fastlane.tools/) - Distributing the app to the Play Store. Pretty much automates tasks for me.
 Configure: There is a section in this README for Fastlane under Getting Started.
 
@@ -96,6 +98,8 @@ You will need to have Ruby installed on your machine to run some of the developm
 
 After you install ruby, [install Bundler](https://bundler.io/), then finally install the development tools with the command `bundle install`.
 
+Also, this project is configured to use Git hooks via the project [overcommit](https://github.com/brigade/overcommit) for development tasks. After `bundle install`, you just need to run `bundle exec overcommit --install` and done! Check out the file `.overcommit.yml` in this project to add or edit your own Git hooks.
+
 Now, open up the Android project in Android Studio. Everything should Gradle sync and build successfully.
 
 * Open the `app/build.gradle` file. Find and replace this line: `applicationId "com.levibostian.androidblanky"` with your own namespace for your app.
@@ -120,6 +124,25 @@ Setup your CI server
 * [Here are instructions](http://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use) for adding a Danger bot to your repo. This depends on if your app is an open source or closed source project.
 * You will need to configure Travis to have push access to your GitHub project so that Travis can push git tag releases to your repo for you. To do this, [follow these directions](https://github.com/travis-ci/travis-ci/issues/8680#issuecomment-354455116) to generate SSH keys for Travis and upload it to GitHub and to Travis.
 * Create the branches in git and GitHub: `production`, `beta`, and `development`. Go into the GitHub settings and protect all of these branches. The CI server is setup so as you are developing, you make all of your pull requests into the `development` branch. When you are ready to make a new beta release of the app, make a pull request from the `development` branch to `beta`. Then, when you want to make a beta build go to production, make a pull request from `beta` into `production`. The CI server will take care of doing the deploying for you.
+
+Travis CI does not support hosting files for you after builds used for viewing. This would be helpful to view the unit tests report after it has completed. Instead, we upload the report files to AWS S3 after tests are completed.
+
+This project is configured already to upload for you, however, you must create yourself an AWS S3 bucket and tell the project where to upload to.
+
+* Create an AWS account.
+* [Create a S3 bucket](https://s3.console.aws.amazon.com/s3/home?region=us-east-1#). When you create the bucket, just name it and leave everything else as default. I like to name it "my-app-test-results" so that this bucket has 1 purpose only: storing test files.
+* After creating the bucket, we need to allow the bucket to host static webpage files. Select your newly created bucket name from the list. Open the 'Properties' tab -> Static website hosting. Select "Use this bucket to host a website" radio button. Then, type "index.html" into the box for "Index document". Hit "Save"
+* I like to add expiring to my S3 bucket files so that super old test reports get deleted automatically not running up my S3 bill each month. To do that, open the "Management" tab -> Lifecycle -> Add lifecycle rule. Enter a name for the rule (example: "delete old files"). Hit next when asking you about "Storage class transition". When asked about "Configure expiration", checkbox the "Current version" box -> check the "Expire current version of object" box -> type how many days old files are when deleted (I use 14 days). Click Next and Save buttons until the window goes away.
+* Open `bin/ci/artifact_s3_upload.rb` file in this project. Edit the values on the top of the file.
+
+Setup Firebase Test Lab
+
+*Instructions below from [Firebase docs](https://firebase.google.com/docs/test-lab/android/continuous)*
+
+* Set up gcloud. Follow the instructions from [Using Firebase Test Lab from the gcloud Command Line](https://firebase.google.com/docs/test-lab/android/command-line) to create a Firebase project and configure your local Google Cloud SDK environment.
+* Create a service account. Service accounts aren't subject to spam checks or captcha prompts, which could otherwise block your CI builds. Create a service account with an Editor role in the [Google Cloud Platform console](https://console.cloud.google.com/iam-admin/serviceaccounts/).
+* Enable required APIs. After logging in using the service account: In the [Google Developers Console API Library page](https://console.developers.google.com/apis/library), enable the Google Cloud Testing API and Cloud Tool Results API. To enable these APIs, type these API names into the search box at the top of the console, and then click Enable API on the overview page for that API.
+* Open `bin/ci/run_ui_integration_tests.rb`, edit the variable values at the top of the file with your values created from above here.
 
 ### Things to edit beyond setup
 
