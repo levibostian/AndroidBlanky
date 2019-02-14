@@ -197,6 +197,9 @@ dependencies {
     // Timber
     implementation "com.jakewharton.timber:timber:4.7.0"
 
+    // Android Debug Database
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+
     // JUnit
     def junitVersion = "4.12"
     testImplementation "junit:junit:$junitVersion"

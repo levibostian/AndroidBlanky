@@ -155,6 +155,18 @@ When creating build to release to Play Store:
 
 * Run Android instrumentation tests. You can use `bundle exec fastlane screengrab` when you want Fastlane to capture screenshots for you that you want to use for releasing to the Play Store.
 
+# Debugging
+
+To view contents of the database and preferences, this project is equipped with [Android debug database](https://github.com/amitshekhariitbhu/Android-Debug-Database).
+
+Install and run this project in the development debug environment, then follow the directions [on the readme](https://github.com/amitshekhariitbhu/Android-Debug-Database) to connect to the device/emulator.
+
+At this time, here is what the readme says:
+
+* Run `adb forward tcp:8080 tcp:8080` command
+* Devices: Look for the `D/DebugDB: Open http://XXX.XXX.X.XXX:8080 in your browser` entry in logcat for
+* Emulator: Open `http://localhost:8080` in your browser.
+
 ## Author
 
 * Levi Bostian - [GitHub](https://github.com/levibostian), [Twitter](https://twitter.com/levibostian), [Website/blog](http://levibostian.com)
