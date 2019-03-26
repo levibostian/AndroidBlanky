@@ -1,19 +1,17 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.27.0' // latest version is found here: https://s3.amazonaws.com/fabric-artifacts/public/io/fabric/tools/gradle/maven-metadata.xml
-    }
-}
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.firebase-perf'
+if (System.getenv("release") == "true") {
+    apply plugin: 'com.google.firebase.firebase-perf'
+}
+
 apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "kotlin-allopen"
+
+androidExtensions {
+    experimental = true
+}
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
@@ -105,6 +103,7 @@ android {
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
 
+        // Put code into below directory that you want shared between unit and integration tests.
         String sharedTestDir = 'src/sharedTest/java'
         test.java.srcDirs += sharedTestDir
         androidTest.java.srcDirs += sharedTestDir
@@ -114,24 +113,35 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // Support libraries
-    def supportLibraryVersion = "1.0.0"
-    implementation "androidx.appcompat:appcompat:$supportLibraryVersion"
-    implementation "com.google.android.material:material:$supportLibraryVersion"
-    implementation "androidx.recyclerview:recyclerview:$supportLibraryVersion"
-    implementation "androidx.preference:preference:$supportLibraryVersion"
+    // AndroidX UI libs
+    implementation "androidx.appcompat:appcompat:1.0.2"
+    implementation "androidx.fragment:fragment:1.0.0"
+    implementation "com.google.android.material:material:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.preference:preference:1.0.0"
 
     // Teller
-    implementation 'com.github.levibostian:teller-android:0.0.1'
+    implementation 'com.levibostian.teller:teller-android:0.2.0-alpha'
 
     // Wendy
-    implementation 'com.github.levibostian:Wendy-Android:0.2.1-alpha'
+    implementation 'com.github.levibostian:Wendy-Android:b14c06c7f0'
+
+    // WorkManager
+    def work_version = "2.0.0"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+    androidTestImplementation "androidx.work:work-testing:$work_version"
 
     // Firebase
-    implementation "com.google.firebase:firebase-core:16.0.7"
-    implementation 'com.google.firebase:firebase-perf:16.2.3'
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
-    implementation 'com.google.firebase:firebase-invites:16.1.0'
+    implementation "com.google.firebase:firebase-core:16.0.8"
+    implementation 'com.google.firebase:firebase-perf:16.2.4'
+    implementation 'com.google.firebase:firebase-messaging:17.5.0'
+    implementation 'com.google.firebase:firebase-invites:16.1.1'
+
+    // Glide
+    def glideVersion = "4.8.0"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+    implementation "com.github.bumptech.glide:okhttp3-integration:$glideVersion"
 
     // Play Install Referrer Library
     implementation 'com.android.installreferrer:installreferrer:1.0'
@@ -168,7 +178,7 @@ dependencies {
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
-    implementation "io.reactivex.rxjava2:rxjava:2.2.0"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.6"
     implementation "com.f2prateek.rx.preferences2:rx-preferences:2.0.0"
 
     // Moshi
@@ -197,9 +207,6 @@ dependencies {
 
     // Crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
-
-    // Timber
-    implementation "com.jakewharton.timber:timber:4.7.0"
 
     // Android Debug Database
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
@@ -249,7 +256,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
 
     // Fastlane screengrab
-    androidTestImplementation "tools.fastlane:screengrab:1.1.0"
+    androidTestImplementation "tools.fastlane:screengrab:1.2.0"
 }
 
 configurations.all {
