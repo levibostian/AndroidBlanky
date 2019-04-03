@@ -17,8 +17,18 @@
 #}
 
 # Keep models and VOs for your package.
-# -keep class com.levibostian.androidblanky.**.models.** { *; }
-# -keep class com.levibostian.androidblanky.**.vo.** { *; }
+-keep class com.levibostian.androidblanky.**.models.** { *; }
+-keep class com.levibostian.androidblanky.**.vo.** { *; }
+-keep class com.levibostian.androidblanky.service.error.** { *; }
+
+# Crashlytics required
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
+# make sure to NOT have the following line in this file at all to make sure Crashlytics can upload mapping file for you.
+#-printmapping mapping.txt
 
 # Retrofit
 -dontnote retrofit2.Platform # Platform calls Class.forName on types which do not exist on Android to determine platform.

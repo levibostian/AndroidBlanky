@@ -14,181 +14,92 @@ import androidx.appcompat.app.AlertDialog
 import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
+import com.levibostian.androidblanky.service.logger.Logger
+import com.levibostian.androidblanky.service.manager.DeviceAccountManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.view.ui.MainApplication
-import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_authenticator.*
+import org.koin.android.ext.android.inject
 import java.util.*
-import javax.inject.Inject
 
 class AuthenticatorActivity: AccountAuthenticatorActivity() {
 
     companion object {
-        const val PASSWORDLESS_TOKEN = "AuthenticatorActivity_PASSWORDLESS_TOKEN"
-        const val FORCE_LOGOUT = "AuthenticatorActivity_FORCE_LOGOUT"
+        const val PASSWORDLESS_TOKEN = "AuthenticatorActivity.PASSWORDLESS_TOKEN"
 
-        fun getIntent(context: Context): Intent = Intent(context, AuthenticatorActivity::class.java)
+        private const val PASSWORDLESS_TOKEN_EXCHANGE_REQUEST_ID = 0
+        private const val LOGOUT_REQUEST_ID = 1
+        private const val UNLOCK_ACCOUNT_REQUEST_ID = 2
+        private const val PASSWORDLESS_EMAIL_LOGIN_REQUEST_ID = 3
+
+        fun getIntent(context: Context, passwordlessToken: String?): Intent = Intent(context, AuthenticatorActivity::class.java).apply {
+            putExtra(AuthenticatorActivity.PASSWORDLESS_TOKEN, passwordlessToken)
+        }
     }
 
-    @Inject lateinit var accountManager: AccountManager
-    @Inject lateinit var userManager: UserManager
-    @Inject lateinit var dataDestroyer: DataDestroyer
+    private val userManager: UserManager by inject()
+    private val deviceAccountManager: DeviceAccountManager by inject()
+    private val logger: Logger by inject()
 
-    private var state: State? = null
-        set(value) {
-            field = value
-
-            when (value) {
-                AuthenticatorActivity.State.LOGGING_OUT_LOADING -> {
-                    auth_activity_loading_view.loadingText = getString(R.string.logging_out)
-                    auth_activity_login_view.visibility = View.GONE
-                    auth_activity_loading_view.visibility = View.VISIBLE
-                }
-                AuthenticatorActivity.State.LOGIN -> {
-                    auth_activity_login_view.visibility = View.VISIBLE
-                    auth_activity_loading_view.visibility = View.GONE
-                    auth_activity_email_textview.visibility = View.GONE
-                    auth_activity_email_edittext.visibility = View.VISIBLE
-                    auth_activity_login_button.text = getString(R.string.done)
-                    auth_activity_logout_anyway_view.visibility = View.GONE
-                    auth_activity_message_textview.text = getString(R.string.login_message)
-                }
-                AuthenticatorActivity.State.UNLOCK_ACCOUNT -> {
-                    auth_activity_login_view.visibility = View.VISIBLE
-                    auth_activity_loading_view.visibility = View.GONE
-                    auth_activity_email_textview.visibility = View.VISIBLE
-                    auth_activity_email_edittext.visibility = View.GONE
-                    auth_activity_login_button.text = getString(R.string.unlock)
-                    auth_activity_email_textview.text = String.format(Locale.getDefault(), "email: %s", userManager.email!!)
-                    auth_activity_logout_anyway_view.visibility = View.VISIBLE
-                    auth_activity_message_textview.text = String.format(Locale.getDefault(), getString(R.string.unlock_account_message), userManager.email!!)
-                }
-                AuthenticatorActivity.State.FIRST_TIME_LOGIN_LOADING -> {
-                    auth_activity_loading_view.loadingText = getString(R.string.preparing_for_login)
-                    auth_activity_login_view.visibility = View.GONE
-                    auth_activity_loading_view.visibility = View.VISIBLE
-                }
-                AuthenticatorActivity.State.PASSWORD_TOKEN_EXCHANGE -> {
-                    auth_activity_loading_view.loadingText = getString(R.string.exchange_passwordless_token_auth_token_loading_message)
-                    auth_activity_login_view.visibility = View.GONE
-                    auth_activity_loading_view.visibility = View.VISIBLE
-                }
-            }
-        }
-
-    private var passwordlessToken: String? = null
-    private var forceLogout: Boolean = false
+    private val passwordlessToken: String?
+        get() = intent?.extras?.getString(PASSWORDLESS_TOKEN)
 
     override fun onCreate(icicle: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(icicle)
 
-        setContentView(R.layout.activity_authenticator)
-        setupViews()
-
-        passwordlessToken = intent?.extras?.getString(PASSWORDLESS_TOKEN) ?: icicle?.getString(PASSWORDLESS_TOKEN)
-        if (passwordlessToken != null) {
-            state = State.PASSWORD_TOKEN_EXCHANGE
-
-            // TODO call server to exchange token with a auth token. Do this in a ViewModel!
-            // TODO call finishLogin() after getting the auth token and email from the server.
-        } else {
-            forceLogout = intent?.extras?.getBoolean(FORCE_LOGOUT) ?: icicle?.getBoolean(FORCE_LOGOUT) ?: false
+        passwordlessToken?.let { passwordlessToken ->
+            exchangePasswordlessTokenForAuth(passwordlessToken)
+        } ?: kotlin.run {
             when {
-                forceLogout -> {
-                    state = State.LOGGING_OUT_LOADING
-                    dataDestroyer.destroyAll {
-                        state = State.LOGIN
-                    }
-                }
-                userManager.isUserLoggedIn() -> // Activity launched with intent of logging the user out since they are still technically logged in.
-                    confirmIfUserWantsToLogout()
-                userManager.doesUserAccountNeedUnlocked() -> // User not logged in, but account data exists (user installed app and Android restored a previous data backup, or a 401 http status code). Re-prompt them to login to "unlock" their account and data.
-                    state = State.UNLOCK_ACCOUNT
-                else -> { // We are showing this activity for the first login.
-                    state = State.FIRST_TIME_LOGIN_LOADING
-                    dataDestroyer.destroyAll {
-                        state = State.LOGIN
-                    }
-                }
+                // Activity launched with intent of logging the user out since they are still technically logged in.
+                userManager.isUserLoggedIn() -> logout()
+                // User not logged in, but account data exists (user installed app and Android restored a previous data backup, or a 401 http status code). Re-prompt them to login to "unlock" their account and data.
+                userManager.doesUserAccountNeedUnlocked() -> unlockLoggedInUserAccount()
+                // We are showing this activity for the first login. Do the logout flow to assert that all data is destroyed first.
+                else -> logout()
             }
         }
     }
 
-    private fun confirmIfUserWantsToLogout() {
-        val loggedInUserEmail: String = userManager.email!!
-        AlertDialog.Builder(this)
-                .setTitle(R.string.sure_logout)
-                .setMessage(String.format(Locale.getDefault(), getString(R.string.sure_logout_message), loggedInUserEmail, loggedInUserEmail))
-                .setPositiveButton(R.string.yes) { dialog, which ->
-                    state = State.LOGGING_OUT_LOADING
-                    dataDestroyer.destroyAll {
-                        state = State.LOGIN
-                    }
-                }
-                .setNegativeButton(R.string.no) { dialog, which ->
-                    dialog.dismiss()
-                    finish()
-                }
-                .show()
+    private fun exchangePasswordlessTokenForAuth(passwordlessToken: String) {
+        startActivityForResult(PasswordTokenExchangeActivity.getIntent(this, passwordlessToken), PASSWORDLESS_TOKEN_EXCHANGE_REQUEST_ID)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putBoolean(FORCE_LOGOUT, forceLogout)
-        passwordlessToken?.let { outState?.putString(PASSWORDLESS_TOKEN, passwordlessToken) }
-
-        super.onSaveInstanceState(outState)
+    private fun startPasswordlessEmailLogin() {
+        startActivityForResult(PasswordlessEmailLoginActivity.getIntent(this), PASSWORDLESS_EMAIL_LOGIN_REQUEST_ID)
     }
 
-    private fun setupViews() {
-        auth_activity_login_button.setOnClickListener {
-            if (state == State.UNLOCK_ACCOUNT) {
-                // TODO Call API to send email and get auth token back for user.
-                
-                // TODO remove handler below.
-                Handler().postDelayed({ // Pretending that we got our email and auth token back from the server.
-                    val email = "you@example.com"
-                    val authToken = "12345"
+    private fun unlockLoggedInUserAccount() {
+        startActivityForResult(UnlockLoggedInAccountActivity.getIntent(this), UNLOCK_ACCOUNT_REQUEST_ID)
+    }
 
-                    finishLogin("1", email, authToken)
-                }, 4000)
+    private fun logout() {
+        startActivityForResult(LogoutAccountActivity.getIntent(this), LOGOUT_REQUEST_ID)
+    }
 
-                AlertDialog.Builder(this)
-                        .setTitle(R.string.email_sent)
-                        .setMessage(R.string.check_email_to_finish_login)
-                        .setPositiveButton(R.string.ok) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
-            } else if (state == State.LOGIN) {
-                val enteredEmail = auth_activity_email_edittext.text.toString()
-                if (enteredEmail.isBlank()) {
-                    auth_activity_email_edittext.error = getString(R.string.enter_email_address)
-                } else {
-                    // TODO send email up to server to have it begin login process. In this case, send an email in a "passwordless" fashion.
-                    // TODO make sure to do this in a ViewModel!
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) return
 
-                    // TODO remove me below...
-                    Handler().postDelayed({ // Pretending that we got our email and auth token back from the server.
-                        val email = "you@example.com"
-                        val authToken = "12345"
+        when (requestCode) {
+            PASSWORDLESS_TOKEN_EXCHANGE_REQUEST_ID -> {
+                val userId = intent!!.getStringExtra(PasswordTokenExchangeActivity.USER_ID_RESULT_KEY)!!
+                val userEmail = intent!!.getStringExtra(PasswordTokenExchangeActivity.USER_EMAIL_RESULT_KEY)!!
+                val authToken = intent!!.getStringExtra(PasswordTokenExchangeActivity.AUTH_TOKEN_RESULT_KEY)!!
 
-                        finishLogin("1", email, authToken)
-                    }, 4000)
-
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.email_sent)
-                            .setMessage(R.string.check_email_to_finish_login)
-                            .setPositiveButton(R.string.ok) { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .show()
-                }
+                finishLogin(userId, userEmail, authToken)
             }
-        }
-        auth_activity_loading_view.loadingTextView!!.setTextColor(ContextCompat.getColor(this, android.R.color.white))
-        auth_activity_logout_anyway_button.setOnClickListener {
-            confirmIfUserWantsToLogout()
+            LOGOUT_REQUEST_ID -> {
+                startPasswordlessEmailLogin()
+            }
+            UNLOCK_ACCOUNT_REQUEST_ID -> {
+                val unlockAnyway = intent!!.getBooleanExtra(UnlockLoggedInAccountActivity.LOGOUT_ANYWAY_RESULT_KEY, false)
+                if (unlockAnyway) logout()
+                else unlockLoggedInUserAccount() // We don't have any other UI to share, so just show the unlock UI again.
+            }
+            PASSWORDLESS_EMAIL_LOGIN_REQUEST_ID -> {
+                // since we have no other UI to show to the user, just show the login one again.
+                startPasswordlessEmailLogin()
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -196,26 +107,18 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
         userManager.id = userId
         userManager.email = email
 
+        logger.loggedIn(userId, Logger.LoginMethod.PasswordlessEmail())
+
         val res = Intent()
         res.putExtra(AccountManager.KEY_ACCOUNT_NAME, email)
         res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, AccountAuthenticator.ACCOUNT_TYPE)
         res.putExtra(AccountManager.KEY_AUTHTOKEN, authToken)
 
-        val account = Account(email, AccountAuthenticator.ACCOUNT_TYPE)
-        accountManager.addAccountExplicitly(account, null, null)
-        accountManager.setAuthToken(account, AccountAuthenticator.ACCOUNT_TYPE, authToken)
+        deviceAccountManager.login(email, authToken)
 
         setAccountAuthenticatorResult(res.extras)
         setResult(Activity.RESULT_OK, intent)
         finish()
-    }
-
-    private enum class State {
-        LOGGING_OUT_LOADING, // Logging the user out of the app.
-        FIRST_TIME_LOGIN_LOADING, // No data from backup, no logging out, first time logging in. Loading view before LOGIN.
-        LOGIN, // User logged out or it's their first time logging in.
-        UNLOCK_ACCOUNT, // User account does not exist in AccountManager, but data exists in the app. This means we need to show a UI for the user to login again to "unlock" their data.
-        PASSWORD_TOKEN_EXCHANGE // Activity launched with intent to exchange passwordless token with auth token.
     }
 
 }

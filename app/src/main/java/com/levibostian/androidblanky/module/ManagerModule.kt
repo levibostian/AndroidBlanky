@@ -1,19 +1,21 @@
 package com.levibostian.androidblanky.module
 
 import android.accounts.AccountManager
-import android.app.Application
-import android.content.SharedPreferences
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.levibostian.androidblanky.service.analytics.AppAnalytics
+import com.levibostian.androidblanky.service.manager.AppDeviceAccountManager
 import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 import com.levibostian.androidblanky.service.manager.UserManager
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-interface ManagerModule {
+object ManagerModule {
 
-    fun provideUserManager(application: Application, sharedPrefs: SharedPreferences, accountManager: AccountManager, appAnalytics: AppAnalytics): UserManager
-
-    fun provideNotificationChannelManager(application: Application): NotificationChannelManager
-
-    fun provideAccountManager(application: Application): AccountManager
+    fun get(): Module {
+        return module {
+            factory { AppDeviceAccountManager(AccountManager.get(androidContext())) }
+            factory { UserManager(get(), get()) }
+            factory { NotificationChannelManager(androidContext()) }
+        }
+    }
 
 }

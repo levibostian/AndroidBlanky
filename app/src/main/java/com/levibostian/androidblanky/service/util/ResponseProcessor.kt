@@ -1,45 +1,90 @@
 package com.levibostian.androidblanky.service.util
 
 import android.content.Context
+import com.levibostian.androidblanky.BuildConfig
 import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.service.error.network.NetworkConnectionIssueException
-import com.levibostian.androidblanky.service.error.network.NoInternetConnectionException
-import com.levibostian.androidblanky.service.error.network.ServerErrorException
-import com.levibostian.androidblanky.service.error.network.UnauthorizedException
+import com.levibostian.androidblanky.service.error.network.*
+import com.levibostian.androidblanky.service.json.JsonAdapter
+import com.levibostian.androidblanky.service.logger.Logger
+import com.levibostian.androidblanky.service.service.HttpResponseConstants
+import com.levibostian.androidblanky.service.vo.MessageResponse
 import com.levibostian.androidblanky.testing.OpenForTesting
+import com.levibostian.teller.repository.OnlineRepository
+import com.levibostian.teller.repository.OnlineRepositoryFetchResponse
+import com.squareup.moshi.Moshi
+import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
-import timber.log.Timber
 import java.io.IOException
 
 @OpenForTesting
-class ResponseProcessor(private val context: Context) {
+class ResponseProcessor(private val context: Context,
+                        private val logger: Logger,
+                        private val jsonAdapter: JsonAdapter) {
 
-    fun <RESPONSE> process(result: Result<RESPONSE>): Throwable? {
-        if (result.response()?.isSuccessful == true) return null
-        when (result.error()) {
-            is NoInternetConnectionException,
-            is UnauthorizedException -> return result.error()
-        }
+    private val humanReadableUnhandledResultError = UnhandledHttpResultException(context.getString(R.string.fatal_network_error_message))
 
-        result.error()?.let { error ->
-            if (error is IOException) {
-                return NetworkConnectionIssueException(context.getString(R.string.error_network_connection_issue))
-            }
-            // According to Retrofit's result.error() Javadoc, if the error is not an instance of IOException, it's a programming error and should be looked at. Throw it so we can see it and fix it.
-            throw error
-        }
-
-        return when (result.response()!!.code()) {
-            in 500..600 -> ServerErrorException(context.getString(R.string.error_500_600_response_code))
-            401 -> UnauthorizedException(context.getString(R.string.error_401_response_code))
-            else -> null
-        }
+    fun <RESPONSE: OnlineRepositoryFetchResponse> process(result: Result<RESPONSE>, extraProcessing: ((code: Int, response: Response<RESPONSE>, jsonAdapter: JsonAdapter) -> Throwable?)? = null): OnlineRepository.FetchResponse<RESPONSE> {
+        return processRequestFailure(result) ?:
+        processRequestSuccessful(result.response()!!, extraProcessing) ?:
+        processUnhandledResult(result)
     }
 
-    // During development you should be handling client side all of the ways that a HTTP API call could fail. However, you may forget some. So to handle that, we need to alert ourselves to fix this issue and to return back to our users a human readable message saying that an error we cannot handle it and we are going to fix it.
-    fun <RESPONSE> unhandledHttpResult(result: Result<RESPONSE>): String {
-        Timber.e(RuntimeException("Fatal HTTP network call. ${result.response()?.toString() ?: "(no HTTP response found)."}"))
-        return context.getString(R.string.fatal_network_error_message)
+    private fun <RESPONSE: OnlineRepositoryFetchResponse> processRequestFailure(result: Result<RESPONSE>): OnlineRepository.FetchResponse<RESPONSE>? {
+        when (result.error()) {
+            is NoInternetConnectionException,
+            is UnauthorizedException -> result.error()
+            is IOException -> NetworkConnectionIssueException(context.getString(R.string.error_network_connection_issue))
+            null -> { null }
+            else -> {
+                // According to Retrofit's result.error() Javadoc, if the error is not an instance of IOException, it's a programming error and should be looked at. Throw it so we can see it and fix it.
+                logger.errorOccurred(result.error()!!)
+                humanReadableUnhandledResultError
+            }
+        }?.let { requestError ->
+            return OnlineRepository.FetchResponse.fail(requestError)
+        }
+
+        return null
+    }
+
+    private fun <RESPONSE: OnlineRepositoryFetchResponse> processRequestSuccessful(response: Response<RESPONSE>, extraProcessing: ((code: Int, response: Response<RESPONSE>, jsonAdapter: JsonAdapter) -> Throwable?)? = null): OnlineRepository.FetchResponse<RESPONSE>? {
+        if (response.isSuccessful) { // Successful (status code < 400)
+            return OnlineRepository.FetchResponse.success(response.body()!!)
+        }
+
+        val errorBody = response.errorBody()?.string()
+        val statusCode = response.code()
+        when (statusCode) {
+            in HttpResponseConstants.SystemError..600 -> ServerErrorException(context.getString(R.string.error_500_600_response_code))
+            HttpResponseConstants.UserEnteredBadDataError -> {
+                jsonAdapter.fromJson(errorBody!!, UserEnteredBadDataResponseError::class.java)
+            }
+            HttpResponseConstants.RateLimitingError -> {
+                RateLimitingResponseError(context.getString(R.string.error_rate_limiting_response))
+            }
+            HttpResponseConstants.ConflictError -> {
+                jsonAdapter.fromJson(errorBody!!, ConflictResponseError::class.java)
+            }
+            HttpResponseConstants.ForbiddenError -> {
+                jsonAdapter.fromJson(errorBody!!, ForbiddenResponseError::class.java)
+            }
+            else -> extraProcessing?.invoke(statusCode, response, jsonAdapter)
+            /**
+             * Do not list FieldsError here. If a 422 happens, it might be a problem with the app and not the user. Therefore, if a 422 could happen, have the API call handle it individually instead of handle it globally here.
+             */
+        }?.let { responseError ->
+            return OnlineRepository.FetchResponse.fail(responseError)
+        }
+
+        return null
+    }
+
+    private fun <RESPONSE: OnlineRepositoryFetchResponse> processUnhandledResult(result: Result<RESPONSE>): OnlineRepository.FetchResponse<RESPONSE> {
+        val unhandledErrorForLogging = UnhandledHttpResultException("Fatal HTTP network call. ${result.response()?.toString() ?: "(no HTTP response found)."}")
+        if (BuildConfig.DEBUG) throw unhandledErrorForLogging
+        logger.errorOccurred(unhandledErrorForLogging)
+
+        return OnlineRepository.FetchResponse.fail(humanReadableUnhandledResultError)
     }
 
 }

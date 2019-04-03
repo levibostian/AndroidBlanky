@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
 
     <application tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".testing.SingleFragmentActivity"/>
     </application>
 
 </manifest>

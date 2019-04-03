@@ -1,12 +1,14 @@
 package com.levibostian.androidblanky.view.fragment
 
 import android.app.Instrumentation
-import android.support.test.filters.SdkSuppress
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
 import org.junit.Rule
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
@@ -16,48 +18,50 @@ import org.junit.runner.RunWith
 import org.junit.Before
 import tools.fastlane.screengrab.locale.LocaleTestRule
 import javax.inject.Inject
-import org.mockito.Mockito.*
 import com.levibostian.androidblanky.service.model.RepoModel
 import com.levibostian.androidblanky.service.model.RepoOwnerModel
 import com.levibostian.androidblanky.view.ui.TestMainApplication
-import org.mockito.*
-import androidx.test.InstrumentationRegistry
+import androidx.test.filters.SdkSuppress
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.levibostian.androidblanky.rule.ScreenshotOnErrorRule
-import com.levibostian.androidblanky.testing.SingleFragmentActivity
+import com.levibostian.androidblanky.service.repository.GitHubUsernameRepository
+import com.levibostian.androidblanky.service.repository.ReposRepository
 import com.levibostian.androidblanky.util.EspressoTestUtil
 import com.levibostian.androidblanky.util.ScreenshotUtil
 import com.levibostian.androidblanky.view.ui.fragment.MainFragment
 import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import com.levibostian.androidblanky.viewmodel.TestViewModelFactory
-import com.levibostian.teller.datastate.LocalDataState
-import com.levibostian.teller.datastate.OnlineDataState
-import com.squareup.spoon.SpoonRule
+import com.levibostian.teller.cachestate.LocalCacheState
+import com.levibostian.teller.cachestate.OnlineCacheState
+import com.levibostian.teller.testing.extensions.cache
+import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.CoreMatchers.not
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @SdkSuppress(minSdkVersion = 18)
-class MainFragmentTest : AndroidIntegrationTestClass {
-
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+class MainFragmentTest: AndroidIntegrationTestClass {
 
     @Mock private lateinit var gitHubUsernameViewModel: GitHubUsernameViewModel
     @Mock private lateinit var reposViewModel: ReposViewModel
+    @Mock private lateinit var reposRequirements: ReposRepository.GetRequirements
+    @Mock private lateinit var githubUsernameRequirements: GitHubUsernameRepository.Requirements
 
-    @get:Rule val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
     @get:Rule val localeTestRule = LocaleTestRule() // fastlane can switch locales to take screenshots and test.
-    @get:Rule val spoon = SpoonRule()
     @get:Rule val screenshotOnErrorRule = ScreenshotOnErrorRule.getRule()
+    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val repoOwner = RepoOwnerModel("login1")
     private val repo1 = RepoModel(1, "name1", repoOwner)
     private val repo2 = RepoModel(2, "name2", repoOwner)
     private val repo3 = RepoModel(3, "name3", repoOwner)
 
-    private val reposLiveData: MutableLiveData<OnlineDataState<List<RepoModel>>> = MutableLiveData()
-    private val githubUsernameLiveData: MutableLiveData<LocalDataState<String>> = MutableLiveData()
+    private val reposLiveData: MutableLiveData<OnlineCacheState<List<RepoModel>>> = MutableLiveData()
+    private val githubUsernameLiveData: MutableLiveData<LocalCacheState<String>> = MutableLiveData()
 
     private lateinit var application: TestMainApplication
 
@@ -73,36 +77,38 @@ class MainFragmentTest : AndroidIntegrationTestClass {
 
         (viewModelFactory as TestViewModelFactory).models = listOf(gitHubUsernameViewModel, reposViewModel)
 
-        `when`(reposViewModel.observeRepos()).thenReturn(reposLiveData)
-        `when`(gitHubUsernameViewModel.observeUsername()).thenReturn(githubUsernameLiveData)
+        whenever(reposViewModel.observeRepos()).thenReturn(reposLiveData)
+        whenever(gitHubUsernameViewModel.observeUsername()).thenReturn(githubUsernameLiveData)
 
-        screenshots = ScreenshotUtil(activityRule.activity, spoon)
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
+        screenshots = ScreenshotUtil()
     }
 
-    override fun getInstrumentation(): Instrumentation = InstrumentationRegistry.getInstrumentation()
-
     private fun launchActivity() {
-        activityRule.activity.setFragment(MainFragment.newInstance())
+        val scenario = launchFragmentInContainer {
+            MainFragment.newInstance()
+        }
+        scenario.onFragment {
+            EspressoTestUtil.disableProgressBarAnimations(it.activity!!)
+        }
     }
 
     @Test
     fun test_showReposDataListFetchingFresh() {
         val githubUsername = repo1.owner.name
 
-        reposLiveData.postValue(OnlineDataState.data(listOf(repo1), Date()))
-        githubUsernameLiveData.postValue(LocalDataState.data(githubUsername))
-
         launchActivity()
 
-        orientationPortrait()
+        reposLiveData.postValue(OnlineCacheState.Testing.cache(reposRequirements, Date()) {
+            cache(listOf(repo1))
+        })
+        githubUsernameLiveData.postValue(LocalCacheState.Testing.cache(githubUsernameRequirements, githubUsername))
 
         screenshots.take("showReposDataListFetchingFresh")
         onView(withId(R.id.username_edittext))
-                .check(ViewAssertions.matches(ViewMatchers.withText(githubUsername)))
+                .check(matches(withText(githubUsername)))
 
         onView(withText(repo1.name))
-                .check(ViewAssertions.matches(not(isDisplayed())))
+                .check(matches(not(isDisplayed())))
     }
 
 }

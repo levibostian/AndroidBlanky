@@ -5,51 +5,41 @@ import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.levibostian.androidblanky.service.analytics.AppAnalytics
+import androidx.core.content.edit
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
+import com.levibostian.androidblanky.service.logger.Logger
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.pendingtasks.UpdateFcmTokenPendingTask
 import com.levibostian.wendy.service.Wendy
 
-class UserManager(private val context: Context,
-                  private val sharedPrefs: SharedPreferences,
-                  private val accountManager: AccountManager,
-                  private val analytics: AppAnalytics) {
+class UserManager(private val sharedPrefs: SharedPreferences,
+                  private val deviceAccountManager: DeviceAccountManager) {
 
     fun isUserLoggedIn(): Boolean {
-        return (id != null) && (getAccount() != null) && (authToken != null) && (email != null)
+        return (id != null) && (authToken != null) && (email != null)
     }
 
+    // If a user goes into the device's settings > accounts and delete the account for this app and then relaunches this app, the id and email will not be null but the token will since that is stored in the device's account manager. So, check for that case here.
     fun doesUserAccountNeedUnlocked(): Boolean {
-        return (id != null) && (email != null) && (getAccount() == null)
-    }
-
-    fun getAccount(): Account? {
-        return accountManager.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE).getOrNull(0)
+        return (id != null) && (email != null) && (authToken == null)
     }
 
     fun logout() {
         id = null
-        authToken = null
         email = null
-        analytics.setUserId(null)
+        deviceAccountManager.logout()
     }
 
-    var authToken: String? = null
-        get() {
-            getAccount()?.let { account ->
-                return accountManager.peekAuthToken(account, AccountAuthenticator.ACCOUNT_TYPE)
-            }
-            return null
-        }
+    val authToken: String?
+        get() = deviceAccountManager.accessToken
 
     var id: String?
         get() = sharedPrefs.getString(SharedPrefersKeys.USER_ID, null)
         @SuppressLint("ApplySharedPref")
         set(value) {
-            sharedPrefs.edit().putString(SharedPrefersKeys.USER_ID, value).commit()
-            analytics.setUserId(value)
+            sharedPrefs.edit {
+                putString(SharedPrefersKeys.USER_ID, value)
+            }
 
             doWorkAfterLoggedIn()
         }
@@ -57,17 +47,21 @@ class UserManager(private val context: Context,
     var email: String?
         get() = sharedPrefs.getString(SharedPrefersKeys.USER_EMAIL, null)
         @SuppressLint("ApplySharedPref")
-        set(value) { sharedPrefs.edit().putString(SharedPrefersKeys.USER_EMAIL, value).commit() }
+        set(value) {
+            sharedPrefs.edit {
+                putString(SharedPrefersKeys.USER_EMAIL, value)
+            }
+        }
 
     var fcmPushNotificationToken: String?
         get() = sharedPrefs.getString(SharedPrefersKeys.FCM_PUSH_NOTIFICATION, null)
         @SuppressLint("ApplySharedPref")
         set(value) {
-            if (isUserLoggedIn()) {
-                doWorkAfterLoggedIn()
-            } else {
-                sharedPrefs.edit().putString(SharedPrefersKeys.FCM_PUSH_NOTIFICATION, value).commit()
+            sharedPrefs.edit(commit = true) {
+                putString(SharedPrefersKeys.FCM_PUSH_NOTIFICATION, value)
             }
+
+            if (isUserLoggedIn()) doWorkAfterLoggedIn()
         }
 
     // Some stuff requires being logged in to perform. Perform that now.

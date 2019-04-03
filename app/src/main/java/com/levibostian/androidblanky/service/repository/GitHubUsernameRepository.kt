@@ -8,26 +8,28 @@ import com.levibostian.teller.repository.LocalRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
 import android.content.SharedPreferences
+import androidx.core.content.edit
+import com.levibostian.androidblanky.extensions.observeString
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
-class GitHubUsernameRepository(private val context: Context): LocalRepository<String>() {
+class GitHubUsernameRepository(private val sharedPreferences: SharedPreferences): LocalRepository<String, GitHubUsernameRepository.Requirements>() {
 
-    private val githubUsernameSharedPrefsKey = "${this::class.java.simpleName}_githubUsername_key"
-    private val rxSharedPreferences: RxSharedPreferences = RxSharedPreferences.create(PreferenceManager.getDefaultSharedPreferences(context))
+    private val githubUsernameSharedPrefsKey = "repository_githubUsername_key"
 
-    override fun saveData(data: String) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(githubUsernameSharedPrefsKey, data).apply()
+    override fun saveCache(cache: String, requirements: Requirements) {
+        sharedPreferences.edit {
+            putString(githubUsernameSharedPrefsKey, cache)
+        }
     }
 
-    override fun observeData(): Observable<String> {
-        return rxSharedPreferences.getString(githubUsernameSharedPrefsKey, "")
-                .asObservable()
-                .filter { it.isNotBlank() }
+    override fun observeCache(requirements: Requirements): Observable<String> {
+        return sharedPreferences.observeString(githubUsernameSharedPrefsKey)
                 .subscribeOn(Schedulers.io())
     }
 
-    override fun isDataEmpty(data: String): Boolean = data.isBlank()
+    override fun isCacheEmpty(cache: String, requirements: Requirements): Boolean = cache.isBlank()
+
+    class Requirements: LocalRepository.GetCacheRequirements
 
 }

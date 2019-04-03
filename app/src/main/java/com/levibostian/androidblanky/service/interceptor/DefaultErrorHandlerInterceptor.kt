@@ -25,7 +25,7 @@ class DefaultErrorHandlerInterceptor(private val context: Context,
             val statusCode = response.code()
             when (statusCode) {
                 401 -> {
-                    eventbus.post(LogoutUserEvent(true))
+                    eventbus.post(LogoutUserEvent())
                     throw UnauthorizedException(context.getString(R.string.error_401_response_code))
                 }
             }

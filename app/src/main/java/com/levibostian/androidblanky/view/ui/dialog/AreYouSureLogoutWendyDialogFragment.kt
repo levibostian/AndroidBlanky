@@ -3,6 +3,7 @@ package com.levibostian.androidblanky.view.ui.dialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -20,16 +21,20 @@ import com.levibostian.wendy.types.ReasonPendingTaskSkipped
 class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener {
 
     companion object {
-        fun getInstance(listener: Listener): AreYouSureLogoutWendyDialogFragment = AreYouSureLogoutWendyDialogFragment().apply {
-            this.listener = listener
-        }
+        fun getInstance(): AreYouSureLogoutWendyDialogFragment = AreYouSureLogoutWendyDialogFragment()
     }
 
     interface Listener {
         fun logout()
+        fun cancel()
     }
 
-    lateinit var listener: Listener
+    override fun onAttach(context: Context) {
+        ((activity as? Listener) ?: (parentFragment as? Listener))?.let { listener = it }
+        super.onAttach(context)
+    }
+
+    private lateinit var listener: Listener
     private var dialogView: View? = null
 
     private var state: State? = null
@@ -92,13 +97,14 @@ class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener 
         return AlertDialog.Builder(activity!!)
                 .setTitle(R.string.warning)
                 .setView(dialogView)
-                .setPositiveButton(R.string.log_out, { dialog, id ->
+                .setPositiveButton(R.string.log_out) { _, _ ->
                     listener.logout()
                     this.dismiss()
-                })
-                .setNegativeButton(R.string.cancel, { dialog, id ->
+                }
+                .setNegativeButton(R.string.cancel) { _, _ ->
+                    listener.cancel()
                     this.dismiss()
-                })
+                }
                 .create()
     }
 

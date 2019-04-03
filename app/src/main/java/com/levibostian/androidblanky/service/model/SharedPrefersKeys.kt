@@ -6,7 +6,6 @@ import com.levibostian.androidblanky.R
 // It's best to have constants across the app instead of some loose strings. This file is intended to be the 1 place that all shared preferences strings are obtained.
 object SharedPrefersKeys {
 
-    const val USER_AUTH_TOKEN: String = "USER_AUTH_TOKEN"
     const val USER_ID: String = "USER_ID"
     const val USER_EMAIL: String = "USER_EMAIL"
     const val FIRST_APP_LAUNCH: String = "FIRST_APP_LAUNCH"

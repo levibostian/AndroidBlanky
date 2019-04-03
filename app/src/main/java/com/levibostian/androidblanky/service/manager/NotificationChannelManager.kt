@@ -30,7 +30,7 @@ class NotificationChannelManager(private val context: Context) {
         allChannels.forEach { channel -> channel.create(notificationManager) }
     }
 
-    class ChannelInfo(val id: String, val name: String, val description: String, val importance: Int) {
+    data class ChannelInfo(val id: String, val name: String, val description: String, val importance: Int) {
 
         fun create(notificationManager: NotificationManager) {
             if (Build.VERSION.SDK_INT < 26) {

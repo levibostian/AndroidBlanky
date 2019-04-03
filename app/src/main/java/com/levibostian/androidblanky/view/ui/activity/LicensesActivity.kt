@@ -7,6 +7,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.transaction
 import com.artitk.licensefragment.model.License
 import com.artitk.licensefragment.model.LicenseID
 import com.artitk.licensefragment.model.LicenseType
@@ -31,7 +33,9 @@ class LicensesActivity: AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().add(R.id.activity_toolbar_fragment_container, getLicensesFragment()).commit()
+            supportFragmentManager.commit {
+                add(R.id.activity_toolbar_fragment_container, getLicensesFragment())
+            }
         }
     }
 
@@ -56,21 +60,25 @@ class LicensesActivity: AppCompatActivity() {
                 License(this, "Wendy-Android", LicenseType.MIT_LICENSE, "2018", "Levi Bostian"),
                 License(this, "Android Architecture Components", LicenseType.APACHE_LICENSE_20, "2017", "The Android Open Source Project"),
                 License(this, "Room", LicenseType.APACHE_LICENSE_20, "2017", "The Android Open Source Project"),
-                License(this, "Dagger 2", LicenseType.APACHE_LICENSE_20, "2012", "Google"),
+                License(this, "Koin", LicenseType.APACHE_LICENSE_20, "2017", "Koin"),
                 License(this, "RxJava2", LicenseType.APACHE_LICENSE_20, "2012", "Netflix, Inc."),
                 License(this, "rx-preferences", LicenseType.APACHE_LICENSE_20, "2014", "Prateek Srivastava"),
                 License(this, "Moshi", LicenseType.APACHE_LICENSE_20, "2015", "Square, Inc."),
                 License(this, "Retrofit2", LicenseType.APACHE_LICENSE_20, "2013", "Square, Inc."),
                 License(this, "OkHttp", LicenseType.APACHE_LICENSE_20, "2012", "Square, Inc."),
                 License(this, "Eventbus", LicenseType.APACHE_LICENSE_20, "2014", "greenrobot"),
-                License(this, "Timber", LicenseType.APACHE_LICENSE_20, "2013", "Jake Wharton"),
                 License(this, "Google Truth", LicenseType.APACHE_LICENSE_20, "2011", "The Android Open Source Project"),
                 License(this, "Mockito", LicenseType.MIT_LICENSE, "2007", "Mockito contributors"),
                 License(this, "Android Testing Support Library", LicenseType.APACHE_LICENSE_20, "2015", "The Android Open Source Project"),
                 License(this, "Espresso", LicenseType.APACHE_LICENSE_20, "2014", "The Android Open Source Project"),
                 License(this, "Fastlane", LicenseType.MIT_LICENSE, "2015-present", "the fastlane authors"),
                 License(this, "Danger", LicenseType.MIT_LICENSE, "2018", "Orta, Felix Krause"),
-                License(this, "Kotlin", LicenseType.APACHE_LICENSE_20, "2010-2017", "JetBrains")
+                License(this, "Kotlin", LicenseType.APACHE_LICENSE_20, "2010-2017", "JetBrains"),
+                License(this, "AccountAuthenticatorAppCompatActivity", LicenseType.MIT_LICENSE, "2018", "Levi Bostian"),
+                License(this, "Glide", LicenseType.BSD_2_CLAUSE, "2014", "Google"),
+                License(this, "RecyclerViewMatcher", LicenseType.MIT_LICENSE, "2018", "Levi Bostian"),
+                License(this, "WorkManager", LicenseType.APACHE_LICENSE_20, "2018", "Google"),
+                License(this, "Android Debug Database", LicenseType.APACHE_LICENSE_20, "2016", "Amit Shekhar")
         ))
         return fragment
     }

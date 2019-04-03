@@ -39,7 +39,6 @@ AndroidBlanky works to avoid that. By having a blank Android app already created
 * [Retrofit](https://github.com/square/retrofit) - Easy way to perform network calls.
 * [OkHttp logging interceptor](https://github.com/square/okhttp) - Log network calls to the Logcat during development for debugging.
 * [Eventbus](https://github.com/greenrobot/EventBus) - An event bus to communicate in my app.
-* [Timber](https://github.com/JakeWharton/timber/) - Unified logging to the Logcat and to Crashlytics within my app.
 * [Android-License-Fragment](https://github.com/first087/Android-License-Fragment) - To easily create an open source licenses list.
 
 ##### For testing...
@@ -49,7 +48,7 @@ AndroidBlanky works to avoid that. By having a blank Android app already created
 * [Android testing support library](https://developer.android.com/training/testing/) - To run unit, integration, and UI tests for Android.
 * [Espresso](https://developer.android.com/training/testing/espresso/) - Create UI tests on Android.
 * [Fastlane screengrab](https://docs.fastlane.tools/actions/screengrab/) - Take screenshots of app during UI tests to help create screenshots for the Play Store.
-* [Kotlin all-open plugin](https://kotlinlang.org/docs/reference/compiler-plugins.html#all-open-compiler-plugin) - Marks classes and functions as open instead of final in debug (test) code and keeps it final in production code.
+* [Kotlin all-open plugin](https://kotlinlang.org/docs/reference/compiler-plugins.html#all-open-compiler-plugin) - Marks classes and functions as open instead of final in debug (android instrumentation tests) code and keeps it final in production code.
 
 ### Tools and services:
 
@@ -165,6 +164,13 @@ Setup Firebase Test Lab
 
 AndroidBlanky uses [Fastlane](https://fastlane.tools/) and [Travis CI](https://travis-ci.com/) to distribute apps to the Play Store for beta testing and production releases.
 
+However, before you do so, make sure to generate screenshots of the app to use for the Play Store if you have not generated them already. Screenshots are generated automatically for you through Espresso UI tests. To create screenshots, do the following steps:
+
+* Add `@ScreenshotOnly` to an `androidTest` instrumentation test function in your Espresso tests to mark a test as one you want to have a screenshot taken for you.
+* In the test function after you mock everything and setup the environment with pre-populated data you want to be shown in the screenshot, call `screenshotUtil.takeForStore("Home screen")` to have a screenshot taken for you.
+* At this time, only English US screenshots are taken for you. If you would like to generate more locales, edit the locales array in `fastlane/Fastfile` to include the ones you need.
+* Lastly, start up an emulator you want to use to take the screenshots from and run this command: `bundle exec fastlane create_screenshots`.
+
 When creating build to release to Play Store:
 
 * [Create a keystore file](keystores/README.md).
@@ -176,7 +182,7 @@ When creating build to release to Play Store:
 
 * Run JUnit unit tests via Android Studio or gradle as you normally would.
 
-* Run Android instrumentation tests. You can use `bundle exec fastlane screengrab` when you want Fastlane to capture screenshots for you that you want to use for releasing to the Play Store.
+* Run Android instrumentation tests.
 
 # Debugging
 

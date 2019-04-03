@@ -3,78 +3,80 @@ package com.levibostian.androidblanky.view.ui
 import android.app.Activity
 import android.app.Application
 import android.app.Service
-import android.util.Log
+import android.content.Context
 import androidx.fragment.app.Fragment
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.levibostian.androidblanky.BuildConfig
-import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 import com.levibostian.androidblanky.service.pendingtasks.PendingTasksFactory
+import com.levibostian.androidblanky.service.work.PendingTasksWorker
 import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.teller.Teller
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.service.Wendy
-import dagger.android.*
-import dagger.android.support.HasSupportFragmentInjector
 import io.fabric.sdk.android.Fabric
-import timber.log.Timber
-import javax.inject.Inject
+import java.util.concurrent.TimeUnit
+import androidx.multidex.MultiDex
+import com.levibostian.androidblanky.BuildConfig
+import com.levibostian.androidblanky.module.*
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 
 @OpenForTesting
-class MainApplication : Application(), HasActivityInjector, HasSupportFragmentInjector, HasServiceInjector {
+class MainApplication: Application() {
 
-    val component: ApplicationComponent by lazy { getApplicationComponent() }
-
-    @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
-    @Inject lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
-    @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
-    @Inject lateinit var pendingTasksFactory: PendingTasksFactory
+    private val pendingTasksFactory: PendingTasksFactory by inject()
 
     override fun onCreate() {
         super.onCreate()
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        } else {
-            Timber.plant(CrashReportingTree())
-        }
 
         val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
         val fabric = Fabric.Builder(this).kits(Crashlytics.Builder().core(core).build()).debuggable(true).build()
         Fabric.with(fabric)
 
-        component.inject(this)
+        initLibsRequiredBeforeDependenciesInitialize()
 
+        // Application must be injected in the onCreate() so that services are able to be injected.
+        startKoin {
+            if (BuildConfig.DEBUG) androidLogger()
+            androidContext(this@MainApplication)
+            modules(getModules())
+        }
+
+        initLibsPostDependenciesInitialized()
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
+
+    protected fun getModules(): List<Module> {
+        return AppModules.get()
+    }
+
+    private fun initLibsRequiredBeforeDependenciesInitialize() {
         Teller.init(this)
+    }
+
+    private fun initLibsPostDependenciesInitialized() {
         Wendy.init(this, pendingTasksFactory)
         WendyConfig.debug = BuildConfig.DEBUG
+        startPeriodicRunningPendingTasks()
     }
 
-    protected fun getApplicationComponent(): ApplicationComponent {
-        return AppApplicationComponent.Initializer.init(this)
-    }
-
-    override fun activityInjector(): AndroidInjector<Activity> = dispatchingActivityInjector
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = dispatchingFragmentInjector
-    override fun serviceInjector(): AndroidInjector<Service> = dispatchingServiceInjector
-
-    /** A tree which logs important information for crash reporting.  */
-    private class CrashReportingTree : Timber.Tree() {
-        override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
-                return
-            }
-
-            Crashlytics.log(priority, tag, message)
-
-            if (t != null) {
-                if (priority == Log.ERROR) {
-                    Crashlytics.logException(t)
-                } else if (priority == Log.WARN) {
-                    // don't do anything since I am already logging it above.
-                }
-            }
-        }
+    private fun startPeriodicRunningPendingTasks() {
+        val pendingTaskWorkerBuilder = PeriodicWorkRequest.Builder(PendingTasksWorker::class.java, 30, TimeUnit.MINUTES)
+        val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+        WorkManager.getInstance().enqueue(pendingTaskWorkerBuilder.setConstraints(constraints).build())
     }
 
 }

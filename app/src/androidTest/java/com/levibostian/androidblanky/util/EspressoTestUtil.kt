@@ -35,8 +35,8 @@ object EspressoTestUtil {
      *
      * @param activityTestRule The activity rule whose views will be checked
      */
-    fun disableProgressBarAnimations(activityTestRule: ActivityTestRule<out FragmentActivity>) {
-        activityTestRule.activity.supportFragmentManager
+    fun disableProgressBarAnimations(activity: FragmentActivity) {
+        activity.supportFragmentManager
                 .registerFragmentLifecycleCallbacks(
                         object : FragmentManager.FragmentLifecycleCallbacks() {
                             override fun onFragmentViewCreated(

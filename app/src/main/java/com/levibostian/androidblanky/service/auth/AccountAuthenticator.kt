@@ -9,6 +9,7 @@ import android.accounts.AccountManager
 import android.content.Intent
 import android.text.TextUtils
 import com.levibostian.androidblanky.BuildConfig
+import com.levibostian.androidblanky.view.ui.activity.LaunchActivity
 import com.levibostian.androidblanky.view.ui.activity.auth.AuthenticatorActivity
 
 class AccountAuthenticator(private val context: Context): AbstractAccountAuthenticator(context) {
@@ -23,16 +24,27 @@ class AccountAuthenticator(private val context: Context): AbstractAccountAuthent
         const val ACCOUNT_TYPE = "com.levibostian.androidblanky"
     }
 
+    /**
+     * Called after a call to [AccountManager.addAccount].
+     *
+     * This function is kinda a hack. Android wants you to be able to add another account to the [AccountManager], but my app only allows 1 account to be added at a time. So, this function will simply get an [Intent] to launch [AuthenticatorActivity] which handles asking you to logout if you have not done so already.
+     *
+     * If this function here is ever edited to allowing add multiple accounts, we will need to edit the app's code to handle adding multiple accounts instead of asking you to logout first.
+     *
+     * Inside of the [Intent] returned from this function, include anything extra the [AuthenticatorActivity] needs to do it's job. You can pull out data from the [options] param since that param is passed into you from the call to [AccountManager.addAccount]. We do that here were we can pass a passwordless_token to the [AuthenticatorActivity] which it knows how to handle that.
+     */
     override fun addAccount(response: AccountAuthenticatorResponse, accountType: String, authTokenType: String?, requiredFeatures: Array<out String>?, options: Bundle?): Bundle {
-        // The Intent inside of the returned Bundle here is what is passed to your AuthenticatorActivity so if there is data you need, send it.
-        //
-        // Note: This app is built to have 1 user logged in at one time. So, when addAccount is called, it will simply launch the AuthenticatorActivity where the activity will ask the user to logout of the existing account, if they are logged in already, or to simply login. If this function here is ever edited to allowing add multiple accounts, we will need to edit some of the LaunchActivity code too (there is a comment in there where).
         return getAuthenticatorActivityIntentBundle(response, options?.getString(AuthenticatorActivity.PASSWORDLESS_TOKEN, null))
     }
 
+    /**
+     * Called after a call to [AccountManager.getAuthToken].
+     *
+     * Checks if an auth token already exists. If it does, return it. If it does not, return an [Intent] to launch to get the auth token from a UI.
+     */
     override fun getAuthToken(response: AccountAuthenticatorResponse, account: Account?, authTokenType: String?, options: Bundle?): Bundle {
         val accountManager = AccountManager.get(context)
-        val authToken = accountManager.peekAuthToken(account, authTokenType)
+        val authToken: String? = accountManager.peekAuthToken(account, authTokenType)
 
         if (authToken?.isNotBlank() == true) {
             val result = Bundle()
@@ -46,9 +58,8 @@ class AccountAuthenticator(private val context: Context): AbstractAccountAuthent
     }
 
     private fun getAuthenticatorActivityIntentBundle(response: AccountAuthenticatorResponse, passwordlessToken: String?): Bundle {
-        val intent = AuthenticatorActivity.getIntent(context).apply {
+        val intent = AuthenticatorActivity.getIntent(context, passwordlessToken).apply {
             putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
-            passwordlessToken?.let { putExtra(AuthenticatorActivity.PASSWORDLESS_TOKEN, it) }
         }
 
         val bundle = Bundle()
@@ -57,22 +68,26 @@ class AccountAuthenticator(private val context: Context): AbstractAccountAuthent
         return bundle
     }
 
+    /**
+     * I don't know what any of the below functions do.
+     */
     override fun getAccountRemovalAllowed(response: AccountAuthenticatorResponse?, account: Account?): Bundle {
-        val result = Bundle()
         val allowed = true
-        result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, allowed)
-        return result
+
+        return Bundle().apply {
+            putBoolean(AccountManager.KEY_BOOLEAN_RESULT, allowed)
+        }
     }
 
     override fun confirmCredentials(response: AccountAuthenticatorResponse?, account: Account?, options: Bundle?): Bundle? = null
 
     override fun updateCredentials(response: AccountAuthenticatorResponse?, account: Account?, authTokenType: String?, options: Bundle?): Bundle? = null
 
+    // This call is used to query whether the Authenticator supports specific features. We don't expect to get called, so we always return false (no) for any queries.
     override fun hasFeatures(response: AccountAuthenticatorResponse?, account: Account?, features: Array<out String>?): Bundle {
-        // This call is used to query whether the Authenticator supports specific features. We don't expect to get called, so we always return false (no) for any queries.
-        val result = Bundle()
-        result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false)
-        return result
+        return Bundle().apply {
+            putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false)
+        }
     }
 
     override fun editProperties(response: AccountAuthenticatorResponse?, accountType: String?): Bundle? = null

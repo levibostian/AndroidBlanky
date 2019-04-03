@@ -2,7 +2,7 @@ package com.levibostian.androidblanky.view.ui
 
 import com.levibostian.androidblanky.MockApplicationComponent
 
-class TestMainApplication : MainApplication() {
+class TestMainApplication: MainApplication() {
 
     companion object {
         var overrideComponent: ApplicationComponent? = null

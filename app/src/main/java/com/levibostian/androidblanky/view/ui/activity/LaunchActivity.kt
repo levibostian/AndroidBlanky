@@ -11,13 +11,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
+import com.levibostian.androidblanky.service.manager.DeviceAccountManager
 import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.androidblanky.view.ui.activity.auth.AuthenticatorActivity
-import dagger.android.AndroidInjection
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class LaunchActivity: Activity() {
 
@@ -31,12 +31,10 @@ class LaunchActivity: Activity() {
         }
     }
 
-    @Inject lateinit var userManager: UserManager
-    @Inject lateinit var notificationChannelManager: NotificationChannelManager
-    @Inject lateinit var accountManager: AccountManager
+    private val notificationChannelManager: NotificationChannelManager by inject()
+    private val deviceAccountManager: DeviceAccountManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         notificationChannelManager.createChannels()
@@ -52,21 +50,9 @@ class LaunchActivity: Activity() {
     }
 
     private fun launchStartupActivity(passwordlessToken: String?, logoutOfAccount: Boolean) {
-        val userAccount = userManager.getAccount()
-
-        if (userAccount == null || logoutOfAccount) { // The AccountAuthenticator's addAccount() function will simply launch an intent to launch the AuthenticatorActivity where it handles logging you out. If AccountAuthenticator is ever updated (there is a comment where), this code needs to be updated too to delete some data or something to trigger the logout process and THEN calling accountManager.addAccount().
-            val addAccountOptions = Bundle()
-            passwordlessToken?.let { addAccountOptions.putString(AuthenticatorActivity.PASSWORDLESS_TOKEN, it) }
-
-            accountManager.addAccount(AccountAuthenticator.ACCOUNT_TYPE, null, null, addAccountOptions, this, {
-                if (it.isDone && !it.isCancelled && it.result.getString(AccountManager.KEY_ACCOUNT_NAME) != null) startActivity(MainActivity.getIntent(this))
-                finish()
-            }, null)
-        } else {
-            accountManager.getAuthToken(userAccount, AccountAuthenticator.ACCOUNT_TYPE, null, this, {
-                if (it.isDone && !it.isCancelled && it.result.getString(AccountManager.KEY_AUTHTOKEN) != null) startActivity(MainActivity.getIntent(this))
-                finish()
-            }, null)
+        deviceAccountManager.continueLoginFlow(this, logoutOfAccount, passwordlessToken) { userLoggedIn ->
+            if (userLoggedIn) startActivity(MainActivity.getIntent(this))
+            finish()
         }
     }
 
@@ -76,7 +62,7 @@ class LaunchActivity: Activity() {
             return true
         }
 
-        // If a Firebase Dynamic short link launches the app, we cannot query for parameters in the intent. So, we do this hack  where we try to view the deep link which will launch this activity *again* but with a full length Dynamic link.
+        // If a Firebase Dynamic short link launches the app, we cannot query for parameters in the intent. So, we do this hack where we try to view the deep link which will launch this activity *again* but with a full length Dynamic link.
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
                 .addOnSuccessListener(this) { pendingDynamicLinkData ->

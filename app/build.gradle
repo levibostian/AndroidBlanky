@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-if (System.getenv("release") == "true") {
+if (System.getenv("RELEASE") == "true") {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 
@@ -27,6 +27,7 @@ repositories {
 
 android {
     compileSdkVersion 28
+    // Make sure to also update .travis.yml, and fastlane/Fastfile build tools version values.
     buildToolsVersion "28.0.3"
 
     packagingOptions {
@@ -114,11 +115,16 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // AndroidX UI libs
+    implementation 'androidx.core:core-ktx:1.0.1'
     implementation "androidx.appcompat:appcompat:1.0.2"
     implementation "androidx.fragment:fragment:1.0.0"
+    implementation "androidx.fragment:fragment-ktx:1.0.0"
+    debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha05'
     implementation "com.google.android.material:material:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.0.0"
     implementation "androidx.preference:preference:1.0.0"
+    // Required to support SDK < 21
+    implementation 'com.android.support:multidex:1.0.3'
 
     // Teller
     implementation 'com.levibostian.teller:teller-android:0.2.0-alpha'
@@ -155,6 +161,8 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycleVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycleVersion"
 
     // Room
     def roomVersion = "2.0.0"
@@ -163,18 +171,11 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$roomVersion"
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
-    // Dagger
-    def daggerVersion = "2.16"
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    androidTestImplementation "com.google.dagger:dagger:$daggerVersion"
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
-    implementation "com.google.dagger:dagger-android:$daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
-    androidTestImplementation "com.google.dagger:dagger-android:$daggerVersion"
-    androidTestImplementation "com.google.dagger:dagger-android-support:$daggerVersion"
-    kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerVersion"
+    // Koin
+    def koinVersion = "2.0.0-rc-2"
+    implementation "org.koin:koin-android:$koinVersion"
+    implementation "org.koin:koin-android-viewmodel:$koinVersion"
+    testImplementation "org.koin:koin-test:$koinVersion"
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:2.1.0"

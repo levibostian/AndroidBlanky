@@ -7,15 +7,17 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Build.VERSION_CODES.LOLLIPOP_MR1
 import android.os.Handler
+import androidx.core.content.edit
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
 import com.levibostian.androidblanky.service.db.Database
+import com.levibostian.androidblanky.service.manager.DeviceAccountManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.wendy.service.Wendy
 
 @OpenForTesting
 class DataDestroyer(private val db: Database,
-                    private val accountManager: AccountManager,
+                    private val deviceAccountManager: DeviceAccountManager,
                     private val userManager: UserManager,
                     private val sharedPreferences: SharedPreferences) {
 
@@ -31,22 +33,14 @@ class DataDestroyer(private val db: Database,
     }
 
     fun destroyAccountManagerAccounts() {
-        accountManager.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE).forEach { account ->
-            accountManager.clearPassword(account)
-            accountManager.peekAuthToken(account, AccountAuthenticator.ACCOUNT_TYPE)?.let {
-                accountManager.invalidateAuthToken(AccountAuthenticator.ACCOUNT_TYPE, it)
-            }
-            if (Build.VERSION.SDK_INT >= LOLLIPOP_MR1) {
-                accountManager.removeAccountExplicitly(account)
-            } else {
-                accountManager.removeAccount(account, null, null)
-            }
-        }
+        deviceAccountManager.logout()
     }
 
     @SuppressLint("ApplySharedPref")
     fun destroySharedPreferences() {
-        sharedPreferences.edit().clear().commit()
+        sharedPreferences.edit {
+            clear()
+        }
     }
 
     fun destroyWendy(complete: () -> Unit?) {

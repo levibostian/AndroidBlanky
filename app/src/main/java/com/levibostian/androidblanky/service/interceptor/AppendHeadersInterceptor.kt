@@ -1,22 +1,24 @@
 package com.levibostian.androidblanky.service.interceptor
 
 import com.levibostian.androidblanky.service.manager.UserManager
+import com.levibostian.androidblanky.AppConstants
 import okhttp3.Interceptor
 import okhttp3.Response
 
 class AppendHeadersInterceptor(private val userManager: UserManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain?): Response {
-        var request = chain!!.request()
+        val request = chain!!.request()
+        var requestBuilder = request.newBuilder()
+
+        requestBuilder = requestBuilder.addHeader("app-environment", AppConstants.APP_ENVIRONMENT)
+        requestBuilder = requestBuilder.addHeader("accept-version", "0.1.0")
 
         userManager.authToken?.let { authToken ->
-            request = request
-                    .newBuilder()
-                    .addHeader("Authorization", "Bearer $authToken")
-                    .build()
+            requestBuilder = requestBuilder.addHeader("Authorization", "Bearer $authToken")
         }
 
-        return chain.proceed(request)
+        return chain.proceed(requestBuilder.build())
     }
 
 }

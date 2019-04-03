@@ -3,42 +3,69 @@ language: android
 jdk:
   - oraclejdk8
 
+# Installs the newest platform tools instead of the outdated v23 travis has by default
+android:
+  components:
+    # Below 3 lines are to download the newer android tools. Tools is listed twice on purpose. https://docs.travis-ci.com/user/languages/android/#installing-a-newer-sdk-platform-tools-revision
+    - tools
+    - platform-tools
+    - tools
+    # Other components needed for the build.
+    - build-tools-28.0.3
+    - android-28
+  licenses:
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
 install:
-  - bundle install --path vendor/bundle
+  - bundle install
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
+  bundler: true
   directories:
-    # Android SDK
-    - $HOME/android-sdk-dl
-    - $HOME/android-sdk
-
-    # Gradle dependencies
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-
-    # Gems
-    - vendor/bundle
-
-    # Android build cache (see http://tools.android.com/tech-docs/build-cache)
     - $HOME/.android/build-cache
+notifications:
+  email: false
 env:
-  - ANDROID_HOME=$HOME/android-sdk
+  global:
+    - AWS_ACCESS_KEY=12345
+    - AWS_SECRET_KEY=67890
+    # DANGER_GITHUB_API_TOKEN
+    - secure: "12345"
 
 jobs:
   include:
     - stage: danger
+      name: "Danger"
       script: bundle exec danger --fail-on-errors=true
+    - stage: tests
+      name: "Tests"
+      script: ruby ./bin/ci/run_unit_tests.rb
+    - # Tests
+      # Using `travis_wait` because task may take >10 minutes to run without any output to the console while running tests on test lab.
+      script: travis_wait ruby ./bin/ci/run_ui_integration_tests.rb
+    - stage: staging-release
+      name: "Deploy staging app"
+      script: bundle exec fastlane staging_deployment
     - stage: beta-release
-      script: ./bin/install_android_sdk.sh && ./gradlew androidDependencies && bundle exec fastlane beta
+      name: "Deploy beta app"
+      script: bundle exec fastlane beta_deployment
     - stage: prod-release
-      script: ./bin/install_android_sdk.sh && ./gradlew androidDependencies && bundle exec fastlane production
+      name: "Deploy prod app"
+      script: bundle exec fastlane production_deployment
 
 stages:
   - name: danger
-    if: type IN (pull_request)
+    if: type IN (pull_request) # Danger only works for pull requests
+  - name: tests # Run tests on every commit to help keep tests passing as long as possible.
+    if: type IN (push, pull_request) # Testing on pull requests assert that after merge, the branch wont be broken.
+  - name: staging-release
+    if: branch = staging AND type IN (push)
   - name: beta-release
-    if: branch = beta AND type IN (pull_request)
+    if: branch = beta AND type IN (push)
   - name: prod-release
-    if: branch = production AND type IN (pull_request)
+    if: branch = production AND type IN (push)

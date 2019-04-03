@@ -1,19 +1,23 @@
 package com.levibostian.androidblanky.util
 
 import android.app.Activity
-import androidx.test.InstrumentationRegistry
-import com.levibostian.androidblanky.AndroidIntegrationTestClass
-import com.squareup.spoon.SpoonRule
 import tools.fastlane.screengrab.Screengrab
+import java.lang.Thread.sleep
 
-class ScreenshotUtil(val activity: Activity, val spoon: SpoonRule) {
+class ScreenshotUtil {
 
     fun take(name: String) {
-        try {
-            Screengrab.screenshot(name)
-            spoon.screenshot(activity, name)
-        } catch (e: RuntimeException) {
-            // We are running on Android N+. We don't have permission to take screenshot unless we run `fastlane screengrab` from the command line. Sometimes, I don't want to do that.
+    }
+
+    fun takeForStore(name: String) {
+        sleep(300) // Assert that the view is refreshed enough to take pic.
+
+        name.replace(' ', '_').let { cleanedName ->
+            try {
+                Screengrab.screenshot(cleanedName)
+            } catch (e: Throwable) {
+                // in case we are running this test *not* using screengrab but instead instrumentation tests, the screenshot attempt will fail.
+            }
         }
     }
 

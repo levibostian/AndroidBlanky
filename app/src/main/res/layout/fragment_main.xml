@@ -39,7 +39,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <com.levibostian.androidblanky.view.widget.UpdateTextView
                 android:id="@+id/data_age_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,90 +1,56 @@
 package com.levibostian.androidblanky.view.ui.fragment
 
-import androidx.lifecycle.Observer
 import android.os.Bundle
-import com.levibostian.androidblanky.view.ui.MainApplication
-import com.levibostian.androidblanky.R
-import kotlinx.android.synthetic.main.fragment_main.*
-import javax.inject.Inject
-import androidx.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Handler
 import android.text.format.DateUtils
 import android.view.*
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.levibostian.androidblanky.service.GitHubService
-import com.levibostian.androidblanky.service.db.Database
-import com.levibostian.androidblanky.service.event.LogoutUserEvent
+import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.service.model.RepoModel
+import com.levibostian.androidblanky.view.ui.activity.LaunchActivity
 import com.levibostian.androidblanky.view.ui.activity.LicensesActivity
-import com.levibostian.androidblanky.view.ui.activity.MainActivity
 import com.levibostian.androidblanky.view.ui.activity.SettingsActivity
 import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
 import com.levibostian.androidblanky.view.ui.dialog.AreYouSureLogoutWendyDialogFragment
 import com.levibostian.androidblanky.view.ui.extensions.closeKeyboard
 import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
-import com.levibostian.androidblanky.viewmodel.ViewModelFactory
-import com.levibostian.teller.datastate.listener.LocalDataStateListener
-import com.levibostian.teller.datastate.listener.OnlineDataStateListener
-import dagger.android.AndroidInjection
-import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
+import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 
-class MainFragment : Fragment() {
-
-    private lateinit var reposViewModel: ReposViewModel
-    private lateinit var gitHubUsernameViewModel: GitHubUsernameViewModel
-
-    private var updateLastSyncedHandler: Handler? = null
-    private var updateLastSyncedRunnable: Runnable? = null
+class MainFragment: Fragment() {
 
     private var fetchingSnackbar: Snackbar? = null
 
-    @Inject lateinit var service: GitHubService
-    @Inject lateinit var db: Database
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var eventBus: EventBus
+    private val reposViewModel: ReposViewModel by viewModel()
+    private val gitHubUsernameViewModel: GitHubUsernameViewModel by viewModel()
 
     companion object {
-        const val ARE_YOU_SURE_LOGOUT_DIALOG_FRAGMENT_TAG = "MainFragment_ARE_YOU_SURE_LOGOUT_DIALOG_FRAGMENT_TAG"
-
-        fun newInstance(): MainFragment {
-            val fragment = MainFragment()
-            val bundle = Bundle()
-            fragment.arguments = bundle
-
-            return fragment
+        fun newInstance(): MainFragment = MainFragment().apply {
+            arguments = Bundle().apply {}
         }
-    }
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        reposViewModel = ViewModelProviders.of(this, viewModelFactory).get(ReposViewModel::class.java)
-        gitHubUsernameViewModel = ViewModelProviders.of(this, viewModelFactory).get(GitHubUsernameViewModel::class.java)
-
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.main_fragment, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_fragment, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.settings -> {
                 startActivity(SettingsActivity.getIntent(activity!!))
                 true
@@ -94,11 +60,8 @@ class MainFragment : Fragment() {
                 true
             }
             R.id.logout -> {
-                AreYouSureLogoutWendyDialogFragment.getInstance(object : AreYouSureLogoutWendyDialogFragment.Listener {
-                    override fun logout() {
-                        eventBus.post(LogoutUserEvent(false))
-                    }
-                }).show(fragmentManager, ARE_YOU_SURE_LOGOUT_DIALOG_FRAGMENT_TAG)
+                startActivity(LaunchActivity.getIntent(activity!!, true))
+                activity!!.finish()
                 true
             }
             else -> {
@@ -115,70 +78,49 @@ class MainFragment : Fragment() {
         super.onStart()
         reposViewModel.observeRepos()
                 .observe(this, Observer { reposState ->
-                    reposState?.deliver(object : OnlineDataStateListener<List<RepoModel>> {
-                        override fun finishedFirstFetchOfData(errorDuringFetch: Throwable?) {
-                            if (errorDuringFetch != null) {
-                                errorDuringFetch.message?.let {
-                                    frag_main_loading_empty.showEmptyView(false)
-                                    frag_main_loading_empty.emptyViewMessage = it
-                                }
+                    reposState.whenNoCache { _, errorDuringFetch ->
+                        frag_main_loading_empty.showLoadingView(false)
 
-                                activity?.let {
-                                    AlertDialog.Builder(it)
-                                            .setTitle("Error")
-                                            .setMessage(errorDuringFetch.message?: "Unknown error. Please, try again.")
-                                            .setPositiveButton("Ok") { dialog, _ ->
-                                                dialog.dismiss()
-                                            }
-                                            .create()
-                                            .show()
-                                }
-                            }
-                        }
-                        override fun firstFetchOfData() {
-                            frag_main_loading_empty.showLoadingView(false)
-                        }
-                        override fun cacheEmpty() {
+                        errorDuringFetch?.message?.let {
                             frag_main_loading_empty.showEmptyView(false)
-                            frag_main_loading_empty.emptyViewMessage = "There are no repos."
+                            frag_main_loading_empty.emptyViewMessage = it
                         }
-                        override fun cacheData(data: List<RepoModel>, fetched: Date) {
-                            frag_main_loading_empty.showContentView(true)
+                    }
 
-                            updateLastSyncedRunnable?.let { updateLastSyncedHandler?.removeCallbacks(it) }
-                            updateLastSyncedHandler = Handler()
-                            updateLastSyncedRunnable = Runnable {
-                                data_age_textview.text = "Data last synced ${DateUtils.getRelativeTimeSpanString(fetched.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)}"
-                                updateLastSyncedHandler?.postDelayed(updateLastSyncedRunnable!!, 1000)
-                            }
-                            updateLastSyncedHandler?.post(updateLastSyncedRunnable!!)
+                    reposState.whenCache { cache, lastSuccessfulFetch, isFetching, _, _ ->
+                        data_age_textview.init {
+                            getString(R.string.repos_last_updated).format(Locale.getDefault(), DateUtils.getRelativeTimeSpanString(lastSuccessfulFetch.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS))
+                        }
 
+                        if (cache == null) {
+                            frag_main_loading_empty.emptyViewMessage = "There are no repos."
+                            frag_main_loading_empty.showEmptyView(false)
+                        } else {
                             repos_recyclerview.apply {
                                 layoutManager = LinearLayoutManager(activity!!)
-                                adapter = ReposRecyclerViewAdapter(data)
+                                adapter = ReposRecyclerViewAdapter(cache)
                                 setHasFixedSize(true)
                             }
+
+                            frag_main_loading_empty.showContentView(true)
                         }
-                        override fun fetchingFreshCacheData() {
+
+                        if (isFetching) {
                             fetchingSnackbar = Snackbar.make(parent_view, "Updating repos list...", Snackbar.LENGTH_LONG)
                             fetchingSnackbar?.show()
-                        }
-                        override fun finishedFetchingFreshCacheData(errorDuringFetch: Throwable?) {
+                        } else {
                             fetchingSnackbar?.dismiss()
                         }
-                    })
+                    }
                 })
         gitHubUsernameViewModel.observeUsername()
                 .observe(this, Observer { username ->
-                    username?.deliver(object : LocalDataStateListener<String> {
-                        override fun isEmpty() {
-                            username_edittext.setText("", TextView.BufferType.EDITABLE)
-                        }
-                        override fun data(data: String) {
-                            username_edittext.setText(data, TextView.BufferType.EDITABLE)
-                            reposViewModel.setUsername(data)
-                        }
-                    })
+                    if (username.cache != null) {
+                        username_edittext.setText(username.cache, TextView.BufferType.EDITABLE)
+                        reposViewModel.setUsername(username.cache!!)
+                    } else {
+                        username_edittext.setText("", TextView.BufferType.EDITABLE)
+                    }
                 })
 
         go_button.setOnClickListener {
@@ -190,12 +132,6 @@ class MainFragment : Fragment() {
                 closeKeyboard()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        updateLastSyncedRunnable?.let { updateLastSyncedHandler?.removeCallbacks(it) }
     }
 
 }

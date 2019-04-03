@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.commit
+import androidx.fragment.app.transaction
 import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.view.ui.fragment.SettingsFragment
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
@@ -26,7 +28,9 @@ class SettingsActivity: AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().add(R.id.activity_toolbar_fragment_container, SettingsFragment.getInstance()).commit()
+            supportFragmentManager.commit {
+                add(R.id.activity_toolbar_fragment_container, SettingsFragment.getInstance())
+            }
         }
     }
 
