@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.google.common.truth.Truth.assertThat
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
+import com.levibostian.androidblanky.util.SharedPreferencesMock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Before
@@ -15,8 +16,11 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class UserManagerTest {
 
-    @Mock private lateinit var sharedPrefs: SharedPreferences
     @Mock private lateinit var deviceAccountManager: DeviceAccountManager
+
+    private val sharedPrefsMock = SharedPreferencesMock()
+    private val sharedPrefs = sharedPrefsMock.sharedPrefs
+    private val sharedPrefsEditor = sharedPrefsMock.editor
 
     private lateinit var manager: UserManager
 
@@ -37,12 +41,8 @@ class UserManagerTest {
     fun authToken_commitTokenAfterSetting() {
         val id = "12345"
 
-        whenever(sharedPrefs.edit()).thenReturn(sharedPrefsEditor)
-        whenever(sharedPrefsEditor.putString(SharedPrefersKeys.USER_ID, id)).thenReturn(sharedPrefsEditor)
-
         manager.id = id
 
-        verify(appAnalytics).setUserId(id)
         verify(sharedPrefsEditor).putString(SharedPrefersKeys.USER_ID, id)
         verify(sharedPrefsEditor).commit()
     }

@@ -8,7 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 // List of pre-defined Firebase events: https://firebase.google.com/docs/reference/android/com/google/firebase/analytics/FirebaseAnalytics.Event
 class FirebaseLogger(context: Context): Logger {
 
-    private val firebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
+    private val firebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(context) }
 
     override fun enteredScreen(activity: Activity, screenName: String) {
         firebaseAnalytics.setCurrentScreen(activity, screenName, null)

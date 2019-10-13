@@ -1,12 +1,17 @@
 package com.levibostian.androidblanky.util
 
 import android.app.Activity
+import com.google.android.libraries.cloudtesting.screenshots.ScreenShotter
 import tools.fastlane.screengrab.Screengrab
 import java.lang.Thread.sleep
 
-class ScreenshotUtil {
+class ScreenshotUtil(val activity: Activity) {
 
     fun take(name: String) {
+        name.replace(' ', '_').let { cleanedName ->
+            // Firebase screenshots
+            ScreenShotter.takeScreenshot(name, activity)
+        }
     }
 
     fun takeForStore(name: String) {

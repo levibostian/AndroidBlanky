@@ -2,10 +2,12 @@ package com.levibostian.androidblanky.view.ui.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextWatcher
 import android.text.format.DateUtils
 import android.view.*
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +27,7 @@ import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
+import androidx.core.widget.TextViewCompat
 
 class MainFragment: Fragment() {
 
@@ -76,6 +79,7 @@ class MainFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
+
         reposViewModel.observeRepos()
                 .observe(this, Observer { reposState ->
                     reposState.whenNoCache { _, errorDuringFetch ->
@@ -113,6 +117,7 @@ class MainFragment: Fragment() {
                         }
                     }
                 })
+
         gitHubUsernameViewModel.observeUsername()
                 .observe(this, Observer { username ->
                     if (username.cache != null) {
@@ -123,12 +128,13 @@ class MainFragment: Fragment() {
                     }
                 })
 
-        go_button.setOnClickListener {
-            if (username_edittext.text.isBlank()) {
-                username_edittext.error = "Enter a GitHub username"
-            } else {
-                gitHubUsernameViewModel.setUsername(username_edittext.text.toString())
+        username_edittext.errorListener = { text ->
+            gitHubUsernameViewModel.validateUsername(text)
+        }
 
+        go_button.setOnClickListener {
+            username_edittext.textIfValid?.let { username ->
+                gitHubUsernameViewModel.setUsername(username.toString())
                 closeKeyboard()
             }
         }

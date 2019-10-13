@@ -216,6 +216,7 @@ dependencies {
     def junitVersion = "4.12"
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "junit:junit:$junitVersion"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
@@ -226,6 +227,7 @@ dependencies {
     def truthVersion = "0.42"
     testImplementation "com.google.truth:truth:$truthVersion"
     androidTestImplementation "com.google.truth:truth:$truthVersion"
+    androidTestImplementation 'androidx.test.ext:truth:1.1.0'
 
     // Mockito
     def mockitoVersion = "2.24.0"
@@ -243,6 +245,7 @@ dependencies {
 
     // Android Testing Support Library's runner and rules
     def androidTestLibVersion = "1.1.0"
+    androidTestImplementation "androidx.test:core:$androidTestLibVersion"
     androidTestImplementation "androidx.test:runner:$androidTestLibVersion"
     androidTestImplementation "androidx.test:rules:$androidTestLibVersion"
 
@@ -251,13 +254,16 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-web:$espressoVersion"
+    // androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
+    // androidTestImplementation "androidx.test.espresso:espresso-web:$espressoVersion"
     androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:$espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
 
     // Fastlane screengrab
     androidTestImplementation "tools.fastlane:screengrab:1.2.0"
+
+    // Firebase screenshots
+    androidTestCompile(name:'cloudtestingscreenshotter_lib', ext:'aar')
 }
 
 configurations.all {

@@ -25,12 +25,9 @@ object ServiceModule {
     fun get(): Module {
         return module {
             factory { PendingTasksFactory(get(), get()) }
-            factory { EventBus.getDefault() }
-            factory { androidApplication().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
             factory { DefaultErrorHandlerInterceptor(androidContext(), get(), get()) }
             factory { ServiceProvider(get(), get(), get()).get() }
             factory { ServiceProvider(get(), get(), get()).getGitHubService() }
-            factory { PreferenceManager.getDefaultSharedPreferences(androidApplication()) }
             factory {
                 Moshi.Builder()
                     .add(Date::class.java, Rfc3339DateJsonAdapter())
@@ -45,7 +42,7 @@ object ServiceModule {
                         FirebaseLogger(androidContext()),
                         CrashlyticsLogger(),
                         LogcatLogger()
-                ))
+                )) as Logger
             }
         }
     }

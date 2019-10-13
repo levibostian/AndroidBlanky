@@ -53,4 +53,6 @@
     <string name="sending_you_an_email">Sending you an email…</string>
     <string name="error_rate_limiting_response">Sorry! You need to take a little break. Wait a minute, then try again.</string>
     <string name="repos_last_updated">Repos last updated %s ago</string>
+    <string name="username_too_long">Username is %s too long.</string>
+    <string name="username_too_short">Username is %s too short.</string>
 </resources>

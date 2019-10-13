@@ -21,7 +21,7 @@ class ResponseProcessor(private val context: Context,
                         private val logger: Logger,
                         private val jsonAdapter: JsonAdapter) {
 
-    private val humanReadableUnhandledResultError = UnhandledHttpResultException(context.getString(R.string.fatal_network_error_message))
+    private val humanReadableUnhandledResultError by lazy { UnhandledHttpResultException(context.getString(R.string.fatal_network_error_message)) }
 
     fun <RESPONSE: OnlineRepositoryFetchResponse> process(result: Result<RESPONSE>, extraProcessing: ((code: Int, response: Response<RESPONSE>, jsonAdapter: JsonAdapter) -> Throwable?)? = null): OnlineRepository.FetchResponse<RESPONSE> {
         return processRequestFailure(result) ?:

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
+        <com.levibostian.androidblanky.view.widget.TextChangedEditText
             android:id="@+id/username_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

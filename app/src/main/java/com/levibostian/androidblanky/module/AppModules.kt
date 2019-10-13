@@ -7,7 +7,9 @@ object AppModules {
 
     fun get(): List<Module> {
         return listOf(
+                AndroidModule.get(),
                 DatabaseModule.get(),
+                LibraryModule.get(),
                 ManagerModule.get(),
                 RepositoryModule.get(),
                 ServiceModule.get(),
