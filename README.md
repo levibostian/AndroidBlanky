@@ -106,7 +106,7 @@ Now, open up the Android project in Android Studio. Everything should Gradle syn
 
 Now it's time to setup Firebase.
 
-* [Create a new Firebase application via a web browser and setup Firebase in app](https://firebase.google.com/docs/android/setup). The big thing to do here is to download a `google-services.json` file and save that to `app/google-services.json` replacing the existing one there already.
+* [Create a new Firebase application via a web browser and setup Firebase in app](https://firebase.google.com/docs/android/setup). The big thing to do here is to download a `google-services.json` file and save that to `app/google-services.json` replacing the existing one there already. You only need to have 1 `google-services.json` file after you add all of your Android apps to your Firebase project. All of the app's configurations are contained in 1 file. 
 * Select `Set up Crashlytics` [in the Firebase console](https://console.firebase.google.com/project/_/crashlytics) for the project you just created (if `Set up Crashlytics` is not visible, simply [follow these directions](https://firebase.google.com/docs/crashlytics/get-started) to enable Crashlytics in your project).
 * Build > Clean Project. Build > Rebuild Project.
 
