@@ -120,54 +120,52 @@ dependencies {
     // AndroidX UI libs
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation "androidx.appcompat:appcompat:1.1.0"
-    implementation "androidx.fragment:fragment-ktx:1.1.0"
-    debugImplementation 'androidx.fragment:fragment-testing:1.2.0-rc01'
+    implementation "androidx.fragment:fragment-ktx:1.2.0"
+    debugImplementation 'androidx.fragment:fragment-testing:1.2.0'
     implementation "com.google.android.material:material:1.0.0"
-    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.preference:preference:1.1.0"
     // Required to support SDK < 21
     implementation 'com.android.support:multidex:1.0.3'
 
     // Teller
-    implementation 'com.levibostian.teller:teller-android:0.2.0-alpha'
+    implementation 'com.github.levibostian:Teller-Android:6f2ec8b3ba'
 
     // Wendy
     implementation 'com.github.levibostian:Wendy-Android:b14c06c7f0'
 
     // WorkManager
-    def work_version = "2.2.0"
+    def work_version = "2.3.0"
     implementation "androidx.work:work-runtime-ktx:$work_version"
     androidTestImplementation "androidx.work:work-testing:$work_version"
 
     // Firebase
-    implementation "com.google.firebase:firebase-core:17.2.1"
-    implementation 'com.google.firebase:firebase-perf:19.0.1'
-    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation "com.google.firebase:firebase-core:17.2.2"
+    implementation 'com.google.firebase:firebase-perf:19.0.5'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-invites:17.0.0'
 
-    // Glide
-    def glideVersion = "4.9.0"
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
-    implementation "com.github.bumptech.glide:okhttp3-integration:$glideVersion"
+    // Coil
+    implementation "io.coil-kt:coil:0.9.2"
 
     // Play Install Referrer Library
-    implementation 'com.android.installreferrer:installreferrer:1.0'
+    implementation 'com.android.installreferrer:installreferrer:1.1.1'
 
     // Custom views
-    implementation "com.github.levibostian:androidviews:0.1.4"
+    implementation 'com.levibostian.swapper:swapper:0.1.0'
+    implementation 'com.levibostian.pleasehold:pleasehold:0.1.0'
+    implementation 'com.levibostian.empty:empty:0.1.0'
 
     // Architecture components
-    def lifecycleVersion = "2.1.0"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion" // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion" // lifecycle compiler for java8
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycleVersion" // Rx support for LiveData
-    androidTestImplementation "androidx.arch.core:core-testing:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0" // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0" // lifecycle compiler for java8
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.2.0" // Rx support for LiveData
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0"
 
     // Room
-    def roomVersion = "2.2.1"
+    def roomVersion = "2.2.3"
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-rxjava2:$roomVersion"
@@ -181,7 +179,7 @@ dependencies {
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
-    implementation "io.reactivex.rxjava2:rxjava:2.2.10"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.17"
     implementation "com.f2prateek.rx.preferences2:rx-preferences:2.0.0"
 
     // Moshi
@@ -265,7 +263,7 @@ dependencies {
     androidTestImplementation "tools.fastlane:screengrab:1.2.0"
 
     // Firebase screenshots
-    androidTestCompile(name:'cloudtestingscreenshotter_lib', ext:'aar')
+    androidTestImplementation(name:'cloudtestingscreenshotter_lib', ext:'aar')
 }
 
 configurations.all {
@@ -273,12 +271,11 @@ configurations.all {
         force "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     }
 }
-
-apply plugin: 'com.google.gms.google-services'
-
-// Disable running android or unit tests on release versions of the app. We don't want to especially as we only want the all-open kotlin compiler plugin to run on debug code.
-project.tasks.whenTaskAdded {
-    if (it.name.contains("Test") && it.name.contains("Release")) {
-        it.enabled = false
+// enable java8, from: https://coil-kt.github.io/coil/getting_started/#java-8
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

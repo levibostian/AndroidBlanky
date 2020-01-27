@@ -24,9 +24,7 @@ class FirebaseMessagingService: FirebaseMessagingService() {
     // When the user taps on the notification they are returned to the app. Messages containing both notification
     // and data payloads are treated as notification messages. The Firebase console always sends notification
 // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-    override fun onMessageReceived(message: RemoteMessage?) {
-        if (message == null) return
-
+    override fun onMessageReceived(message: RemoteMessage) {
         if (message.data.isNotEmpty()) {
             // Job to run.
         } else {
@@ -44,7 +42,7 @@ class FirebaseMessagingService: FirebaseMessagingService() {
         }
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         userManager.fcmPushNotificationToken = token
     }
 
