@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.koin.android.ext.android.inject
 
 class MainActivity: BaseActivity() {
 

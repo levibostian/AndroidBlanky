@@ -11,12 +11,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.extensions.onAttachDiGraph
 import com.levibostian.androidblanky.service.util.ConnectivityUtil
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.listeners.TaskRunnerListener
 import com.levibostian.wendy.service.PendingTask
 import com.levibostian.wendy.service.Wendy
 import com.levibostian.wendy.types.ReasonPendingTaskSkipped
+import javax.inject.Inject
 
 class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener {
 
@@ -31,8 +33,11 @@ class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener 
 
     override fun onAttach(context: Context) {
         ((activity as? Listener) ?: (parentFragment as? Listener))?.let { listener = it }
+        onAttachDiGraph().inject(this)
         super.onAttach(context)
     }
+
+    @Inject lateinit var connectivityUtil: ConnectivityUtil
 
     private lateinit var listener: Listener
     private var dialogView: View? = null
@@ -109,7 +114,7 @@ class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener 
     }
 
     private fun refreshView() {
-        state = if (!ConnectivityUtil.isNetworkAvailable(activity!!)) State.NO_NETWORK_CONNECTION
+        state = if (!connectivityUtil.isNetworkAvailable()) State.NO_NETWORK_CONNECTION
         else if (Wendy.shared.getAllTasks().isEmpty()) State.DONE_SYNCING else State.SYNCING
     }
 

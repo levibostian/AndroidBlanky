@@ -13,9 +13,10 @@ import com.levibostian.teller.cachestate.OnlineCacheState
 import io.reactivex.BackpressureStrategy
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 @OpenForTesting
-class ReposViewModel(private val reposRepository: ReposRepository): ViewModel() {
+class ReposViewModel @Inject constructor(private val reposRepository: ReposRepository): ViewModel() {
 
     fun setUsername(username: String) {
         reposRepository.requirements = ReposRepository.GetRequirements(username)

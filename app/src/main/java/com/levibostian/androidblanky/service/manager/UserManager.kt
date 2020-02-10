@@ -11,9 +11,10 @@ import com.levibostian.androidblanky.service.logger.Logger
 import com.levibostian.androidblanky.service.model.SharedPrefersKeys
 import com.levibostian.androidblanky.service.pendingtasks.UpdateFcmTokenPendingTask
 import com.levibostian.wendy.service.Wendy
+import javax.inject.Inject
 
-class UserManager(private val sharedPrefs: SharedPreferences,
-                  private val deviceAccountManager: DeviceAccountManager) {
+class UserManager @Inject constructor(private val sharedPrefs: SharedPreferences,
+                                      private val deviceAccountManager: DeviceAccountManager) {
 
     fun isUserLoggedIn(): Boolean {
         return (id != null) && (authToken != null) && (email != null)

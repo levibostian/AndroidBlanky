@@ -17,9 +17,10 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 @OpenForTesting
-class UserViewModel(private val userRepository: UserRepository): ViewModel() {
+class UserViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
 
     fun loginPasswordlessEmail(email: String): Single<OnlineRepository.FetchResponse<MessageResponseVo>> {
         return userRepository.loginPasswordlessEmail(email)

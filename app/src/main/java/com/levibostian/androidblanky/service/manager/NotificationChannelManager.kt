@@ -7,8 +7,9 @@ import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.graphics.Color
 import android.os.Build
+import javax.inject.Inject
 
-class NotificationChannelManager(private val context: Context) {
+class NotificationChannelManager @Inject constructor(private val context: Context) {
 
     companion object {
         @SuppressLint("InlinedApi")

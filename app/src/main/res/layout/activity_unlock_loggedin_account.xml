@@ -7,11 +7,16 @@
               android:layout_height="match_parent"
               android:background="@color/primary_lighter">
 
-    <com.levibostian.loadingemptyviews.views.LoadingEmptyLayout
-        android:id="@+id/act_unlock_account_loading_empty"
+    <com.levibostian.swapper.SwapperView
+        android:id="@+id/act_unlock_account_swapper_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:loadingEmpty_loadingText="@string/sending_you_an_email">
+        android:layout_height="match_parent">
+
+        <com.levibostian.pleasehold.PleaseHoldView
+            android:id="@+id/act_unlock_account_loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:pleasehold_message_text="@string/sending_you_an_email"/>
 
         <LinearLayout
             android:id="@+id/act_unlock_account_login_view"
@@ -80,6 +85,5 @@
                     android:text="@string/log_out"/>
             </LinearLayout>
         </LinearLayout>
-    </com.levibostian.loadingemptyviews.views.LoadingEmptyLayout>
-
+    </com.levibostian.swapper.SwapperView>
 </LinearLayout>

@@ -21,17 +21,15 @@ import io.fabric.sdk.android.Fabric
 import java.util.concurrent.TimeUnit
 import androidx.multidex.MultiDex
 import com.levibostian.androidblanky.BuildConfig
-import com.levibostian.androidblanky.module.*
-import org.koin.android.ext.android.inject
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import org.koin.core.module.Module
+import com.levibostian.androidblanky.di.*
+import javax.inject.Inject
 
 @OpenForTesting
 class MainApplication: Application() {
 
-    private val pendingTasksFactory: PendingTasksFactory by inject()
+    lateinit var appComponent: AppGraph
+
+    @Inject lateinit var pendingTasksFactory: PendingTasksFactory
 
     override fun onCreate() {
         super.onCreate()
@@ -40,16 +38,17 @@ class MainApplication: Application() {
         val fabric = Fabric.Builder(this).kits(Crashlytics.Builder().core(core).build()).debuggable(true).build()
         Fabric.with(fabric)
 
-        initLibsRequiredBeforeDependenciesInitialize()
+        appComponent = initAppComponent()
+        appComponent.inject(this)
 
-        // Application must be injected in the onCreate() so that services are able to be injected.
-        startKoin {
-            if (BuildConfig.DEBUG) androidLogger()
-            androidContext(this@MainApplication)
-            modules(getModules())
-        }
+        initDependencies()
+    }
 
-        initLibsPostDependenciesInitialized()
+    fun initAppComponent(): AppGraph {
+        return DaggerAppGraph
+                .builder()
+                .androidModule(AndroidModule(this))
+                .build()
     }
 
     override fun attachBaseContext(base: Context) {
@@ -57,15 +56,9 @@ class MainApplication: Application() {
         MultiDex.install(this)
     }
 
-    protected fun getModules(): List<Module> {
-        return AppModules.get()
-    }
-
-    private fun initLibsRequiredBeforeDependenciesInitialize() {
+    private fun initDependencies() {
         Teller.init(this)
-    }
 
-    private fun initLibsPostDependenciesInitialized() {
         Wendy.init(this, pendingTasksFactory)
         WendyConfig.debug = BuildConfig.DEBUG
         startPeriodicRunningPendingTasks()
@@ -76,7 +69,7 @@ class MainApplication: Application() {
         val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-        WorkManager.getInstance().enqueue(pendingTaskWorkerBuilder.setConstraints(constraints).build())
+        WorkManager.getInstance(this).enqueue(pendingTaskWorkerBuilder.setConstraints(constraints).build())
     }
 
 }

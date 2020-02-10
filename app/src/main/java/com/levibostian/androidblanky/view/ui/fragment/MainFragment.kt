@@ -1,5 +1,6 @@
 package com.levibostian.androidblanky.view.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextWatcher
@@ -24,22 +25,36 @@ import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
-import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 import androidx.core.widget.TextViewCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import com.levibostian.androidblanky.extensions.onAttachDiGraph
+import javax.inject.Inject
 
 class MainFragment: Fragment() {
 
     private var fetchingSnackbar: Snackbar? = null
 
-    private val reposViewModel: ReposViewModel by viewModel()
-    private val gitHubUsernameViewModel: GitHubUsernameViewModel by viewModel()
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val reposViewModel by viewModels<ReposViewModel> { viewModelFactory }
+    private val gitHubUsernameViewModel by viewModels<GitHubUsernameViewModel> { viewModelFactory }
+
+    enum class SwapperViews {
+        LOADING_VIEW,
+        EMPTY_VIEW,
+        REPOS
+    }
 
     companion object {
         fun newInstance(): MainFragment = MainFragment().apply {
             arguments = Bundle().apply {}
         }
+    }
+
+    override fun onAttach(context: Context) {
+        onAttachDiGraph().inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,17 +92,27 @@ class MainFragment: Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        frag_main_swapper.viewMap = mapOf(
+                Pair(SwapperViews.EMPTY_VIEW.name, frag_main_empty),
+                Pair(SwapperViews.LOADING_VIEW.name, frag_main_loading),
+                Pair(SwapperViews.REPOS.name, frag_main_content)
+        )
+    }
+
     override fun onStart() {
         super.onStart()
 
         reposViewModel.observeRepos()
                 .observe(this, Observer { reposState ->
                     reposState.whenNoCache { _, errorDuringFetch ->
-                        frag_main_loading_empty.showLoadingView(false)
+                        frag_main_swapper.swapTo(SwapperViews.LOADING_VIEW.name) {}
 
                         errorDuringFetch?.message?.let {
-                            frag_main_loading_empty.showEmptyView(false)
-                            frag_main_loading_empty.emptyViewMessage = it
+                            frag_main_empty.message = it
+                            frag_main_swapper.swapTo(SwapperViews.EMPTY_VIEW.name) {}
                         }
                     }
 
@@ -97,8 +122,8 @@ class MainFragment: Fragment() {
                         }
 
                         if (cache == null) {
-                            frag_main_loading_empty.emptyViewMessage = "There are no repos."
-                            frag_main_loading_empty.showEmptyView(false)
+                            frag_main_empty.message = getString(R.string.user_no_repos)
+                            frag_main_swapper.swapTo(SwapperViews.EMPTY_VIEW.name) {}
                         } else {
                             repos_recyclerview.apply {
                                 layoutManager = LinearLayoutManager(activity!!)
@@ -106,7 +131,7 @@ class MainFragment: Fragment() {
                                 setHasFixedSize(true)
                             }
 
-                            frag_main_loading_empty.showContentView(true)
+                            frag_main_swapper.swapTo(SwapperViews.REPOS.name) {}
                         }
 
                         if (isFetching) {

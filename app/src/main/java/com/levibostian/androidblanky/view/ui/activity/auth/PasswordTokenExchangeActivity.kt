@@ -1,28 +1,12 @@
 package com.levibostian.androidblanky.view.ui.activity.auth
 
-import android.accounts.AccountAuthenticatorActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.accounts.AccountManager
-import android.accounts.Account
 import android.app.Activity
 import android.os.Handler
-import androidx.core.content.ContextCompat
-import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.service.DataDestroyer
-import com.levibostian.androidblanky.service.auth.AccountAuthenticator
-import com.levibostian.androidblanky.service.logger.Logger
-import com.levibostian.androidblanky.service.manager.DeviceAccountManager
-import com.levibostian.androidblanky.service.manager.UserManager
-import com.levibostian.androidblanky.view.ui.MainApplication
-import kotlinx.android.synthetic.main.activity_password_token.*
-import org.koin.android.ext.android.inject
-import java.util.*
-import kotlin.math.log
 
 class PasswordTokenExchangeActivity: AppCompatActivity() {
 
@@ -49,7 +33,6 @@ class PasswordTokenExchangeActivity: AppCompatActivity() {
     }
 
     private fun setupViews() {
-        act_password_token_loading_view.loadingTextView!!.setTextColor(ContextCompat.getColor(this, android.R.color.white))
     }
 
     override fun onStart() {

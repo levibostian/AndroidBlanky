@@ -7,8 +7,9 @@ import com.levibostian.androidblanky.service.util.ResponseProcessor
 import com.levibostian.androidblanky.view.ui.MainApplication
 import com.levibostian.wendy.service.PendingTask
 import com.levibostian.wendy.service.PendingTasksFactory
+import javax.inject.Inject
 
-class PendingTasksFactory(private val userManager: UserManager,
+class PendingTasksFactory @Inject constructor(private val userManager: UserManager,
                           private val userRepository: UserRepository): PendingTasksFactory {
 
     override fun getTask(tag: String): PendingTask? {

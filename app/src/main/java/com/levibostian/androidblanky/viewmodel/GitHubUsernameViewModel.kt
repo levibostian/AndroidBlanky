@@ -11,9 +11,10 @@ import com.levibostian.androidblanky.service.service.endpoint.contract.GitHubUse
 import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.teller.cachestate.LocalCacheState
 import java.util.*
+import javax.inject.Inject
 
 @OpenForTesting
-class GitHubUsernameViewModel(private val context: Context,
+class GitHubUsernameViewModel @Inject constructor(private val context: Context,
                               private val repository: GitHubUsernameRepository): ViewModel() {
 
     private val repositoryRequirements = GitHubUsernameRepository.Requirements()

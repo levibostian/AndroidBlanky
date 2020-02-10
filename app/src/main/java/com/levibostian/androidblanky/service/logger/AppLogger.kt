@@ -2,6 +2,7 @@ package com.levibostian.androidblanky.service.logger
 
 import android.app.Activity
 import android.os.Bundle
+import javax.inject.Inject
 
 class AppLogger(private val loggers: List<Logger>): Logger {
 

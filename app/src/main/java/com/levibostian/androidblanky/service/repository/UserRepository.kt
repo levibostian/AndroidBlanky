@@ -7,10 +7,10 @@ import com.levibostian.androidblanky.service.vo.request.UpdateFcmTokenRequestBod
 import com.levibostian.androidblanky.service.vo.response.MessageResponseVo
 import com.levibostian.teller.repository.OnlineRepository
 import io.reactivex.Single
+import javax.inject.Inject
 
-
-class UserRepository(private val appService: AppService,
-                     private val responseProcessor: ResponseProcessor) {
+class UserRepository @Inject constructor(private val appService: AppService,
+                                         private val responseProcessor: ResponseProcessor) {
 
     fun updateFcmToken(fcmToken: String): Single<OnlineRepository.FetchResponse<MessageResponseVo>> {
         return appService.updateFcmToken(UpdateFcmTokenRequestBody(fcmToken))

@@ -1,26 +1,18 @@
 package com.levibostian.androidblanky.view.ui.activity.auth
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.accounts.AccountManager
-import android.accounts.Account
-import android.app.Activity
 import android.os.Handler
-import androidx.core.content.ContextCompat
-import android.view.View
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.levibostian.androidblanky.R
+import androidx.lifecycle.ViewModelProvider
 import com.levibostian.androidblanky.extensions.plusAssign
 import com.levibostian.androidblanky.viewmodel.UserViewModel
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.activity_passwordless_email_login.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
 abstract class BasePasswordlessEmailLoginActivity: AppCompatActivity() {
 
-    private val userViewModel: UserViewModel by viewModel()
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val userViewModel by viewModels<UserViewModel> { viewModelFactory }
 
     private val compositeDisposable = CompositeDisposable()
 

@@ -4,14 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.app.Activity
-import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.extensions.onCreateDiGraph
 import com.levibostian.androidblanky.service.DataDestroyer
 import com.levibostian.androidblanky.view.ui.dialog.AreYouSureLogoutWendyDialogFragment
 import com.levibostian.wendy.service.Wendy
-import kotlinx.android.synthetic.main.activity_password_token.*
-import org.koin.android.ext.android.inject
+import javax.inject.Inject
 
 class LogoutAccountActivity: AppCompatActivity(), AreYouSureLogoutWendyDialogFragment.Listener {
 
@@ -19,9 +18,10 @@ class LogoutAccountActivity: AppCompatActivity(), AreYouSureLogoutWendyDialogFra
         fun getIntent(context: Context): Intent = Intent(context, LogoutAccountActivity::class.java)
     }
 
-    private val dataDestroyer: DataDestroyer by inject()
+    @Inject lateinit var dataDestroyer: DataDestroyer
 
     override fun onCreate(icicle: Bundle?) {
+        onCreateDiGraph().inject(this)
         super.onCreate(icicle)
 
         setContentView(R.layout.activity_logout_account)
@@ -29,7 +29,6 @@ class LogoutAccountActivity: AppCompatActivity(), AreYouSureLogoutWendyDialogFra
     }
 
     private fun setupViews() {
-        act_password_token_loading_view.loadingTextView!!.setTextColor(ContextCompat.getColor(this, android.R.color.white))
     }
 
     override fun onStart() {

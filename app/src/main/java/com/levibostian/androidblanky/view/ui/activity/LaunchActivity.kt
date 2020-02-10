@@ -1,23 +1,14 @@
 package com.levibostian.androidblanky.view.ui.activity
 
-import android.accounts.AccountManager
-import android.accounts.AccountManagerCallback
-import android.accounts.AccountManagerFuture
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import com.levibostian.androidblanky.service.auth.AccountAuthenticator
+import com.levibostian.androidblanky.extensions.onCreateDiGraph
 import com.levibostian.androidblanky.service.manager.DeviceAccountManager
 import com.levibostian.androidblanky.service.manager.NotificationChannelManager
-import com.levibostian.androidblanky.service.manager.UserManager
-import com.levibostian.androidblanky.service.model.SharedPrefersKeys
-import com.levibostian.androidblanky.view.ui.MainApplication
-import com.levibostian.androidblanky.view.ui.activity.auth.AuthenticatorActivity
-import org.koin.android.ext.android.inject
+import javax.inject.Inject
 
 class LaunchActivity: Activity() {
 
@@ -31,10 +22,11 @@ class LaunchActivity: Activity() {
         }
     }
 
-    private val notificationChannelManager: NotificationChannelManager by inject()
-    private val deviceAccountManager: DeviceAccountManager by inject()
+    @Inject lateinit var notificationChannelManager: NotificationChannelManager
+    @Inject lateinit var deviceAccountManager: DeviceAccountManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        onCreateDiGraph().inject(this)
         super.onCreate(savedInstanceState)
 
         notificationChannelManager.createChannels()

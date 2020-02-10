@@ -14,12 +14,13 @@ import com.levibostian.androidblanky.service.manager.DeviceAccountManager
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.testing.OpenForTesting
 import com.levibostian.wendy.service.Wendy
+import javax.inject.Inject
 
 @OpenForTesting
-class DataDestroyer(private val db: Database,
-                    private val deviceAccountManager: DeviceAccountManager,
-                    private val userManager: UserManager,
-                    private val sharedPreferences: SharedPreferences) {
+class DataDestroyer @Inject constructor(private val db: Database,
+                                        private val deviceAccountManager: DeviceAccountManager,
+                                        private val userManager: UserManager,
+                                        private val sharedPreferences: SharedPreferences) {
 
     fun destroyAll(complete: (() -> Unit)?) {
         DataDestroyerDestroyAllAsyncTask(this) { error ->

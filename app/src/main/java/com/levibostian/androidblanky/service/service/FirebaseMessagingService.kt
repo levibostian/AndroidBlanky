@@ -1,20 +1,24 @@
 package com.levibostian.androidblanky.service.service
 
-
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.levibostian.androidblanky.R
+import com.levibostian.androidblanky.extensions.onCreateDiGraph
 import com.levibostian.androidblanky.service.manager.NotificationChannelManager
 import com.levibostian.androidblanky.service.manager.UserManager
-import org.koin.android.ext.android.inject
-import java.lang.Exception
+import javax.inject.Inject
 
 class FirebaseMessagingService: FirebaseMessagingService() {
 
-    private val userManager: UserManager by inject()
+    @Inject lateinit var userManager: UserManager
+
+    override fun onCreate() {
+        onCreateDiGraph().inject(this)
+        super.onCreate()
+    }
 
     // From Firebase's quickstart: https://github.com/firebase/quickstart-android/blob/master/messaging/app/src/main/java/com/google/firebase/quickstart/fcm/MyFirebaseMessagingService.java
     // There are two types of messages data messages and notification messages. Data messages are handled

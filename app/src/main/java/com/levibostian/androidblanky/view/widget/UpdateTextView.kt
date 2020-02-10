@@ -18,14 +18,14 @@ class UpdateTextView: TextView {
 
     constructor(context: Context, attrs: AttributeSet): this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        initialize(context, attrs, defStyleAttr)
+        initialize()
     }
     @TargetApi(VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr, defStyleRes) {
-        initialize(context, attrs, defStyleAttr)
+        initialize()
     }
 
-    private fun initialize(context: Context, attrs: AttributeSet, defStyleAttr: Int) {
+    private fun initialize() {
         visibility = View.INVISIBLE
     }
 

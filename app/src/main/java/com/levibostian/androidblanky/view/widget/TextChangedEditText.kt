@@ -14,12 +14,8 @@ class TextChangedEditText: AppCompatEditText {
 
     var errorListener: ((text: String) -> String?)? = null
 
-    constructor(context: Context, attrs: AttributeSet?): super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        initialize()
-    }
-    @TargetApi(VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet): this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
         initialize()
     }
 

@@ -28,13 +28,24 @@
             android:text="GO"/>
     </LinearLayout>
 
-    <com.levibostian.loadingemptyviews.views.LoadingEmptyLayout
-        android:id="@+id/frag_main_loading_empty"
+    <com.levibostian.swapper.SwapperView
+        android:id="@+id/frag_main_swapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.levibostian.pleasehold.PleaseHoldView
+            android:id="@+id/frag_main_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:pleasehold_message_text="@string/loading_repos"/>
+
+        <com.levibostian.empty.EmptyView
+            android:id="@+id/frag_main_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <LinearLayout
-            android:id="@+id/data_view"
+            android:id="@+id/frag_main_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -51,6 +62,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </LinearLayout>
-    </com.levibostian.loadingemptyviews.views.LoadingEmptyLayout>
-
+    </com.levibostian.swapper.SwapperView>
 </LinearLayout>

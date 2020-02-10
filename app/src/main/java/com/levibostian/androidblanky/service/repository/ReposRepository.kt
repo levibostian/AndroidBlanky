@@ -9,10 +9,12 @@ import com.levibostian.teller.repository.OnlineRepository
 import com.levibostian.teller.type.Age
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class ReposRepository(private val responseProcessor: ResponseProcessor,
-                      private val service: GitHubService,
-                      private val db: Database): OnlineRepository<List<RepoModel>, ReposRepository.GetRequirements, List<RepoModel>>() {
+class ReposRepository @Inject constructor(private val responseProcessor: ResponseProcessor,
+                                          private val service: GitHubService,
+                                          private val db: Database): OnlineRepository<List<RepoModel>, ReposRepository.GetRequirements, List<RepoModel>>() {
 
     override var maxAgeOfCache: Age = Age(1, Age.Unit.HOURS)
 
@@ -28,12 +30,13 @@ class ReposRepository(private val responseProcessor: ResponseProcessor,
                 }
     }
 
-    override fun saveCache(cache: List<RepoModel>, requirements: GetRequirements) {
+    public override fun saveCache(cache: List<RepoModel>, requirements: GetRequirements) {
         db.reposDao().insertRepos(cache)
     }
 
     override fun observeCache(requirements: GetRequirements): Observable<List<RepoModel>> {
         return db.reposDao().observeReposForUser(requirements.username).toObservable()
+                .subscribeOn(Schedulers.io())
     }
 
     override fun isCacheEmpty(cache: List<RepoModel>, requirements: GetRequirements): Boolean = cache.isEmpty()

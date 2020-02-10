@@ -7,19 +7,12 @@ import android.os.Bundle
 import android.accounts.AccountManager
 import android.accounts.Account
 import android.app.Activity
-import android.os.Handler
-import androidx.core.content.ContextCompat
-import android.view.View
-import androidx.appcompat.app.AlertDialog
-import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.service.DataDestroyer
+import com.levibostian.androidblanky.extensions.onCreateDiGraph
 import com.levibostian.androidblanky.service.auth.AccountAuthenticator
 import com.levibostian.androidblanky.service.logger.Logger
 import com.levibostian.androidblanky.service.manager.DeviceAccountManager
 import com.levibostian.androidblanky.service.manager.UserManager
-import com.levibostian.androidblanky.view.ui.MainApplication
-import org.koin.android.ext.android.inject
-import java.util.*
+import javax.inject.Inject
 
 class AuthenticatorActivity: AccountAuthenticatorActivity() {
 
@@ -32,18 +25,19 @@ class AuthenticatorActivity: AccountAuthenticatorActivity() {
         private const val PASSWORDLESS_EMAIL_LOGIN_REQUEST_ID = 3
 
         fun getIntent(context: Context, passwordlessToken: String?): Intent = Intent(context, AuthenticatorActivity::class.java).apply {
-            putExtra(AuthenticatorActivity.PASSWORDLESS_TOKEN, passwordlessToken)
+            putExtra(PASSWORDLESS_TOKEN, passwordlessToken)
         }
     }
 
-    private val userManager: UserManager by inject()
-    private val deviceAccountManager: DeviceAccountManager by inject()
-    private val logger: Logger by inject()
+    @Inject lateinit var userManager: UserManager
+    @Inject lateinit var deviceAccountManager: DeviceAccountManager
+    @Inject lateinit var logger: Logger
 
     private val passwordlessToken: String?
         get() = intent?.extras?.getString(PASSWORDLESS_TOKEN)
 
     override fun onCreate(icicle: Bundle?) {
+        onCreateDiGraph().inject(this)
         super.onCreate(icicle)
 
         passwordlessToken?.let { passwordlessToken ->

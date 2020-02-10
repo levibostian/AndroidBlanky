@@ -15,11 +15,12 @@ import com.squareup.moshi.Moshi
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.Result
 import java.io.IOException
+import javax.inject.Inject
 
 @OpenForTesting
-class ResponseProcessor(private val context: Context,
-                        private val logger: Logger,
-                        private val jsonAdapter: JsonAdapter) {
+class ResponseProcessor @Inject constructor(private val context: Context,
+                                            private val logger: Logger,
+                                            private val jsonAdapter: JsonAdapter) {
 
     private val humanReadableUnhandledResultError by lazy { UnhandledHttpResultException(context.getString(R.string.fatal_network_error_message)) }
 

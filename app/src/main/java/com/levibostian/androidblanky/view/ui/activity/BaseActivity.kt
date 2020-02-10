@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.koin.android.ext.android.inject
+import javax.inject.Inject
 
 /**
  * Extend for all root activities.
@@ -28,8 +28,8 @@ import org.koin.android.ext.android.inject
  */
 abstract class BaseActivity: AppCompatActivity() {
 
-    private val userManager: UserManager by inject()
-    private val installReferrerProcessor: InstallReferrerProcessor by inject()
+    @Inject lateinit var userManager: UserManager
+    @Inject lateinit var installReferrerProcessor: InstallReferrerProcessor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

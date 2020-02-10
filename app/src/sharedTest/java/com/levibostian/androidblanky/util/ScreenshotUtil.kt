@@ -7,6 +7,7 @@ import java.lang.Thread.sleep
 
 class ScreenshotUtil(val activity: Activity) {
 
+    // Firebase test lab: https://firebase.google.com/docs/test-lab/android/test-screenshots
     fun take(name: String) {
         name.replace(' ', '_').let { cleanedName ->
             // Firebase screenshots
@@ -14,6 +15,7 @@ class ScreenshotUtil(val activity: Activity) {
         }
     }
 
+    // Fastlane screengrab for store pics
     fun takeForStore(name: String) {
         sleep(300) // Assert that the view is refreshed enough to take pic.
 
