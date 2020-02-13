@@ -24,6 +24,7 @@ class AndroidTestTestRunner : AndroidJUnitRunner() {
         // Required only for testing to disable the *networking on UI thread* rule. This is because of our use of the OkHttp mock web server. Because we use the mock web server and Dagger to create the graph, the execution goes as follows: (1) Dagger graph made (2) app's MainApplication injected by graph (3) some things such as wendy pending tasks factory initialized which require some dependencies such as repositories (4) these repositories require Retrofit interface instances and when testing, these Retrofit instances require the mockwebserver's URL to create Retrofit instances. When the url is requested in the mock web server, it starts up the server. Well, when the server is started up, it can't be done on the UI thread.
         // So, we will disable this rule only on the testing because this problem is not easily fixable since we don't control very well when the DI graph is made and injected especially when injection should be able to be injected on any thread it wishes!
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build())
+
         super.onCreate(arguments)
     }
 

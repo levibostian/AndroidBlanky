@@ -15,6 +15,10 @@ class TestNetworkModule {
     @Provides
     @Singleton
     fun provideMockWebserver(jsonAdapter: JsonAdapter): MockWebServer {
+        // To fix the crash when running tests with robolectric with java11, `java.lang.NullPointerException: No password supplied for PKCS#12 KeyStore`. I believe this is a java11 new thing.
+        // From: https://github.com/robolectric/robolectric/issues/5115
+        System.setProperty("javax.net.ssl.trustStore", "NONE")
+
         return MockWebServer(okhttp3.mockwebserver.MockWebServer(), jsonAdapter)
     }
 

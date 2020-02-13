@@ -1,4 +1,4 @@
-package com.levibostian.androidblanky
+package com.levibostian.androidblanky.rule
 
 import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins

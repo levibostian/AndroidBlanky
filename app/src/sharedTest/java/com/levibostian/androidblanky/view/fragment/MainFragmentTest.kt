@@ -1,6 +1,7 @@
 package com.levibostian.androidblanky.view.fragment
 
 import android.app.Instrumentation
+import android.os.Looper.getMainLooper
 import androidx.arch.core.executor.testing.CountingTaskExecutorRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -46,15 +47,19 @@ import com.levibostian.teller.testing.extensions.cache
 import com.levibostian.teller.testing.extensions.initState
 import com.levibostian.teller.testing.extensions.initStateAsync
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import java.util.*
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
 @SdkSuppress(minSdkVersion = 18)
+@LooperMode(LooperMode.Mode.PAUSED)
 class MainFragmentTest {
 
     @Inject lateinit var reposRepository: ReposRepository
@@ -93,13 +98,13 @@ class MainFragmentTest {
         val githubUsername = repo1.owner.name
         val requirements = ReposRepository.GetRequirements(githubUsername)
 
-        runBlocking {
+        //runBlocking {
             OnlineRepository.Testing.initState(reposRepository, requirements) {
                 cache(listOf(repo1))
             }
 
             githubUsernameRepository.saveCache(githubUsername, GitHubUsernameRepository.Requirements())
-        }
+        //}
 
         launchFragment()
 
@@ -111,13 +116,13 @@ class MainFragmentTest {
                 .check(matches(isDisplayed()))
     }
 
-    @Test
-    fun test_networking() {
-        mockWebServer.queue(200, MessageResponseVo("message here"))
-
-        val message = apiService.updateFcmToken(UpdateFcmTokenRequestBody("")).blockingGet().response()!!.body()!!.message
-
-        Truth.assertThat(message).isEqualTo("message here")
-    }
+//    @Test
+//    fun test_networking() {
+//        mockWebServer.queue(200, MessageResponseVo("message here"))
+//
+//        val message = apiService.updateFcmToken(UpdateFcmTokenRequestBody("")).blockingGet().response()!!.body()!!.message
+//
+//        Truth.assertThat(message).isEqualTo("message here")
+//    }
 
 }

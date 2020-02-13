@@ -15,7 +15,9 @@ class TestDatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(context: Context): Database {
-        return Room.inMemoryDatabaseBuilder(context, Database::class.java).build()
+        return Room.inMemoryDatabaseBuilder(context, Database::class.java)
+                .allowMainThreadQueries()
+                .build()
     }
 
 }
