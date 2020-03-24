@@ -72,3 +72,23 @@ class MainApplication: Application(), Configuration.Provider {
     override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder().build()
 
 }
+
+
+enum class Dependency {
+    REPOSITORY,
+    GITHUB_SERVICE
+}
+
+class Di {
+
+    companion object {
+        val graph = Di()
+    }
+
+    fun <T> inject(dep: Dependency): T {
+        when (dep) {
+            Dependency.REPOSITORY -> return Repository(inject(Dependency.GITHUB_SERVICE))
+            Dependency.GITHUB_SERVICE -> return GitHubService()
+        }
+    }
+}

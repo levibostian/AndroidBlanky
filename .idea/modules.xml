@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AndroidBlanky.iml" filepath="$PROJECT_DIR$/AndroidBlanky.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidBlanky.iml" filepath="$PROJECT_DIR$/AndroidBlanky.iml" group="AndroidBlanky" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="AndroidBlanky/app" />
     </modules>
   </component>
 </project>

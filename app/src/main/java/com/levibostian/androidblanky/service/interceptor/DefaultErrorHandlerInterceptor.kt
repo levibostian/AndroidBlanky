@@ -22,8 +22,7 @@ class DefaultErrorHandlerInterceptor @Inject constructor(private val context: Co
         val response = chain.proceed(request)
 
         if (!response.isSuccessful) {
-            val statusCode = response.code()
-            when (statusCode) {
+            when (response.code()) {
                 401 -> {
                     eventbus.post(LogoutUserEvent())
                     throw UnauthorizedException(context.getString(R.string.error_401_response_code))

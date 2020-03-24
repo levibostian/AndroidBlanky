@@ -2,10 +2,8 @@ package com.levibostian.androidblanky.mock
 
 import com.levibostian.androidblanky.service.json.JsonAdapter
 import com.nhaarman.mockitokotlin2.mock
-import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.*
 import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.QueueDispatcher
-import okhttp3.mockwebserver.RecordedRequest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,10 +23,12 @@ class MockWebServer @Inject constructor(private val mockWebServer: MockWebServer
         this.queueResponse(statusCode, data, headers)
     }
 
-    // Unfortunately, I have not figured out a way to test this. mock web server does not have a method to do this. retrofit-mock does have a method, but this requires you to also mock the return value from your retrofit interface which then makes my test unusable as my code is not running through retrofit.
-//    fun queueError(error: Throwable) {
-//
-//    }
+    fun queueNetworkIssue() {
+        // throws an IOException which is a network error
+        // https://github.com/square/okhttp/blob/master/mockwebserver/src/test/java/okhttp3/mockwebserver/MockWebServerTest.java#L236
+        // https://github.com/square/okhttp/issues/3533
+        mockWebServer.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
+    }
 
     private fun <T: Any> queueResponse(statusCode: Int, data: T, headers: Map<String, String>? = null) {
         val body = jsonAdapter.toJson(data)

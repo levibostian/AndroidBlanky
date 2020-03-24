@@ -1,16 +1,13 @@
 package com.levibostian.androidblanky.service
 
 import android.content.Context
-import android.net.ConnectivityManager
 import com.levibostian.androidblanky.BuildConfig
 import com.levibostian.androidblanky.service.interceptor.AppendHeadersInterceptor
 import com.levibostian.androidblanky.service.interceptor.DefaultErrorHandlerInterceptor
 import com.levibostian.androidblanky.service.manager.UserManager
 import com.levibostian.androidblanky.AppConstants
-import com.levibostian.androidblanky.service.error.network.type.ConflictResponseErrorTypeAdapter
 import com.levibostian.androidblanky.service.util.ConnectivityUtil
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,7 +15,6 @@ import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.*
 import javax.inject.Inject
 
 class ServiceProvider @Inject constructor(private val context: Context,

@@ -8,8 +8,6 @@ import android.net.ConnectivityManager
 import androidx.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
-import com.levibostian.androidblanky.service.db.Database
-import com.levibostian.androidblanky.service.db.manager.DatabaseManager
 import com.levibostian.androidblanky.service.logger.Logger
 import com.levibostian.androidblanky.service.util.InstallReferrerProcessor
 import javax.inject.Singleton
