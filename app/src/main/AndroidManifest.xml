@@ -31,8 +31,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.ui.activity.MainActivity"/>
-        <activity android:name=".view.ui.activity.LicensesActivity"/>
-        <activity android:name=".view.ui.activity.SettingsActivity"/>
         <activity android:name=".view.ui.activity.auth.AuthenticatorActivity"/>
         <activity android:name=".view.ui.activity.auth.PasswordTokenExchangeActivity"/>
         <activity android:name=".view.ui.activity.auth.LogoutAccountActivity"/>

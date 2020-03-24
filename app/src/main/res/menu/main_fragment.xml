@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/settings"
+    <item android:id="@id/action_global_settingsFragment"
           android:title="@string/settings"/>
-    <item android:id="@+id/open_source_licenses"
+    <item android:id="@id/action_global_licensesFragment"
           android:title="@string/open_source_licenses"/>
     <item android:id="@+id/logout"
           android:title="@string/log_out"/>

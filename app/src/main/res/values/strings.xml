@@ -55,4 +55,5 @@
     <string name="repos_last_updated">Repos last updated %s ago</string>
     <string name="username_too_long">Username is %s too long.</string>
     <string name="username_too_short">Username is %s too short.</string>
+    <string name="licenses">Licenses</string>
 </resources>

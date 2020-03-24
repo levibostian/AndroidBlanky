@@ -13,15 +13,11 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         setPreferencesFromResource(R.xml.settings, rootKey)
     }
 
-    companion object {
-        fun getInstance(): SettingsFragment = SettingsFragment()
-    }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             getString(R.string.preferences_enable_analytics) -> {
-                val enableAnalytics: Boolean = sharedPreferences?.getBoolean(SharedPrefersKeys.enableAnalytics(activity!!), true) ?: true
-                FirebaseAnalytics.getInstance(activity!!).setAnalyticsCollectionEnabled(enableAnalytics)
+                val enableAnalytics: Boolean = sharedPreferences?.getBoolean(SharedPrefersKeys.enableAnalytics(requireActivity()), true) ?: true
+                FirebaseAnalytics.getInstance(requireActivity()).setAnalyticsCollectionEnabled(enableAnalytics)
             }
             else -> {}
         }

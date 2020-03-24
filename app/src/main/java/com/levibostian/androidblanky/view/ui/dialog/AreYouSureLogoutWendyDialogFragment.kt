@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import com.levibostian.androidblanky.R
 import com.levibostian.androidblanky.extensions.onAttachDiGraph
 import com.levibostian.androidblanky.service.util.ConnectivityUtil
+import com.levibostian.androidblanky.view.ui.extensions.getListener
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.listeners.TaskRunnerListener
 import com.levibostian.wendy.service.PendingTask
@@ -32,7 +33,7 @@ class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener 
     }
 
     override fun onAttach(context: Context) {
-        ((activity as? Listener) ?: (parentFragment as? Listener))?.let { listener = it }
+        getListener<Listener>()?.let { listener = it }
         onAttachDiGraph().inject(this)
         super.onAttach(context)
     }
@@ -93,13 +94,13 @@ class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener 
             this.dismiss()
         }
 
-        dialogView = activity!!.layoutInflater.inflate(R.layout.dialog_fragment_are_you_sure_logout_wendy, null)
+        dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_fragment_are_you_sure_logout_wendy, null)
         refreshView()
 
         WendyConfig.addTaskRunnerListener(this)
         Wendy.shared.runTasks(null)
 
-        return AlertDialog.Builder(activity!!)
+        return AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.warning)
                 .setView(dialogView)
                 .setPositiveButton(R.string.log_out) { _, _ ->

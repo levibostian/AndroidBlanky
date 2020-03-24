@@ -2,7 +2,6 @@ package com.levibostian.androidblanky.di
 
 import com.levibostian.androidblanky.service.service.FirebaseMessagingService
 import com.levibostian.androidblanky.view.ui.MainApplication
-import com.levibostian.androidblanky.view.ui.activity.LaunchActivity
 import com.levibostian.androidblanky.view.ui.activity.auth.AuthenticatorActivity
 import com.levibostian.androidblanky.view.ui.activity.auth.LogoutAccountActivity
 import com.levibostian.androidblanky.view.ui.activity.auth.PasswordlessEmailLoginActivity
@@ -24,7 +23,6 @@ import javax.inject.Singleton
 )
 interface AppGraph {
     fun inject(mainApplication: MainApplication)
-    fun inject(launchActivity: LaunchActivity)
     fun inject(mainFragment: MainFragment)
     fun inject(authenticatorActivity: AuthenticatorActivity)
     fun inject(logoutAccountActivity: LogoutAccountActivity)

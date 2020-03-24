@@ -14,12 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.levibostian.androidblanky.R
-import com.levibostian.androidblanky.service.model.RepoModel
-import com.levibostian.androidblanky.view.ui.activity.LaunchActivity
-import com.levibostian.androidblanky.view.ui.activity.LicensesActivity
-import com.levibostian.androidblanky.view.ui.activity.SettingsActivity
 import com.levibostian.androidblanky.view.ui.adapter.ReposRecyclerViewAdapter
-import com.levibostian.androidblanky.view.ui.dialog.AreYouSureLogoutWendyDialogFragment
 import com.levibostian.androidblanky.view.ui.extensions.closeKeyboard
 import com.levibostian.androidblanky.viewmodel.GitHubUsernameViewModel
 import com.levibostian.androidblanky.viewmodel.ReposViewModel
@@ -29,7 +24,10 @@ import java.util.*
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.onNavDestinationSelected
 import com.levibostian.androidblanky.extensions.onAttachDiGraph
+import com.levibostian.androidblanky.service.event.LogoutUserEvent
 import javax.inject.Inject
 
 class MainFragment: Fragment() {
@@ -37,6 +35,7 @@ class MainFragment: Fragment() {
     private var fetchingSnackbar: Snackbar? = null
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var eventBus: EventBus
     private val reposViewModel by viewModels<ReposViewModel> { viewModelFactory }
     private val gitHubUsernameViewModel by viewModels<GitHubUsernameViewModel> { viewModelFactory }
 
@@ -44,12 +43,6 @@ class MainFragment: Fragment() {
         LOADING_VIEW,
         EMPTY_VIEW,
         REPOS
-    }
-
-    companion object {
-        fun newInstance(): MainFragment = MainFragment().apply {
-            arguments = Bundle().apply {}
-        }
     }
 
     override fun onAttach(context: Context) {
@@ -68,23 +61,12 @@ class MainFragment: Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.settings -> {
-                startActivity(SettingsActivity.getIntent(activity!!))
-                true
-            }
-            R.id.open_source_licenses -> {
-                startActivity(LicensesActivity.getIntent(activity!!))
-                true
-            }
+        return item.onNavDestinationSelected(findNavController()) || when (item.itemId) {
             R.id.logout -> {
-                startActivity(LaunchActivity.getIntent(activity!!, true))
-                activity!!.finish()
+                eventBus.post(LogoutUserEvent())
                 true
             }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -126,7 +108,7 @@ class MainFragment: Fragment() {
                             frag_main_swapper.swapTo(SwapperViews.EMPTY_VIEW.name) {}
                         } else {
                             repos_recyclerview.apply {
-                                layoutManager = LinearLayoutManager(activity!!)
+                                layoutManager = LinearLayoutManager(requireActivity())
                                 adapter = ReposRecyclerViewAdapter(cache)
                                 setHasFixedSize(true)
                             }

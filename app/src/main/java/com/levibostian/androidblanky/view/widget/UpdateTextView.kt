@@ -11,17 +11,13 @@ import android.widget.TextView
 /**
  * Calls lambda function every second to update the textview text.
  */
-class UpdateTextView: TextView {
+class UpdateTextView: androidx.appcompat.widget.AppCompatTextView {
 
     private var updateLastSyncedHandler: Handler? = null
     private var updateLastSyncedRunnable: Runnable? = null
 
     constructor(context: Context, attrs: AttributeSet): this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        initialize()
-    }
-    @TargetApi(VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr, defStyleRes) {
         initialize()
     }
 
