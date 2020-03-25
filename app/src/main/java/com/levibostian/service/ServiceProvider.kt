@@ -11,14 +11,13 @@ import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
 
 class ServiceProvider @Inject constructor(private val context: Context,
-                                          private val eventBus: EventBus,
+                                          private val resetAppRunner: ResetAppRunner,
                                           private val connectivityUtil: ConnectivityUtil,
                                           private val userManager: UserManager,
                                           private val moshi: Moshi) {
@@ -32,7 +31,7 @@ class ServiceProvider @Inject constructor(private val context: Context,
     }
 
     private fun getService(hostname: String): Retrofit {
-        val errorHandlerInterceptor = DefaultErrorHandlerInterceptor(context, eventBus, connectivityUtil)
+        val errorHandlerInterceptor = DefaultErrorHandlerInterceptor(context, resetAppRunner, connectivityUtil)
 
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE

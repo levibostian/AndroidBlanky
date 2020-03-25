@@ -5,15 +5,10 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import com.levibostian.module.AppModules
 import com.levibostian.teller.Teller
-import org.greenrobot.eventbus.EventBus
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
-import org.koin.test.check.checkModules
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner

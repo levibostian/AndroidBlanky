@@ -10,7 +10,6 @@ import com.levibostian.service.manager.UserManager
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
-import org.greenrobot.eventbus.EventBus
 
 @Module
 class NetworkModule {

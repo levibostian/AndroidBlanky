@@ -85,9 +85,7 @@ android {
             minSdkVersion 23
             resConfigs "en", "xxhdpi"
 
-            versionNameSuffix "-dev"
             dimension "mode"
-            applicationIdSuffix ".dev"
         }
         production {
             dimension "mode"
@@ -208,9 +206,6 @@ dependencies {
 
     // Licenses fragment
     implementation 'com.github.levibostian:Android-License-Fragment:support-v4-SNAPSHOT'
-
-    // Eventbus
-    implementation 'org.greenrobot:eventbus:3.2.0'
 
     // Crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'

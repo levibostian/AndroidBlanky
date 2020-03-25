@@ -3,8 +3,8 @@ package com.levibostian.service.interceptor
 import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.greenrobot.eventbus.EventBus
 import com.levibostian.R
+import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.error.network.NoInternetConnectionException
 import com.levibostian.service.error.network.UnauthorizedException
 import com.levibostian.service.event.LogoutUserEvent
@@ -12,7 +12,7 @@ import com.levibostian.service.util.ConnectivityUtil
 import javax.inject.Inject
 
 class DefaultErrorHandlerInterceptor @Inject constructor(private val context: Context,
-                                                         private val eventbus: EventBus,
+                                                         private val resetAppRunner: ResetAppRunner,
                                                          private val connectivityUtil: ConnectivityUtil) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -24,7 +24,7 @@ class DefaultErrorHandlerInterceptor @Inject constructor(private val context: Co
         if (!response.isSuccessful) {
             when (response.code) {
                 401 -> {
-                    eventbus.post(LogoutUserEvent())
+                    resetAppRunner.deleteAllAndReset()
                     throw UnauthorizedException(context.getString(R.string.error_401_response_code))
                 }
             }

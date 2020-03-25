@@ -19,7 +19,6 @@ import com.levibostian.view.ui.extensions.closeKeyboard
 import com.levibostian.viewmodel.GitHubUsernameViewModel
 import com.levibostian.viewmodel.ReposViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.greenrobot.eventbus.EventBus
 import java.util.*
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
@@ -27,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.levibostian.extensions.onAttachDiGraph
+import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.event.LogoutUserEvent
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class MainFragment: Fragment() {
     private var fetchingSnackbar: Snackbar? = null
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var eventBus: EventBus
+    @Inject lateinit var resetAppRunner: ResetAppRunner
     private val reposViewModel by viewModels<ReposViewModel> { viewModelFactory }
     private val gitHubUsernameViewModel by viewModels<GitHubUsernameViewModel> { viewModelFactory }
 
@@ -63,7 +63,7 @@ class MainFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return item.onNavDestinationSelected(findNavController()) || when (item.itemId) {
             R.id.logout -> {
-                eventBus.post(LogoutUserEvent())
+                resetAppRunner.deleteAllAndReset()
                 true
             }
             else -> super.onOptionsItemSelected(item)

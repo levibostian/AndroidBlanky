@@ -7,16 +7,10 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import dagger.Module
 import dagger.Provides
-import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 @Module
 class DependencyModule {
-
-    @Provides
-    fun provideEventBus(): EventBus {
-        return EventBus.getDefault()
-    }
 
     @Provides
     fun provideMoshi(): Moshi {

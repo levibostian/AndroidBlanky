@@ -1,28 +1,32 @@
 package com.levibostian.view.ui
 
-import android.app.Activity
 import android.app.Application
-import android.app.Service
 import android.content.Context
-import androidx.fragment.app.Fragment
+import android.content.Intent
+import androidx.multidex.MultiDex
+import androidx.work.*
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
+import com.levibostian.BuildConfig
+import com.levibostian.di.AndroidModule
+import com.levibostian.di.AppGraph
+import com.levibostian.di.DaggerAppGraph
+import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.pendingtasks.PendingTasksFactory
 import com.levibostian.service.work.PendingTasksWorker
-import com.levibostian.testing.OpenForTesting
 import com.levibostian.teller.Teller
+import com.levibostian.testing.OpenForTesting
+import com.levibostian.view.ui.activity.LaunchActivity
+import com.levibostian.view.ui.activity.MainActivity
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.service.Wendy
 import io.fabric.sdk.android.Fabric
 import java.util.concurrent.TimeUnit
-import androidx.multidex.MultiDex
-import androidx.work.*
-import com.levibostian.BuildConfig
-import com.levibostian.di.*
 import javax.inject.Inject
 
+
 @OpenForTesting
-class MainApplication: Application(), Configuration.Provider {
+class MainApplication: Application(), Configuration.Provider, ResetAppRunner {
 
     lateinit var appComponent: AppGraph
 
@@ -70,5 +74,13 @@ class MainApplication: Application(), Configuration.Provider {
     }
 
     override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder().build()
+
+    override fun deleteAllAndReset() {
+        // delete all data here.
+
+        val intent = Intent(this, LaunchActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
 
 }

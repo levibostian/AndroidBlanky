@@ -2,6 +2,7 @@ package com.levibostian.di
 
 import com.levibostian.service.service.FirebaseMessagingService
 import com.levibostian.view.ui.MainApplication
+import com.levibostian.view.ui.activity.BaseActivity
 import com.levibostian.view.ui.activity.LaunchActivity
 import com.levibostian.view.ui.activity.auth.AuthenticatorActivity
 import com.levibostian.view.ui.activity.auth.LogoutAccountActivity
@@ -26,6 +27,7 @@ interface AppGraph {
     fun inject(launchActivity: LaunchActivity)
     fun inject(mainApplication: MainApplication)
     fun inject(mainFragment: MainFragment)
+    fun inject(baseActivity: BaseActivity)
     fun inject(authenticatorActivity: AuthenticatorActivity)
     fun inject(logoutAccountActivity: LogoutAccountActivity)
     fun inject(firebaseMessagingService: FirebaseMessagingService)

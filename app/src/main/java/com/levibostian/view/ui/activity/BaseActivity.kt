@@ -9,16 +9,15 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
 import androidx.fragment.app.transaction
 import com.levibostian.R
+import com.levibostian.extensions.onCreateDiGraph
 import com.levibostian.service.DataDestroyer
+import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.event.LogoutUserEvent
 import com.levibostian.service.logger.Logger
 import com.levibostian.service.manager.UserManager
 import com.levibostian.service.util.InstallReferrerProcessor
 import com.levibostian.view.ui.fragment.MainFragment
 import kotlinx.android.synthetic.main.activity_toolbar_fragment_container.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 /**
@@ -30,8 +29,10 @@ abstract class BaseActivity: AppCompatActivity() {
 
     @Inject lateinit var userManager: UserManager
     @Inject lateinit var installReferrerProcessor: InstallReferrerProcessor
+    @Inject lateinit var resetAppRunner: ResetAppRunner
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        onCreateDiGraph().inject(this)
         super.onCreate(savedInstanceState)
 
         if (!userManager.isUserLoggedIn()) throw RuntimeException("Activity cannot run when user is not logged in")
@@ -42,23 +43,13 @@ abstract class BaseActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        EventBus.getDefault().register(this)
 
         // Users can remove accounts in the settings app on the device. Check if they did while the app was in the background.
         if (!userManager.isUserLoggedIn()) {
-            EventBus.getDefault().post(LogoutUserEvent())
+            resetAppRunner.deleteAllAndReset()
         }
     }
 
-    override fun onPause() {
-        EventBus.getDefault().unregister(this)
-        super.onPause()
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(event: LogoutUserEvent) {
-        startActivity(LaunchActivity.getIntent(this, true))
-        finish()
-    }
 
 }

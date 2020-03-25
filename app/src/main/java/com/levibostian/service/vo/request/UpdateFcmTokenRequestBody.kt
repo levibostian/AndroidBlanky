@@ -1,3 +1,6 @@
 package com.levibostian.service.vo.request
 
-class UpdateFcmTokenRequestBody(val token: String)
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class UpdateFcmTokenRequestBody(val token: String)
