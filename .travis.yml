@@ -1,4 +1,3 @@
-sudo: false
 language: android
 jdk:
   - oraclejdk8
@@ -19,6 +18,8 @@ android:
 
 install:
   - bundle install
+  - brew update 
+  - brew install librsvg graphicsmagick || true # for fastlane generating app icons
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -28,14 +29,12 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
-notifications:
-  email: false
 env:
   global:
     - AWS_ACCESS_KEY=12345
     - AWS_SECRET_KEY=67890
     # DANGER_GITHUB_API_TOKEN
-    - secure: "12345"
+    # DEVELOPER_EMAIL=you@you.com
 
 jobs:
   include:

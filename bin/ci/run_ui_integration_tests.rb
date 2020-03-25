@@ -5,7 +5,7 @@ require 'trent'
 # You can copy this below value from `app/build.gradle` android -> defaultConfig -> testInstrumentationRunner
 google_project_id = "project-id-here"
 google_service_account = "firebase-test-lab@yourproject.iam.gserviceaccount.com"
-test_runner_file_namespace = "com.levibostian.androidblanky.AndroidTestTestRunner"
+test_runner_file_namespace = "com.levibostian.AndroidTestTestRunner"
 
 ###########################################
 

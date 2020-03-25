@@ -1,0 +1,8 @@
+path: "_secrets"
+default: # default is dev/testing values
+  secrets:
+    - ".env"
+    - "app/src/main/res/values/env.xml"
+sets:
+  production:
+    path: "_production"

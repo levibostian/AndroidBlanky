@@ -1,3 +1,8 @@
+secrets.tar
+_secrets
+.env
+app/src/main/res/values/env.xml
+
 # Built application files
 *.apk
 *.ap_

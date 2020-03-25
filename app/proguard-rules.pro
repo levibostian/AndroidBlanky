@@ -17,9 +17,9 @@
 #}
 
 # Keep models and VOs for your package.
--keep class com.levibostian.androidblanky.**.models.** { *; }
--keep class com.levibostian.androidblanky.**.vo.** { *; }
--keep class com.levibostian.androidblanky.service.error.** { *; }
+-keep class com.levibostian.**.models.** { *; }
+-keep class com.levibostian.**.vo.** { *; }
+-keep class com.levibostian.service.error.** { *; }
 
 # Crashlytics required
 -keepattributes *Annotation*

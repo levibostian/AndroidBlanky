@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.levibostian.androidblanky.view.ui.fragment.MainFragment"
+        android:name="com.levibostian.view.ui.fragment.MainFragment"
         android:label="Repos"
         tools:layout="@layout/fragment_main" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.levibostian.androidblanky.view.ui.fragment.SettingsFragment"
+        android:name="com.levibostian.view.ui.fragment.SettingsFragment"
         android:label="@string/settings" />
     <action
         android:id="@+id/action_global_settingsFragment"
@@ -22,6 +22,6 @@
         app:destination="@id/licensesFragment"/>
     <fragment
         android:id="@+id/licensesFragment"
-        android:name="com.levibostian.androidblanky.view.ui.fragment.LicensesFragment"
+        android:name="com.levibostian.view.ui.fragment.LicensesFragment"
         android:label="@string/licenses" />
 </navigation>

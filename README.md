@@ -101,7 +101,7 @@ Also, this project is configured to use Git hooks via the project [overcommit](h
 
 Now, open up the Android project in Android Studio. Everything should Gradle sync and build successfully.
 
-* Open the `app/build.gradle` file. Find and replace this line: `applicationId "com.levibostian.androidblanky"` with your own namespace for your app.
+* Open the `app/build.gradle` file. Find and replace this line: `applicationId "com.levibostian"` with your own namespace for your app.
 * Edit the package names of your source code to your namespace as well. [This is how to do that](https://stackoverflow.com/a/29092698/1486374)
 
 Now it's time to setup Firebase.

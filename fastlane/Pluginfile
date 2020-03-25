@@ -4,3 +4,6 @@
 
 gem 'fastlane-plugin-get_android_version'
 gem 'fastlane-plugin-versioning_android'
+gem 'fastlane-plugin-appicon'
+gem 'fastlane-plugin-postmark'
+gem 'fastlane-plugin-badge'
