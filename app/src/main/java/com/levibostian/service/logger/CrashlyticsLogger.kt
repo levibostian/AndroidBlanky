@@ -1,20 +1,20 @@
 package com.levibostian.service.logger
 
 import android.util.Log
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 class CrashlyticsLogger: DebugLogger() {
 
     override fun setUserProperty(name: String, property: String?) {
-        Crashlytics.setString(name, property ?: "null")
+        FirebaseCrashlytics.getInstance().setCustomKey(name, property ?: "null")
     }
 
     override fun logEvent(tag: String, message: String) {
-        Crashlytics.log(Log.DEBUG, tag, message)
+        FirebaseCrashlytics.getInstance().log(message)
     }
 
     override fun logError(error: Throwable) {
-        Crashlytics.logException(error)
+        FirebaseCrashlytics.getInstance().recordException(error)
     }
 
 }

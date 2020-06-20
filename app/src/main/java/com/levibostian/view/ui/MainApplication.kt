@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.multidex.MultiDex
 import androidx.work.*
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.levibostian.BuildConfig
 import com.levibostian.di.AndroidModule
 import com.levibostian.di.AppGraph
@@ -17,10 +15,8 @@ import com.levibostian.service.work.PendingTasksWorker
 import com.levibostian.teller.Teller
 import com.levibostian.testing.OpenForTesting
 import com.levibostian.view.ui.activity.LaunchActivity
-import com.levibostian.view.ui.activity.MainActivity
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.service.Wendy
-import io.fabric.sdk.android.Fabric
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -34,10 +30,6 @@ class MainApplication: Application(), Configuration.Provider, ResetAppRunner {
 
     override fun onCreate() {
         super.onCreate()
-
-        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
-        val fabric = Fabric.Builder(this).kits(Crashlytics.Builder().core(core).build()).debuggable(true).build()
-        Fabric.with(fabric)
 
         appComponent = initAppComponent()
         appComponent.inject(this)

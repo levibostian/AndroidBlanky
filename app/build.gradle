@@ -3,7 +3,7 @@ if (System.getenv("RELEASE") == "true") {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -21,7 +21,6 @@ allOpen {
 }
 
 repositories {
-    maven { url 'http://s3.amazonaws.com/fabric-artifacts/public' }
     mavenCentral()
     google()
     jcenter()
@@ -146,6 +145,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:19.0.7'
     implementation 'com.google.firebase:firebase-messaging:20.2.1'
     implementation 'com.google.firebase:firebase-invites:17.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
 
     // Coil
     implementation 'io.coil-kt:coil:0.11.0'
@@ -206,9 +206,6 @@ dependencies {
 
     // Licenses fragment
     implementation 'com.github.levibostian:Android-License-Fragment:support-v4-SNAPSHOT'
-
-    // Crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     // JUnit
     def junitVersion = '4.13'
