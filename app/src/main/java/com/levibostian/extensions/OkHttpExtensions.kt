@@ -1,8 +1,11 @@
 package com.levibostian.extensions
 
-import okhttp3.Headers
-import okhttp3.Request
+import com.levibostian.service.json.JsonAdapter
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 fun Response.getBodyCopy(): String? {
     return if (body != null) {
@@ -34,4 +37,10 @@ fun Headers.getString(): String? {
 
 fun Response.getHeadersString(): String? {
     return headers.getString()
+}
+
+object Response {
+    fun <HttpResponseError, T> error(code: Int, body: T): retrofit2.Response<HttpResponseError> {
+        return retrofit2.Response.error(code, JsonAdapter.toJson(body as Any).toResponseBody("application/json".toMediaType()))
+    }
 }

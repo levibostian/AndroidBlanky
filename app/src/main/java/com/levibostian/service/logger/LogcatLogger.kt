@@ -1,32 +1,39 @@
 package com.levibostian.service.logger
 
+import android.os.Bundle
 import android.util.Log
-import com.levibostian.BuildConfig
-import com.levibostian.extensions.getStacktrace
+import com.levibostian.Env
+import java.util.*
 
 class LogcatLogger: DebugLogger() {
 
     companion object {
-        const val TAG = "APP_DEV"
+        val TAG = Env.appName.toUpperCase(Locale.ENGLISH)
     }
 
-    override fun setUserProperty(name: String, property: String?) {
-        logMessage("Set user property. name: $name, property: ${property ?: "null"}")
+    override fun setUserId(id: String?) {
+        if (id == null) Log.d(TAG, "User logged out")
+        else Log.d(TAG, "User logged in. id $id")
     }
 
-    override fun logEvent(tag: String, message: String) {
-        logMessage("Event. $tag: $message")
+    override fun appEventOccurred(event: ActivityEvent, extras: Map<ActivityEventParamKey, Any>?, average: Double?) {
+        Log.d(TAG, "event: ${event.name}, extras: ${extras.toString()}")
+    }
+
+    override fun setUserProperty(key: UserPropertyKey, value: String) {
+        Log.d(TAG, "Property, ${key.name}:$value")
+    }
+
+    override fun logDebug(message: String, extras: Bundle?) {
+        Log.d(TAG, "$message, extras: ${extras.toString()}")
     }
 
     override fun logError(error: Throwable) {
-        logMessage("ERROR: ${error.message}\n\n${error.getStacktrace()}")
+        Log.e(TAG, "ERROR: ${error.message}", error)
+        error.printStackTrace()
 
         // Throw because during dev mode, it's best to catch these errors to fix them.
-        if (BuildConfig.DEBUG) throw error
-    }
-
-    private fun logMessage(message: String) {
-        if (BuildConfig.DEBUG) Log.d(TAG, message)
+        if (Env.isDevelopment) throw error
     }
 
 }

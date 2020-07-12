@@ -1,30 +1,93 @@
 package com.levibostian.view.ui.adapter
 
-import android.view.LayoutInflater
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.levibostian.R
-import com.levibostian.service.model.RepoModel
 
-class ReposRecyclerViewAdapter(private val repos: List<RepoModel>): RecyclerView.Adapter<ReposRecyclerViewAdapter.ViewHolder>() {
+class ReposRecyclerViewAdapter(val context: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun getItemCount(): Int = repos.size
+    enum class ViewType {
+        REPO,
+        CTA;
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameTextView: TextView = view.findViewById(R.id.repo_name_textview)
+        companion object {
+            fun from(value: Int) = values()[value]
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReposRecyclerViewAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_repo_recyclerview, parent, false)
-        return ViewHolder(view)
+    interface Listener: CTAView.Listener {
+        fun programItemClicked(item: ProgramListItem)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val repo = repos[position]
+    lateinit var listener: Listener
 
-        holder.nameTextView.text = repo.name
+    data class RowItem(val viewType: ViewType, val item: ProgramListItem)
+
+    var items: List<ProgramListItem> = emptyList()
+        set(newValue) {
+            this.data = newValue.map { item ->
+                when (item) {
+                    is ProgramListItem.Repo -> RowItem(ViewType.REPO, item)
+                    is ProgramListItem.Cta -> RowItem(ViewType.CTA, item)
+                }
+            }
+
+            field = newValue
+        }
+
+    private var data: List<RowItem> = emptyList()
+        set(newValue) {
+            val oldValue = field
+
+            DiffUtil.calculateDiff(DiffCallback(oldValue, newValue)).apply {
+                field = newValue
+                dispatchUpdatesTo(this@ReposRecyclerViewAdapter)
+            }
+        }
+
+    companion object {
+        class DiffCallback(private val oldList: List<RowItem>, private val newList: List<RowItem>) : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = oldList.size
+            override fun getNewListSize(): Int = newList.size
+            override fun areItemsTheSame(oldPosition: Int, newPosition: Int): Boolean = areContentsTheSame(oldPosition, newPosition)
+            override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean = oldList[oldPosition] == newList[newPosition]
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int = this.data[position].viewType.ordinal
+    override fun getItemCount(): Int = data.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (ViewType.from(viewType)) {
+            ViewType.REPO -> RepoViewHolder(view(parent, RepoViewHolder.layoutRes))
+            ViewType.CTA -> CtaViewHolder(view(parent, CtaViewHolder.layoutRes))
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val rowItem = this.data[position]
+
+        var programViewHolder: RepoViewHolder? = null
+        when (rowItem.viewType) {
+            ViewType.REPO -> {
+                programViewHolder = holder as RepoViewHolder
+
+                val item = rowItem.item as RepoListItem.Prog
+                programViewHolder.populate(item.program.name, item.program.image_url)
+            }
+            ViewType.CTA -> {
+                holder as CtaViewHolder
+                val item = rowItem.item as RepoListItem.Cta
+                holder.listener = listener
+                holder.populate(item.cta)
+            }
+        }
+
+        programViewHolder?.itemView?.setOnClickListener {
+            listener.programItemClicked(rowItem.item)
+        }
     }
 
 }

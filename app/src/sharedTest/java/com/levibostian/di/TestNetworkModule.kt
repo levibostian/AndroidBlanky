@@ -1,8 +1,8 @@
 package com.levibostian.di
 
 import com.levibostian.mock.MockWebServer
-import com.levibostian.service.AppService
-import com.levibostian.service.GitHubService
+import com.levibostian.service.api.AppService
+import com.levibostian.service.api.GitHubService
 import com.levibostian.service.ServiceProvider
 import com.levibostian.service.json.JsonAdapter
 import dagger.Module

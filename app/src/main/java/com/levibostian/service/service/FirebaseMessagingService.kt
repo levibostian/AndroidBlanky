@@ -1,19 +1,22 @@
 package com.levibostian.service.service
 
-import android.app.NotificationManager
-import android.content.Context
-import androidx.core.app.NotificationCompat
+import com.levibostian.extensions.onCreateDiGraph
+
+
+import androidx.core.os.bundleOf
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.levibostian.R
-import com.levibostian.extensions.onCreateDiGraph
-import com.levibostian.service.manager.NotificationChannelManager
+import com.levibostian.service.logger.ActivityEvent
+import com.levibostian.service.logger.ActivityEventParamKey
+import com.levibostian.service.logger.Logger
 import com.levibostian.service.manager.UserManager
 import javax.inject.Inject
 
 class FirebaseMessagingService: FirebaseMessagingService() {
 
     @Inject lateinit var userManager: UserManager
+    @Inject lateinit var backgroundJobRunner: BackgroundJobRunner
+    @Inject lateinit var logger: Logger
 
     override fun onCreate() {
         onCreateDiGraph().inject(this)
@@ -29,25 +32,45 @@ class FirebaseMessagingService: FirebaseMessagingService() {
     // and data payloads are treated as notification messages. The Firebase console always sends notification
 // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
     override fun onMessageReceived(message: RemoteMessage) {
+        logger.breadcrumb(this, "received push notification", bundleOf(
+                Pair("raw", message.toString())
+        ))
+
         if (message.data.isNotEmpty()) {
-            // Job to run.
-        } else {
-            message.notification?.let { notificationMessage ->
-                val notification = NotificationCompat.Builder(applicationContext, NotificationChannelManager.announcements.id)
-                        .setSmallIcon(R.drawable.ic_announcement_white_24dp)
-                        .setContentTitle(NotificationChannelManager.announcements.name)
-                        .setContentText(notificationMessage.body)
-                        .build()
+            logger.appEventOccurred(ActivityEvent.PushNotificationReceived, mapOf(
+                    Pair(ActivityEventParamKey.Type, "data")
+            ))
 
-                val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-                notificationManager.notify(NotificationChannelManager.ANNOUNCEMENTS_NOTIFY_ID, notification)
+            NotificationUtil.parseDataNotification(message.data)?.let { dataNotification ->
+                backgroundJobRunner.handleDataPushNotification(dataNotification)
             }
+        } else {
+            logger.appEventOccurred(ActivityEvent.PushNotificationReceived, mapOf(
+                    Pair(ActivityEventParamKey.Type, "ui")
+            ))
         }
+        /**
+         * Notifications with a message payload are automatically put in the system tray as a notification for the user to click when the app is in the background. This app does not need to handle message notifications when the app is in the foreground.
+         */
+//        else {
+//            message.notification?.let { notificationMessage ->
+//                val notification = NotificationCompat.Builder(applicationContext, NotificationChannelManager.announcements.id)
+//                        .setSmallIcon(R.drawable.ic_announcement_white_24dp)
+//                        .setContentTitle(NotificationChannelManager.announcements.name)
+//                        .setContentText(notificationMessage.body)
+//                        .build()
+//
+//                val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//                notificationManager.notify(NotificationChannelManager.ANNOUNCEMENTS_NOTIFY_ID, notification)
+//            }
+//        }
     }
 
     override fun onNewToken(token: String) {
-        userManager.fcmPushNotificationToken = token
+        logger.breadcrumb(this, "Push notification token received", bundleOf(
+                Pair("token", token)
+        ))
     }
 
 }

@@ -12,20 +12,20 @@ import javax.inject.Inject
 class NotificationChannelManager @Inject constructor(private val context: Context) {
 
     companion object {
-        @SuppressLint("InlinedApi")
-        // Note: If you change the ID below, make sure to also edit the manifest's `default_notification_channel_id` metadata entry to match.
-        val announcements: ChannelInfo = ChannelInfo("announcements", "Announcements", "Announcements from the team about updates to the app.", NotificationManager.IMPORTANCE_DEFAULT)
-        @SuppressLint("InlinedApi")
-        val errors: ChannelInfo = ChannelInfo("errors", "Errors", "When errors occur in the app that need your attention.", NotificationManager.IMPORTANCE_HIGH)
 
-        private val allChannels = listOf(announcements, errors)
+        /**
+         * Note: If you change the ID below, make sure to also edit the manifest's `default_notification_channel_id` metadata entry to match.
+         */
+        @SuppressLint("InlinedApi")
+        val announcements: ChannelInfo = ChannelInfo("announcements", "Announcements", "Announcements from the team about updates to the app.", NotificationManager.IMPORTANCE_DEFAULT)
+
+        private val allChannels = listOf(announcements)
 
         const val ANNOUNCEMENTS_NOTIFY_ID: Int = 1
-        const val UPDATE_APP_ID: Int = 2
     }
 
     fun createChannels() {
-        if (Build.VERSION.SDK_INT < 26) { return }
+        if (Build.VERSION.SDK_INT < 26) return
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         allChannels.forEach { channel -> channel.create(notificationManager) }

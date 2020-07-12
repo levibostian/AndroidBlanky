@@ -141,11 +141,20 @@ dependencies {
     androidTestImplementation "androidx.work:work-testing:$work_version"
 
     // Firebase
-    implementation 'com.google.firebase:firebase-core:17.4.3'
+    implementation 'com.google.firebase:firebase-core:17.4.4'
     implementation 'com.google.firebase:firebase-perf:19.0.7'
-    implementation 'com.google.firebase:firebase-messaging:20.2.1'
-    implementation 'com.google.firebase:firebase-invites:17.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
+    implementation 'com.google.firebase:firebase-messaging:20.2.2'
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
+    implementation 'com.google.firebase:firebase-config-ktx:19.2.0'
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx:19.1.0'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.4' // required for remote config, dynamic links
+
+    // Boquila - remote config
+    def boquila_version = "1.0.0-alpha.1"
+    implementation "com.levibostian.boquila:boquila:$boquila_version"
+    implementation "com.levibostian.boquila:moshi-boquila-plugin:$boquila_version"
+    implementation "com.levibostian.boquila:firebase-boquila-adapter:$boquila_version"
+    androidTestImplementation "com.levibostian.boquila:boquila-testing:$boquila_version"
 
     // Coil
     implementation 'io.coil-kt:coil:0.11.0'
@@ -238,6 +247,9 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'org.mockito'
     }
+
+    // Robolectric
+    testImplementation 'org.robolectric:robolectric:4.3.1'
 
     // Android Testing Support Library's runner and rules
     def androidTestLibVersion = "1.2.0"

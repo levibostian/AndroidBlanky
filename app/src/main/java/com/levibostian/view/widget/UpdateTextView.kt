@@ -11,7 +11,7 @@ import android.widget.TextView
 /**
  * Calls lambda function every second to update the textview text.
  */
-class UpdateTextView: androidx.appcompat.widget.AppCompatTextView {
+open class UpdateTextView: androidx.appcompat.widget.AppCompatTextView {
 
     private var updateLastSyncedHandler: Handler? = null
     private var updateLastSyncedRunnable: Runnable? = null
@@ -22,7 +22,7 @@ class UpdateTextView: androidx.appcompat.widget.AppCompatTextView {
     }
 
     private fun initialize() {
-        visibility = View.INVISIBLE
+        cancel()
     }
 
     fun init(update: () -> String) {
@@ -37,11 +37,16 @@ class UpdateTextView: androidx.appcompat.widget.AppCompatTextView {
         updateLastSyncedHandler?.post(updateLastSyncedRunnable!!)
     }
 
+    open fun cancel() {
+        visibility = View.INVISIBLE
+        updateLastSyncedRunnable?.let { updateLastSyncedHandler?.removeCallbacks(it) }
+    }
+
     // Equivalent to onDestroy()
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
-        updateLastSyncedRunnable?.let { updateLastSyncedHandler?.removeCallbacks(it) }
+        cancel()
     }
 
 }

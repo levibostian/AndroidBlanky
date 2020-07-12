@@ -1,26 +1,19 @@
 package com.levibostian.service
 
-import android.accounts.AccountManager
-import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.os.AsyncTask
-import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP_MR1
-import android.os.Handler
-import androidx.core.content.edit
-import com.levibostian.service.auth.AccountAuthenticator
 import com.levibostian.service.db.Database
-import com.levibostian.service.manager.DeviceAccountManager
 import com.levibostian.service.manager.UserManager
+import com.levibostian.service.service.FileStorage
+import com.levibostian.service.service.KeyValueStorage
+import com.levibostian.teller.Teller
 import com.levibostian.testing.OpenForTesting
 import com.levibostian.wendy.service.Wendy
 import javax.inject.Inject
 
 @OpenForTesting
 class DataDestroyer @Inject constructor(private val db: Database,
-                                        private val deviceAccountManager: DeviceAccountManager,
-                                        private val userManager: UserManager,
-                                        private val sharedPreferences: SharedPreferences) {
+                                        private val fileStorage: FileStorage,
+                                        private val keyValueStorage: KeyValueStorage) {
 
     fun destroyAll(complete: (() -> Unit)?) {
         DataDestroyerDestroyAllAsyncTask(this) { error ->
@@ -29,19 +22,29 @@ class DataDestroyer @Inject constructor(private val db: Database,
         }.execute()
     }
 
+    // Call on background thread only!
+    fun destroyAllSync() {
+        destroySqlite()
+        deleteAllFiles()
+        destroySharedPreferences()
+        Wendy.shared.clear() // clears pending tasks
+        deleteCacheManager()
+    }
+
+    fun deleteAllFiles() {
+        fileStorage.deleteAll()
+    }
+
     fun destroySqlite() {
         db.clearAllTables()
     }
 
-    fun destroyAccountManagerAccounts() {
-        deviceAccountManager.logout()
+    fun destroySharedPreferences() {
+        keyValueStorage.deleteAll()
     }
 
-    @SuppressLint("ApplySharedPref")
-    fun destroySharedPreferences() {
-        sharedPreferences.edit {
-            clear()
-        }
+    fun deleteCacheManager() {
+        Teller.shared.clear()
     }
 
     fun destroyWendy(complete: () -> Unit?) {
@@ -54,11 +57,7 @@ class DataDestroyer @Inject constructor(private val db: Database,
 
         override fun doInBackground(vararg p: Unit?): Unit? {
             try {
-                destroyer.destroySqlite()
-                destroyer.destroyAccountManagerAccounts()
-                destroyer.destroySharedPreferences()
-                destroyer.userManager.logout()
-                Wendy.shared.clear()
+                destroyer.destroyAllSync()
             } catch (e: Throwable) {
                 doInBackgroundError = e
             }

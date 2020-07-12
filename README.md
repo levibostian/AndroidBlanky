@@ -81,6 +81,8 @@ Configure: There is a section in this README for Danger under Getting Started.
 
 # Getting started
 
+Project requires Java 9 or above because of running Robolectric. 11 is recommended because it's a LTS release. Set the runtime version in the build configurations in Android Studio.
+
 The instructions below assume you are on a macOS machine and are comfortable with the command line. Are you on Windows or want to use a GUI? Feel free to make a pull request with the instructions!
 
 ```

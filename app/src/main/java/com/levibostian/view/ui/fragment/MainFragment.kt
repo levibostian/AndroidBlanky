@@ -16,7 +16,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.levibostian.R
 import com.levibostian.view.ui.adapter.ReposRecyclerViewAdapter
 import com.levibostian.view.ui.extensions.closeKeyboard
-import com.levibostian.viewmodel.GitHubUsernameViewModel
 import com.levibostian.viewmodel.ReposViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
@@ -27,7 +26,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.levibostian.extensions.onAttachDiGraph
 import com.levibostian.service.ResetAppRunner
-import com.levibostian.service.event.LogoutUserEvent
+import com.levibostian.service.service.ViewDataProvider
+import com.squareup.moshi.JsonClass
 import javax.inject.Inject
 
 class MainFragment: Fragment() {
@@ -36,8 +36,18 @@ class MainFragment: Fragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var resetAppRunner: ResetAppRunner
+    @Inject lateinit var viewDataProvider: ViewDataProvider
     private val reposViewModel by viewModels<ReposViewModel> { viewModelFactory }
-    private val gitHubUsernameViewModel by viewModels<GitHubUsernameViewModel> { viewModelFactory }
+
+    private val viewData: ViewData by lazy {
+        viewDataProvider.mainFragment
+    }
+
+    // The pattern of ViewData is to have it exist in the View controller itself and not share the Vo with other parts of the app. Why? Because even if you imagine 1 view being shared across multiple screens of the app, the wording for that context might be different. To allow each screen to be very flexible and able to adapt, it's best to put it in the view itself
+    @JsonClass(generateAdapter = true)
+    data class ViewData(
+            val loadingText: String
+    )
 
     enum class SwapperViews {
         LOADING_VIEW,
@@ -82,6 +92,8 @@ class MainFragment: Fragment() {
                 Pair(SwapperViews.LOADING_VIEW.name, frag_main_loading),
                 Pair(SwapperViews.REPOS.name, frag_main_content)
         )
+
+        frag_main_loading.title = viewData.loadingText
     }
 
     override fun onStart() {
@@ -109,7 +121,7 @@ class MainFragment: Fragment() {
                         } else {
                             repos_recyclerview.apply {
                                 layoutManager = LinearLayoutManager(requireActivity())
-                                adapter = ReposRecyclerViewAdapter(cache)
+                                adapter = ReposRecyclerViewAdapter(requireActivity())
                                 setHasFixedSize(true)
                             }
 
@@ -125,23 +137,9 @@ class MainFragment: Fragment() {
                     }
                 })
 
-        gitHubUsernameViewModel.observeUsername()
-                .observe(this, Observer { username ->
-                    if (username.cache != null) {
-                        username_edittext.setText(username.cache, TextView.BufferType.EDITABLE)
-                        reposViewModel.setUsername(username.cache!!)
-                    } else {
-                        username_edittext.setText("", TextView.BufferType.EDITABLE)
-                    }
-                })
-
-        username_edittext.errorListener = { text ->
-            gitHubUsernameViewModel.validateUsername(text)
-        }
-
         go_button.setOnClickListener {
             username_edittext.textIfValid?.let { username ->
-                gitHubUsernameViewModel.setUsername(username.toString())
+                reposViewModel.setUsername(username.toString())
                 closeKeyboard()
             }
         }

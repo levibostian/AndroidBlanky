@@ -1,12 +1,8 @@
 package com.levibostian.service.pendingtasks
 
-import com.levibostian.service.AppService
 import com.levibostian.service.manager.UserManager
 import com.levibostian.service.repository.UserRepository
-import com.levibostian.service.vo.request.UpdateFcmTokenRequestBody
-import com.levibostian.view.ui.MainApplication
 import com.levibostian.wendy.service.PendingTask
-import com.levibostian.wendy.service.Wendy
 import com.levibostian.wendy.types.PendingTaskResult
 import io.reactivex.schedulers.Schedulers
 
@@ -28,9 +24,9 @@ class UpdateFcmTokenPendingTask(userId: String): PendingTask(dataId = userId, //
     }
 
     override fun runTask(): PendingTaskResult {
-        val fcmToken = userManager.fcmPushNotificationToken
+        val fcmToken = userManager.pushNotificationDeviceToken
 
-        return if (fcmToken != null && userManager.isUserLoggedIn()) {
+        return if (fcmToken != null && userManager.isUserLoggedIn) {
             val response = userRepository.updateFcmToken(fcmToken)
                     .subscribeOn(Schedulers.io())
                     .blockingGet()

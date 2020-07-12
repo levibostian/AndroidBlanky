@@ -19,8 +19,7 @@ import javax.inject.Inject
 
 @OpenForTesting
 class ResponseProcessor @Inject constructor(private val context: Context,
-                                            private val logger: Logger,
-                                            private val jsonAdapter: JsonAdapter) {
+                                            private val logger: Logger) {
 
     private val humanReadableUnhandledResultError by lazy { UnhandledHttpResultException(context.getString(R.string.fatal_network_error_message)) }
 
@@ -58,16 +57,16 @@ class ResponseProcessor @Inject constructor(private val context: Context,
         when (statusCode) {
             in HttpResponseConstants.SystemError..600 -> ServerErrorException(context.getString(R.string.error_500_600_response_code))
             HttpResponseConstants.UserEnteredBadDataError -> {
-                jsonAdapter.fromJson(errorBody!!, UserEnteredBadDataResponseError::class.java)
+                JsonAdapter.fromJson(errorBody!!, UserEnteredBadDataResponseError::class.java)
             }
             HttpResponseConstants.RateLimitingError -> {
                 RateLimitingResponseError(context.getString(R.string.error_rate_limiting_response))
             }
             HttpResponseConstants.ConflictError -> {
-                jsonAdapter.fromJson(errorBody!!, ConflictResponseError::class.java)
+                JsonAdapter.fromJson(errorBody!!, ConflictResponseError::class.java)
             }
             HttpResponseConstants.ForbiddenError -> {
-                jsonAdapter.fromJson(errorBody!!, ForbiddenResponseError::class.java)
+                JsonAdapter.fromJson(errorBody!!, ForbiddenResponseError::class.java)
             }
             else -> extraProcessing?.invoke(statusCode, response, jsonAdapter)
             /**

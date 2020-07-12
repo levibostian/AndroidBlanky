@@ -4,58 +4,30 @@ import android.app.Activity
 import android.os.Bundle
 
 /**
- * [Logger] intended for development purposes. Leaving breadcrumbs for debugging.
+ * [Logger] intended for development purposes. It's meant to take many of the functions and turn them into strings that can be shown to the developer.
  */
 abstract class DebugLogger: Logger {
 
-    companion object {
-        const val USER_ID_TAG = "UserId"
-        const val HTTP_EVENT_TAG = "HttpEvent"
+    abstract fun logDebug(message: String, extras: Bundle?)
+    abstract fun logError(error: Throwable)
+
+    override fun breadcrumb(caller: Any, event: String, extras: Bundle?) {
+        logDebug("$event (from: ${caller::class.java.simpleName})", extras)
     }
 
-    override fun enteredScreen(activity: Activity, screenName: String) {
-        logEvent("EnteredScreen", "Name: $screenName, from Activity: ${activity::class.java.simpleName}")
+    override fun httpRequestEvent(method: String, url: String, reqBody: String?) {
+        logDebug("Http request-- method: $method, url: $url, req body: ${reqBody ?: "(none)"}", null)
     }
 
-    override fun loggedIn(id: String, method: Logger.LoginMethod) {
-        setUserProperty(USER_ID_TAG, id)
-        logEvent("LoggedIn", "method: ${method.name}")
+    override fun httpSuccessEvent(method: String, url: String, code: Int, reqHeaders: String?, resHeaders: String?, resBody: String?) {
+        logDebug("Http response success-- method: $method, url: $url, code: $code, res body: ${resBody ?: "(none)"}", null)
     }
 
-    override fun loggedOut() {
-        logEvent("LoggedOut", "")
-        setUserProperty(USER_ID_TAG, null)
+    override fun httpFailEvent(method: String, url: String, code: Int, reqHeaders: String?, resHeaders: String?, resBody: String?) {
+        logDebug("Http Response Failed! method: method: $method, url: $url, code: $code, req headers: ${reqHeaders ?: "(none)"}, res headers: ${resHeaders ?: "(none)"}, res body: ${resBody ?: "(none)"}", null)
     }
-
-    override fun performedEvent(event: Logger.ActivityEvent, bundle: Bundle?) {
-        logEvent(event.name, bundle.toString())
-    }
-
-    override fun httpRequest(method: String, url: String) {
-        logEvent(HTTP_EVENT_TAG, "Request. method: $method, url: $url")
-    }
-
-    override fun httpSuccess(method: String, url: String) {
-        logEvent(HTTP_EVENT_TAG, "Success! method: $method, url: $url")
-    }
-
-    override fun httpFail(method: String, url: String, code: Int, reqHeaders: String?, resHeaders: String?, resBody: String?) {
-        val message = "Failed! method: $method, url: $url, code: $code, req headers: ${reqHeaders ?: "(none)" }, res headers: ${reqHeaders ?: "(none)" }, res body: ${resBody ?: "(none)" }"
-
-        logEvent(HTTP_EVENT_TAG, message)
-        logError(DebugHttpFailed("HTTP $message"))
-    }
-
-    class DebugHttpFailed(message: String): Throwable(message)
 
     override fun errorOccurred(error: Throwable) {
         logError(error)
     }
-
-    abstract fun setUserProperty(name: String, property: String?)
-
-    abstract fun logEvent(tag: String, message: String)
-
-    abstract fun logError(error: Throwable)
-
 }

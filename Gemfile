@@ -5,15 +5,9 @@
 source "https://rubygems.org"
 
 gem 'fastlane'
-
 plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
 eval_gemfile(plugins_path) if File.exist?(plugins_path)
 
-gem 'danger-android_version_change', '~> 0.1.2'
-gem "danger", "~> 6"
-gem "trent", "~> 0.4.0"
-gem "dotenv-android", "~> 0.1.2"
-
-gem "dotenv", "~> 2.7"
-
-gem "cici", "~> 0.2.0"
+gem "dotenv-android"
+gem "dotenv"
+gem "cici"

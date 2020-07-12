@@ -3,27 +3,32 @@ package com.levibostian.view.ui.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.levibostian.extensions.onCreateDiGraph
-import com.levibostian.service.manager.DeviceAccountManager
+import com.levibostian.service.logger.ActivityEvent
+import com.levibostian.service.logger.Logger
 import com.levibostian.service.manager.NotificationChannelManager
+import com.levibostian.service.util.AppStartupUtil
+import com.levibostian.service.util.DynamicLinkAction
+import com.levibostian.service.util.DynamicLinksProcessor
+import com.levibostian.service.work.WorkManagerWrapper
 import javax.inject.Inject
+import kotlin.math.log
 
-class LaunchActivity: Activity() {
-
-    companion object {
-        private const val LOGOUT_ACCOUNT = "LaunchActivity_LOGOUT_ACCOUNT"
-
-        fun getIntent(context: Context, logoutOfAccount: Boolean): Intent {
-            return Intent(context, LaunchActivity::class.java).apply {
-                putExtra(LOGOUT_ACCOUNT, logoutOfAccount)
-            }
-        }
-    }
+class LaunchActivity: AppCompatActivity() {
 
     @Inject lateinit var notificationChannelManager: NotificationChannelManager
-    @Inject lateinit var deviceAccountManager: DeviceAccountManager
+    @Inject lateinit var logger: Logger
+    @Inject lateinit var workerManager: WorkManagerWrapper
+    @Inject lateinit var appStartupUtil: AppStartupUtil
+
+    private val LOGIN_ACTIVITY_REQUEST_CODE = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         onCreateDiGraph().inject(this)
@@ -31,40 +36,76 @@ class LaunchActivity: Activity() {
 
         notificationChannelManager.createChannels()
 
-        val logoutAccount: Boolean = intent?.extras?.getBoolean(LOGOUT_ACCOUNT) ?: false
-        if (logoutAccount) {
-            launchStartupActivity(null, true)
-        } else {
-            if (!getDynamicLinkIfExists()) {
-                launchStartupActivity(null, false)
+        // Run startup tasks before UI shows up. Some tasks may change the UI if called after the UI is shown.
+        appStartupUtil.run()
+
+        getDynamicLinkIfExists { handledNavigation ->
+            if (!handledNavigation) {
+                goToMainPartOfApp()
             }
         }
     }
 
-    private fun launchStartupActivity(passwordlessToken: String?, logoutOfAccount: Boolean) {
-        deviceAccountManager.continueLoginFlow(this, logoutOfAccount, passwordlessToken) { userLoggedIn ->
-            if (userLoggedIn) startActivity(MainActivity.getIntent(this))
-            finish()
+    private fun goToMainPartOfApp() {
+        startActivity(MainActivity.getIntent(this))
+
+        workerManager.startPeriodicTasks()
+
+        finish()
+    }
+
+    private fun getDynamicLinkIfExists(onComplete: (handled: Boolean) -> Unit) {
+        Firebase.dynamicLinks
+                .getDynamicLink(intent)
+                .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                    var deepLink = pendingDynamicLinkData?.link
+
+                    // Just because Firebase did not find a dynamic link doesn't mean there is not one at all (dynamic links that are not short links may not be captured by Firebase). We check the intent to see if a dynamic link exists there and handle it, too.
+                    if (deepLink == null) {
+                        intent?.dataString?.let { deepLink = Uri.parse(it) }
+                    }
+
+                    if (deepLink == null) return@addOnSuccessListener onComplete(false)
+
+                    onComplete(handleDeepLink(deepLink!!))
+                }
+                .addOnFailureListener(this) { error ->
+                    logger.errorOccurred(error)
+
+                    onComplete(false)
+                }
+    }
+
+    /**
+     * Takes a dynamic link (aka: deep link), parses it, determines if there is an action, if there is an action, performs it.
+     *
+     * @return If there was an action that was acted upon that launched a UI to the user. This tells the Activity if if should launch an activity if one has not been launched already.
+     */
+    private fun handleDeepLink(deepLink: Uri): Boolean {
+        logger.appEventOccurred(ActivityEvent.OpenedDynamicLink, null)
+
+        val action = DynamicLinksProcessor.getActionFromDynamicLink(deepLink) ?: return false
+
+        return when (action) {
+            is DynamicLinkAction.PasswordlessTokenExchange -> {
+                logger.breadcrumb(this, "Passwordless token found in dynamic link", null)
+
+                startActivityForResult(LoginActivity.getIntent(this, action.token), LOGIN_ACTIVITY_REQUEST_CODE)
+
+                true
+            }
         }
     }
 
-    private fun getDynamicLinkIfExists(): Boolean {
-        intent?.data?.getQueryParameter("passwordless_token")?.let {
-            launchStartupActivity(it, false)
-            return true
-        }
-
-        // If a Firebase Dynamic short link launches the app, we cannot query for parameters in the intent. So, we do this hack where we try to view the deep link which will launch this activity *again* but with a full length Dynamic link.
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(intent)
-                .addOnSuccessListener(this) { pendingDynamicLinkData ->
-                    pendingDynamicLinkData?.link?.let { deepLink ->
-                        startActivity(Intent(Intent.ACTION_VIEW, deepLink))
-                        finish()
-                    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            LOGIN_ACTIVITY_REQUEST_CODE -> {
+                if (resultCode == RESULT_OK) {
+                    goToMainPartOfApp()
                 }
-                .addOnFailureListener(this) { error -> throw error }
-        return false
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
 }

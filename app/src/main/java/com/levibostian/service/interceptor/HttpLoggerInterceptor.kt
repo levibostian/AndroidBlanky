@@ -14,19 +14,22 @@ class HttpLoggerInterceptor(private val logger: Logger): Interceptor {
         val url = request.url.toString()
         val method = request.method
 
-        logger.httpRequest(
-                method = method,
-                url = url)
+        logger.httpRequestEvent(method, url, request.body?.toString())
 
         val response = chain.proceed(request)
 
         // We only care about the body if the response is not a successful one.
         if (response.isSuccessful) {
-            logger.httpSuccess(
+            logger.httpSuccessEvent(
                     method = method,
-                    url = url)
+                    url = url,
+                    code = response.code,
+                    reqHeaders = request.getHeadersString(),
+                    resHeaders = response.getHeadersString(),
+                    resBody = response.getBodyCopy()
+            )
         } else {
-            logger.httpFail(
+            logger.httpFailEvent(
                     method = method,
                     url = url,
                     code = response.code,

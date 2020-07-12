@@ -36,8 +36,7 @@
         <com.levibostian.pleasehold.PleaseHoldView
             android:id="@+id/frag_main_loading"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:pleasehold_message_text="@string/loading_repos"/>
+            android:layout_height="match_parent" />
 
         <com.levibostian.empty.EmptyView
             android:id="@+id/frag_main_empty"

@@ -28,6 +28,11 @@ class AndroidModule(private val application: MainApplication) {
     }
 
     @Provides
+    fun provideApplication(): MainApplication {
+        return application
+    }
+
+    @Provides
     @Singleton
     fun provideContext(): Context {
         return application

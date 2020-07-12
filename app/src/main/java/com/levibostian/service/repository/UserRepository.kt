@@ -1,6 +1,6 @@
 package com.levibostian.service.repository
 
-import com.levibostian.service.AppService
+import com.levibostian.service.api.AppService
 import com.levibostian.service.util.ResponseProcessor
 import com.levibostian.service.vo.request.PasswordlessEmailLoginBody
 import com.levibostian.service.vo.request.UpdateFcmTokenRequestBody
