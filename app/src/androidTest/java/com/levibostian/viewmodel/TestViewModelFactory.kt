@@ -2,9 +2,7 @@ package com.levibostian.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.levibostian.testing.OpenForTesting
 
-@OpenForTesting
 class TestViewModelFactory : ViewModelProvider.Factory {
 
     var models: List<ViewModel> = emptyList()

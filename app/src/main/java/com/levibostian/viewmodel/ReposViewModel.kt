@@ -6,13 +6,11 @@ import com.levibostian.extensions.toLiveData
 import com.levibostian.service.datasource.ReposTellerRepository
 import com.levibostian.service.model.RepoModel
 import com.levibostian.service.repository.ReposRepository
-import com.levibostian.testing.OpenForTesting
 import com.levibostian.teller.cachestate.OnlineCacheState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-@OpenForTesting
 class ReposViewModel @Inject constructor(private val reposRepository: ReposTellerRepository): ViewModel() {
 
     fun setUsername(username: String) {

@@ -6,9 +6,6 @@ import com.levibostian.R
 import com.levibostian.service.error.network.*
 import com.levibostian.service.json.JsonAdapter
 import com.levibostian.service.logger.Logger
-import com.levibostian.service.service.HttpResponseConstants
-import com.levibostian.service.vo.MessageResponse
-import com.levibostian.testing.OpenForTesting
 import com.levibostian.teller.repository.OnlineRepository
 import com.levibostian.teller.repository.OnlineRepositoryFetchResponse
 import com.squareup.moshi.Moshi
@@ -17,7 +14,6 @@ import retrofit2.adapter.rxjava2.Result
 import java.io.IOException
 import javax.inject.Inject
 
-@OpenForTesting
 class ResponseProcessor @Inject constructor(private val context: Context,
                                             private val logger: Logger) {
 

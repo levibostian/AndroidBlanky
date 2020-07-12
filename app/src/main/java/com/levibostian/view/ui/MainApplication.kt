@@ -15,7 +15,6 @@ import com.levibostian.service.logger.ActivityEvent
 import com.levibostian.service.logger.Logger
 import com.levibostian.service.pendingtasks.PendingTasksFactory
 import com.levibostian.teller.Teller
-import com.levibostian.testing.OpenForTesting
 import com.levibostian.view.ui.activity.LaunchActivity
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.service.Wendy
@@ -23,7 +22,6 @@ import io.reactivex.plugins.RxJavaPlugins
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@OpenForTesting
 class MainApplication: Application(), Configuration.Provider, ResetAppRunner {
 
     lateinit var appComponent: AppGraph

@@ -7,17 +7,10 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 androidExtensions {
     experimental = true
-}
-
-allOpen {
-    // allows mocking for classes w/o directly opening them for release builds
-    // UI tests cannot mock final classes with mockito, that's what this is for.
-    annotation "${env.PACKAGE_NAME}.testing.OpenClass"
 }
 
 repositories {

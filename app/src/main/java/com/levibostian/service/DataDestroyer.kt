@@ -6,11 +6,9 @@ import com.levibostian.service.manager.UserManager
 import com.levibostian.service.service.FileStorage
 import com.levibostian.service.service.KeyValueStorage
 import com.levibostian.teller.Teller
-import com.levibostian.testing.OpenForTesting
 import com.levibostian.wendy.service.Wendy
 import javax.inject.Inject
 
-@OpenForTesting
 class DataDestroyer @Inject constructor(private val db: Database,
                                         private val fileStorage: FileStorage,
                                         private val keyValueStorage: KeyValueStorage) {
