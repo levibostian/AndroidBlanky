@@ -1,6 +1,10 @@
 package com.levibostian.service.api
 
 import android.content.Context
+import com.levibostian.R
+import com.levibostian.service.error.network.HttpRequestError
+import com.levibostian.service.error.network.NoInternetConnectionException
+import com.levibostian.service.error.network.UnhandledHttpResultException
 import com.levibostian.service.logger.Logger
 import io.reactivex.Single
 import java.io.IOException
@@ -44,7 +48,7 @@ abstract class Api constructor(private val context: Context,
                 if (result.response()!!.isSuccessful) { // 200-300 status code
                     Result.success(result.response()!!.body()!!) // the only time we return a Result.success result.
                 } else {
-                    val processedResponse = ProcessedResponse(result.response()!!.raw().request().url().toString(), result.response()!!.raw().request().method(), result.response()!!.code(), result.response()!!.errorBody()!!.string())
+                    val processedResponse = ProcessedResponse(result.response()!!.raw().request.url.toString(), result.response()!!.raw().request.method, result.response()!!.code(), result.response()!!.errorBody()!!.string())
 
                     if (extraSuccessHandling != null) {
                         val successfulResult = extraSuccessHandling(processedResponse)

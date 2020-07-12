@@ -9,6 +9,7 @@ import com.google.firebase.FirebaseApp
 import com.levibostian.BuildConfig
 import com.levibostian.di.AndroidModule
 import com.levibostian.di.AppGraph
+import com.levibostian.di.DaggerAppGraph
 import com.levibostian.service.DataDestroyer
 import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.logger.ActivityEvent

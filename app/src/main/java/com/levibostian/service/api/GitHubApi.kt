@@ -1,10 +1,18 @@
 package com.levibostian.service.api
 
 import android.content.Context
+import com.levibostian.R
+import com.levibostian.extensions.humanReadableTimeAgoSince
 import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.error.network.HttpRequestError
+import com.levibostian.service.error.network.ServerErrorException
+import com.levibostian.service.json.JsonAdapter
 import com.levibostian.service.logger.Logger
 import com.levibostian.service.model.RepoModel
+import com.levibostian.service.vo.response.error.FieldsErrorException
+import com.levibostian.service.vo.response.error.FieldsErrorResponse
+import com.levibostian.service.vo.response.error.ForbiddenResponseError
+import com.levibostian.service.vo.response.error.RateLimitingResponseError
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -23,7 +31,7 @@ class GitHubApi @Inject constructor(private val context: Context,
                                     private val resetAppRunner: ResetAppRunner): Api(context, logger) {
 
     fun getRepos(username: String): Single<Result<List<RepoModel>>> {
-        return request(service.listRepos(username), extraSuccessHandling = { processedResponse ->
+        return request(service.listRepos(username), extraErrorHandling = { processedResponse ->
             when (processedResponse.statusCode) {
                 404 -> HttpRequestError.userError(ForbiddenResponseError.from(processedResponse.body!!).error_message, null)
                 else -> null

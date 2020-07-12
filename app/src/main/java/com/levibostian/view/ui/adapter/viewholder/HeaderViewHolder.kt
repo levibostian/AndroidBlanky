@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.vh_header.*
 
 class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view), LayoutContainer {
     companion object {
-        @LayoutRes val layoutRes: Int = R.layout.vh_header
+        @LayoutRes val layoutRes: Int = com.levibostian.R.layout.vh_header
     }
 
     override val containerView: View?

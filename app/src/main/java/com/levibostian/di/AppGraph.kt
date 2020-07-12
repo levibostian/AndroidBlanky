@@ -4,6 +4,7 @@ import com.levibostian.service.service.FirebaseMessagingService
 import com.levibostian.view.ui.MainApplication
 import com.levibostian.view.ui.activity.BaseActivity
 import com.levibostian.view.ui.activity.LaunchActivity
+import com.levibostian.view.ui.activity.LoginActivity
 import com.levibostian.view.ui.dialog.AreYouSureLogoutWendyDialogFragment
 import com.levibostian.view.ui.fragment.MainFragment
 import com.levibostian.view.ui.fragment.SettingsFragment
@@ -29,4 +30,5 @@ interface AppGraph {
     fun inject(firebaseMessagingService: FirebaseMessagingService)
     fun inject(areYouSureLogoutWendyDialogFragment: AreYouSureLogoutWendyDialogFragment)
     fun inject(settingsFragment: SettingsFragment)
+    fun inject(loginActivity: LoginActivity)
 }

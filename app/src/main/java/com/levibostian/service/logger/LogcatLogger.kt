@@ -3,6 +3,7 @@ package com.levibostian.service.logger
 import android.os.Bundle
 import android.util.Log
 import com.levibostian.Env
+import com.levibostian.extensions.isDevelopment
 import java.util.*
 
 class LogcatLogger: DebugLogger() {

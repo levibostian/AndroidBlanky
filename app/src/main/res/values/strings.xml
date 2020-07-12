@@ -18,6 +18,8 @@
     <string name="server_down_error_message">Sorry! There was an issue. The team has been notified. Please try again later.</string>
     <string name="error_500_600_response_code">Sorry! Our system is currently not working. Come back in a few minutes and try again.</string>
     <string name="error_network_connection_issue">There is an issue with your Internet connection. Try again soon.</string>
+    <string name="unhandled_http_response_error_message">Sorry! There was an issue. The team has been notified. Please try again later.</string>
+    <string name="unauthorized_relogin">Sorry, you have been logged out. Please login again and try again.</string>
     <string name="settings">Settings</string>
     <string name="privacy">Privacy</string>
     <string name="enable_analytics">Enable analytics</string>
@@ -56,4 +58,5 @@
     <string name="username_too_long">Username is %s too long.</string>
     <string name="username_too_short">Username is %s too short.</string>
     <string name="licenses">Licenses</string>
+    <string name="logging_into_app_title">Logging into account...</string>
 </resources>

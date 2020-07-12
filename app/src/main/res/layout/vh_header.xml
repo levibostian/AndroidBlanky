@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="24dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title_textview"
+        android:layout_width="match_parent"
+        style="@style/h2"
+        android:layout_height="wrap_content"
+        tools:text="What’s holding you back from reaching your health goals? Get into it with our latest Podcast episode."/>
+
+</LinearLayout>

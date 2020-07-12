@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- the colors here are to theme material design elements https://developer.android.com/training/material/theme.html#StatusBar describes all the elements you can customize -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_darker</item>
@@ -22,6 +22,9 @@
 
         <item name="dialogTheme">@style/DialogTheme</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+
+        <item name="pleaseholdview_style">@style/PleaseHoldView.Custom</item>
+        <item name="emptyview_style">@style/EmptyView.Custom</item>
     </style>
 
     <style name="BorderlessButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
@@ -58,6 +61,46 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="PleaseHoldView.Custom">
+        <item name="pleaseholdview_titleTextView">@style/PleaseHoldView.TitleTextView.Custom</item>
+        <item name="pleaseholdview_messageTextView">@style/PleaseHoldView.MessageTextView.Custom</item>
+        <item name="pleaseholdview_progressBar">@style/PleaseHoldView.ProgressBar.Custom</item>
+    </style>
+
+    <style name="PleaseHoldView.ProgressBar.Custom"  parent="Widget.AppCompat.ProgressBar">
+        <item name="android:layout_height">30dp</item>
+        <item name="android:padding">@dimen/com_levibostian_pleaseholdview_view_padding</item>
+    </style>
+
+    <style name="PleaseHoldView.TitleTextView.Custom">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:padding">30dp</item>
+    </style>
+
+    <style name="PleaseHoldView.MessageTextView.Custom">
+        <item name="android:textColor">@color/text_color_secondary</item>
+        <item name="android:padding">30dp</item>
+    </style>
+
+    <style name="EmptyView.Custom">
+        <item name="emptyview_titleTextView">@style/EmptyView.TitleTextView.Custom</item>
+        <item name="emptyview_messageTextView">@style/EmptyView.MessageTextView.Custom</item>
+        <item name="emptyview_button">@style/EmptyView.Button.Custom</item>
+    </style>
+
+    <style name="EmptyView.TitleTextView.Custom">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:padding">30dp</item>
+    </style>
+
+    <style name="EmptyView.MessageTextView.Custom">
+        <item name="android:textColor">@color/text_color_secondary</item>
+        <item name="android:padding">30dp</item>
+    </style>
+
+    <style name="EmptyView.Button.Custom" parent="ButtonStyle">
     </style>
 
 </resources>

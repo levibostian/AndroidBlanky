@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.levibostian.R
 import kotlinx.android.synthetic.main.activity_fragment_testing.*
-import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * Activity meant to house a Fragment that is under a UI test.

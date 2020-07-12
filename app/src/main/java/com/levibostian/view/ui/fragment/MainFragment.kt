@@ -27,6 +27,7 @@ import androidx.navigation.ui.onNavDestinationSelected
 import com.levibostian.extensions.onAttachDiGraph
 import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.service.ViewDataProvider
+import com.levibostian.service.type.list_item.RepoListItem
 import com.squareup.moshi.JsonClass
 import javax.inject.Inject
 
@@ -38,6 +39,9 @@ class MainFragment: Fragment() {
     @Inject lateinit var resetAppRunner: ResetAppRunner
     @Inject lateinit var viewDataProvider: ViewDataProvider
     private val reposViewModel by viewModels<ReposViewModel> { viewModelFactory }
+
+    private val recyclerViewAdapter: ReposRecyclerViewAdapter
+        get() = repos_recyclerview.adapter as ReposRecyclerViewAdapter
 
     private val viewData: ViewData by lazy {
         viewDataProvider.mainFragment
@@ -94,6 +98,12 @@ class MainFragment: Fragment() {
         )
 
         frag_main_loading.title = viewData.loadingText
+
+        repos_recyclerview.apply {
+            layoutManager = LinearLayoutManager(requireActivity())
+            adapter = ReposRecyclerViewAdapter(requireActivity())
+            setHasFixedSize(true)
+        }
     }
 
     override fun onStart() {
@@ -119,11 +129,8 @@ class MainFragment: Fragment() {
                             frag_main_empty.message = getString(R.string.user_no_repos)
                             frag_main_swapper.swapTo(SwapperViews.EMPTY_VIEW.name) {}
                         } else {
-                            repos_recyclerview.apply {
-                                layoutManager = LinearLayoutManager(requireActivity())
-                                adapter = ReposRecyclerViewAdapter(requireActivity())
-                                setHasFixedSize(true)
-                            }
+                            // We *should* be observing the repo list items but this version of Teller does not include the `.convert()` function which is needed to map the cache to the list item. So, below is a hack just to get the app to compile.
+                            recyclerViewAdapter.items = cache.map { RepoListItem.Repo(it) }
 
                             frag_main_swapper.swapTo(SwapperViews.REPOS.name) {}
                         }

@@ -1,12 +1,10 @@
 package com.levibostian.service.repository
 
 import com.levibostian.service.api.GitHubApi
-import com.levibostian.service.util.ResponseProcessor
 import com.levibostian.service.db.Database
 import com.levibostian.service.model.RepoModel
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ReposRepository @Inject constructor(private val api: GitHubApi,

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-if (System.getenv("RELEASE") == "true") {
+if (env.DEVELOPMENT != "true") {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 

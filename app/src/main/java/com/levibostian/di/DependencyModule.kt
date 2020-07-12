@@ -69,18 +69,18 @@ class DependencyModule {
     fun provideMoshi(): Moshi = JsonAdapter.moshi
 
     @Provides
-    fun provideRemoteConfigPlugins(moshi: Moshi): List<RemoteConfigAdapterPlugin> {
+    fun provideRemoteConfigPlugins(moshi: Moshi): BoquilaRemoteConfigAdapterPlugins {
         val plugins: MutableList<RemoteConfigAdapterPlugin> = mutableListOf(
                 MoshiRemoteConfigAdapterPlugin(moshi)
         )
 
         if (Env.isDevelopment) plugins.add(LoggingRemoteConfigAdapterPlugin())
 
-        return plugins
+        return BoquilaRemoteConfigAdapterPlugins(plugins)
     }
 
     @Provides
-    fun provideRemoteConfig(plugins: List<RemoteConfigAdapterPlugin>): RemoteConfigAdapter {
+    fun provideRemoteConfig(plugins: BoquilaRemoteConfigAdapterPlugins): RemoteConfigAdapter {
         val firebaseRemoteConfig = Firebase.remoteConfig
         if (Env.isDevelopment) {
             val configSettings = remoteConfigSettings {
@@ -89,7 +89,10 @@ class DependencyModule {
             firebaseRemoteConfig.setConfigSettingsAsync(configSettings)
         }
 
-        return FirebaseRemoteConfigAdapter(firebaseRemoteConfig, plugins = plugins)
+        return FirebaseRemoteConfigAdapter(firebaseRemoteConfig, plugins = plugins.plugins)
     }
 
 }
+
+// Exists for Dagger. Dagger does better with concrete data types like a class instead of a List<> type.
+data class BoquilaRemoteConfigAdapterPlugins(val plugins: List<RemoteConfigAdapterPlugin>)

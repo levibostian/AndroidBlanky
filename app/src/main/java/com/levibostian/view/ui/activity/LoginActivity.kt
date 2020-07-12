@@ -6,12 +6,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.ktx.Firebase
+import com.levibostian.R
+import com.levibostian.extensions.onCreateDiGraph
+import com.levibostian.extensions.plusAssign
 import com.levibostian.service.logger.Logger
+import com.levibostian.viewmodel.LoginViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
@@ -52,7 +52,6 @@ class LoginActivity: AppCompatActivity() {
 
         loading_view.apply {
             title = getString(R.string.logging_into_app_title)
-            message = getString(R.string.logging_into_app_message)
         }
 
         swapper_view.viewMap = mapOf(

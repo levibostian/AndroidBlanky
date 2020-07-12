@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.ImageView
 import com.levibostian.R
+import com.levibostian.extensions.textOrHide
 import com.levibostian.view.type.CTALink
 import kotlinx.android.synthetic.main.view_cta.view.*
 

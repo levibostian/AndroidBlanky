@@ -1,26 +1,22 @@
 package com.levibostian.view.ui.dialog
 
+/**
 import android.os.Bundle
 import javax.inject.Inject
 import android.content.Context
 import android.view.*
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_select_special_value.*
 
-class SelectHighlightValueDialog : DialogFragment(), SelectHighlightOptionsRecyclerViewAdapter.Listener {
+class ExampleDialog : DialogFragment(), FooRecyclerViewAdapter.Listener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val workoutsViewModel by activityViewModels<WorkoutsViewModel> { viewModelFactory }
-    @Inject lateinit var logger: Logger
+    private val fooViewModel by activityViewModels<FooViewModel> { viewModelFactory }
 
-    private val args: SelectHighlightValueDialogArgs by navArgs()
+    private val args: ExampleDialogArgs by navArgs()
 
     override fun onAttach(context: Context) {
         onAttachDiGraph().inject(this)
@@ -28,7 +24,7 @@ class SelectHighlightValueDialog : DialogFragment(), SelectHighlightOptionsRecyc
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_select_highlight_value, container, false)
+        return inflater.inflate(R.layout.fragment_dialog_foo, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,18 +32,19 @@ class SelectHighlightValueDialog : DialogFragment(), SelectHighlightOptionsRecyc
 
         options_recyclerview.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = SelectHighlightOptionsRecyclerViewAdapter(requireActivity()).apply {
-                listener = this@SelectHighlightValueDialog
+            adapter = FooRecyclerViewAdapter(requireActivity()).apply {
+                listener = this@ExampleDialog
             }
         }
 
-        (options_recyclerview.adapter as SelectHighlightOptionsRecyclerViewAdapter).data = args.options.toList()
+        (options_recyclerview.adapter as FooRecyclerViewAdapter).data = args.options.toList()
     }
 
     override fun highlightOptionSelected(option: String) {
-        workoutsViewModel.highlightScheduleSelected(option)
+        fooViewModel.valueSelected(option)
 
         dismiss()
     }
 
 }
+        */

@@ -10,6 +10,7 @@ import com.levibostian.service.logger.ActivityEvent
 import com.levibostian.service.logger.ActivityEventParamKey
 import com.levibostian.service.logger.Logger
 import com.levibostian.service.manager.UserManager
+import com.levibostian.service.util.NotificationUtil
 import javax.inject.Inject
 
 class FirebaseMessagingService: FirebaseMessagingService() {
