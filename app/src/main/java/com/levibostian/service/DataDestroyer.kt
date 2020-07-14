@@ -2,16 +2,17 @@ package com.levibostian.service
 
 import android.os.AsyncTask
 import com.levibostian.service.db.Database
-import com.levibostian.service.manager.UserManager
 import com.levibostian.service.service.FileStorage
 import com.levibostian.service.service.KeyValueStorage
 import com.levibostian.teller.Teller
 import com.levibostian.wendy.service.Wendy
 import javax.inject.Inject
 
-class DataDestroyer @Inject constructor(private val db: Database,
-                                        private val fileStorage: FileStorage,
-                                        private val keyValueStorage: KeyValueStorage) {
+class DataDestroyer @Inject constructor(
+    private val db: Database,
+    private val fileStorage: FileStorage,
+    private val keyValueStorage: KeyValueStorage
+) {
 
     fun destroyAll(complete: (() -> Unit)?) {
         DataDestroyerDestroyAllAsyncTask(this) { error ->
@@ -49,7 +50,7 @@ class DataDestroyer @Inject constructor(private val db: Database,
         Wendy.shared.clearAsync(complete)
     }
 
-    private class DataDestroyerDestroyAllAsyncTask(private val destroyer: DataDestroyer, private val complete: (error: Throwable?) -> Unit?): AsyncTask<Unit?, Unit?, Unit?>() {
+    private class DataDestroyerDestroyAllAsyncTask(private val destroyer: DataDestroyer, private val complete: (error: Throwable?) -> Unit?) : AsyncTask<Unit?, Unit?, Unit?>() {
 
         private var doInBackgroundError: Throwable? = null
 
@@ -68,7 +69,5 @@ class DataDestroyer @Inject constructor(private val db: Database,
 
             complete(doInBackgroundError)
         }
-
     }
-
 }

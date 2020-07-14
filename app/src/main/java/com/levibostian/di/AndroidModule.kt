@@ -1,17 +1,16 @@
 package com.levibostian.di
 
 import android.accounts.AccountManager
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.preference.PreferenceManager
 import com.levibostian.service.ResetAppRunner
-import dagger.Module
-import dagger.Provides
 import com.levibostian.service.logger.Logger
 import com.levibostian.service.util.InstallReferrerProcessor
 import com.levibostian.view.ui.MainApplication
+import dagger.Module
+import dagger.Provides
 import javax.inject.Singleton
 
 @Module
@@ -52,5 +51,4 @@ class AndroidModule(private val application: MainApplication) {
     fun provideConnectivityManager(): ConnectivityManager {
         return application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
-
 }

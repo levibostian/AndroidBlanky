@@ -27,5 +27,4 @@ class ScreenshotUtil(val activity: Activity) {
             }
         }
     }
-
 }

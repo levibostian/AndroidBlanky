@@ -12,8 +12,7 @@ class DatabaseManager {
 
     fun dbInstance(context: Context): Database {
         return Room.databaseBuilder(context, Database::class.java, DATABASE_NAME)
-                //.addMigrations(Migration1()) // When you need to run a migration, un-comment.
-                .build()
+            // .addMigrations(Migration1()) // When you need to run a migration, un-comment.
+            .build()
     }
-
 }

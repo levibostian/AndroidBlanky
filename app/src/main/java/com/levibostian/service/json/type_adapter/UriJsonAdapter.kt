@@ -17,5 +17,4 @@ class UriJsonAdapter {
     fun eventToJson(event: Uri?): String? {
         return event?.toString()
     }
-
 }

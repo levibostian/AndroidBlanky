@@ -21,12 +21,12 @@ val Date.yesterday: Date
 val Date.isoString: String
     get() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US).format(this)
 
-fun Date.hoursInFuture(hours: Int): Date =Calendar.getInstance().apply {
+fun Date.hoursInFuture(hours: Int): Date = Calendar.getInstance().apply {
     add(Calendar.HOUR, hours)
     add(Calendar.SECOND, 1) // add a little bit or some tests may fail because you expected a date to be 2 hours ahead but it's 1 hour 59 seconds and X milliseconds.
 }.time
 
-fun Date.daysAgo(days: Int): Date =Calendar.getInstance().apply {
+fun Date.daysAgo(days: Int): Date = Calendar.getInstance().apply {
     add(Calendar.SECOND, -1) // add a little bit or some tests may fail because you expected a date to be 2 hours ahead but it's 1 hour 59 seconds and X milliseconds.
     add(Calendar.DATE, -days)
 }.time

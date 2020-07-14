@@ -3,7 +3,6 @@ package com.levibostian.view.ui.dialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -21,7 +20,7 @@ import com.levibostian.wendy.service.Wendy
 import com.levibostian.wendy.types.ReasonPendingTaskSkipped
 import javax.inject.Inject
 
-class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener {
+class AreYouSureLogoutWendyDialogFragment : DialogFragment(), TaskRunnerListener {
 
     companion object {
         fun getInstance(): AreYouSureLogoutWendyDialogFragment = AreYouSureLogoutWendyDialogFragment()
@@ -101,17 +100,17 @@ class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener 
         Wendy.shared.runTasks(null)
 
         return AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.warning)
-                .setView(dialogView)
-                .setPositiveButton(R.string.log_out) { _, _ ->
-                    listener.logout()
-                    this.dismiss()
-                }
-                .setNegativeButton(R.string.cancel) { _, _ ->
-                    listener.cancel()
-                    this.dismiss()
-                }
-                .create()
+            .setTitle(R.string.warning)
+            .setView(dialogView)
+            .setPositiveButton(R.string.log_out) { _, _ ->
+                listener.logout()
+                this.dismiss()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ ->
+                listener.cancel()
+                this.dismiss()
+            }
+            .create()
     }
 
     private fun refreshView() {
@@ -153,5 +152,4 @@ class AreYouSureLogoutWendyDialogFragment: DialogFragment(), TaskRunnerListener 
         NO_NETWORK_CONNECTION,
         FINISH_SYNC_ERRORS
     }
-
 }

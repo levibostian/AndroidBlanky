@@ -1,13 +1,9 @@
 package com.levibostian.view.ui.activity
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.levibostian.extensions.onCreateDiGraph
@@ -19,9 +15,8 @@ import com.levibostian.service.util.DynamicLinkAction
 import com.levibostian.service.util.DynamicLinksProcessor
 import com.levibostian.service.work.WorkManagerWrapper
 import javax.inject.Inject
-import kotlin.math.log
 
-class LaunchActivity: AppCompatActivity() {
+class LaunchActivity : AppCompatActivity() {
 
     @Inject lateinit var notificationChannelManager: NotificationChannelManager
     @Inject lateinit var logger: Logger
@@ -56,24 +51,24 @@ class LaunchActivity: AppCompatActivity() {
 
     private fun getDynamicLinkIfExists(onComplete: (handled: Boolean) -> Unit) {
         Firebase.dynamicLinks
-                .getDynamicLink(intent)
-                .addOnSuccessListener(this) { pendingDynamicLinkData ->
-                    var deepLink = pendingDynamicLinkData?.link
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                var deepLink = pendingDynamicLinkData?.link
 
-                    // Just because Firebase did not find a dynamic link doesn't mean there is not one at all (dynamic links that are not short links may not be captured by Firebase). We check the intent to see if a dynamic link exists there and handle it, too.
-                    if (deepLink == null) {
-                        intent?.dataString?.let { deepLink = Uri.parse(it) }
-                    }
-
-                    if (deepLink == null) return@addOnSuccessListener onComplete(false)
-
-                    onComplete(handleDeepLink(deepLink!!))
+                // Just because Firebase did not find a dynamic link doesn't mean there is not one at all (dynamic links that are not short links may not be captured by Firebase). We check the intent to see if a dynamic link exists there and handle it, too.
+                if (deepLink == null) {
+                    intent?.dataString?.let { deepLink = Uri.parse(it) }
                 }
-                .addOnFailureListener(this) { error ->
-                    logger.errorOccurred(error)
 
-                    onComplete(false)
-                }
+                if (deepLink == null) return@addOnSuccessListener onComplete(false)
+
+                onComplete(handleDeepLink(deepLink!!))
+            }
+            .addOnFailureListener(this) { error ->
+                logger.errorOccurred(error)
+
+                onComplete(false)
+            }
     }
 
     /**
@@ -107,5 +102,4 @@ class LaunchActivity: AppCompatActivity() {
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
 }

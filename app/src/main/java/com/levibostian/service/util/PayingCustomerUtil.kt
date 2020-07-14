@@ -10,5 +10,4 @@ class PayingCustomerUtil @Inject constructor(private val userManager: UserManage
 
     val isUserPaying: Boolean
         get() = userManager.isUserLoggedIn
-
 }

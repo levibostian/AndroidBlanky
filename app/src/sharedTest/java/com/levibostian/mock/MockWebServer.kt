@@ -1,11 +1,10 @@
 package com.levibostian.mock
 
 import com.levibostian.service.json.JsonAdapter
-import com.nhaarman.mockitokotlin2.mock
-import okhttp3.mockwebserver.*
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.SocketPolicy
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Wrapper around OkHttp [MockWebServer] to give an api that is consistent no matter the networking library used.
@@ -15,11 +14,11 @@ class MockWebServer @Inject constructor(private val mockWebServer: MockWebServer
     val url: String
         get() = mockWebServer.url("/").toString()
 
-    fun <T: Any> queue(statusCode: Int, data: T, headers: Map<String, String>? = null) {
+    fun <T : Any> queue(statusCode: Int, data: T, headers: Map<String, String>? = null) {
         this.queueResponse(statusCode, data, headers)
     }
 
-    fun <T: Any> queue(statusCode: Int, data: Array<T>, headers: Map<String, String>? = null) {
+    fun <T : Any> queue(statusCode: Int, data: Array<T>, headers: Map<String, String>? = null) {
         this.queueResponse(statusCode, data, headers)
     }
 
@@ -30,7 +29,7 @@ class MockWebServer @Inject constructor(private val mockWebServer: MockWebServer
         mockWebServer.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
     }
 
-    private fun <T: Any> queueResponse(statusCode: Int, data: T, headers: Map<String, String>? = null) {
+    private fun <T : Any> queueResponse(statusCode: Int, data: T, headers: Map<String, String>? = null) {
         val body = jsonAdapter.toJson(data)
 
         val mockResponse = MockResponse().setResponseCode(statusCode).setBody(body)
@@ -43,5 +42,4 @@ class MockWebServer @Inject constructor(private val mockWebServer: MockWebServer
 
         mockWebServer.enqueue(mockResponse)
     }
-
 }

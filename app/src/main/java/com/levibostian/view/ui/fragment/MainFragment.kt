@@ -2,36 +2,30 @@ package com.levibostian.view.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.text.TextWatcher
 import android.text.format.DateUtils
 import android.view.*
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
-import com.levibostian.R
-import com.levibostian.view.ui.adapter.ReposRecyclerViewAdapter
-import com.levibostian.view.ui.extensions.closeKeyboard
-import com.levibostian.viewmodel.ReposViewModel
-import kotlinx.android.synthetic.main.fragment_main.*
-import java.util.*
-import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.levibostian.R
 import com.levibostian.extensions.onAttachDiGraph
 import com.levibostian.service.ResetAppRunner
 import com.levibostian.service.service.ViewDataProvider
 import com.levibostian.service.type.list_item.RepoListItem
+import com.levibostian.view.ui.adapter.ReposRecyclerViewAdapter
+import com.levibostian.view.ui.extensions.closeKeyboard
+import com.levibostian.viewmodel.ReposViewModel
 import com.squareup.moshi.JsonClass
+import kotlinx.android.synthetic.main.fragment_main.*
+import java.util.*
 import javax.inject.Inject
 
-class MainFragment: Fragment() {
+class MainFragment : Fragment() {
 
     private var fetchingSnackbar: Snackbar? = null
 
@@ -50,7 +44,7 @@ class MainFragment: Fragment() {
     // The pattern of ViewData is to have it exist in the View controller itself and not share the Vo with other parts of the app. Why? Because even if you imagine 1 view being shared across multiple screens of the app, the wording for that context might be different. To allow each screen to be very flexible and able to adapt, it's best to put it in the view itself
     @JsonClass(generateAdapter = true)
     data class ViewData(
-            val loadingText: String
+        val loadingText: String
     )
 
     enum class SwapperViews {
@@ -92,9 +86,9 @@ class MainFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         frag_main_swapper.viewMap = mapOf(
-                Pair(SwapperViews.EMPTY_VIEW.name, frag_main_empty),
-                Pair(SwapperViews.LOADING_VIEW.name, frag_main_loading),
-                Pair(SwapperViews.REPOS.name, frag_main_content)
+            Pair(SwapperViews.EMPTY_VIEW.name, frag_main_empty),
+            Pair(SwapperViews.LOADING_VIEW.name, frag_main_loading),
+            Pair(SwapperViews.REPOS.name, frag_main_content)
         )
 
         frag_main_loading.title = viewData.loadingText
@@ -110,7 +104,9 @@ class MainFragment: Fragment() {
         super.onStart()
 
         reposViewModel.observeRepos()
-                .observe(this, Observer { reposState ->
+            .observe(
+                this,
+                Observer { reposState ->
                     reposState.whenNoCache { _, errorDuringFetch ->
                         frag_main_swapper.swapTo(SwapperViews.LOADING_VIEW.name) {}
 
@@ -142,7 +138,8 @@ class MainFragment: Fragment() {
                             fetchingSnackbar?.dismiss()
                         }
                     }
-                })
+                }
+            )
 
         go_button.setOnClickListener {
             username_edittext.textIfValid?.let { username ->
@@ -151,5 +148,4 @@ class MainFragment: Fragment() {
             }
         }
     }
-
 }

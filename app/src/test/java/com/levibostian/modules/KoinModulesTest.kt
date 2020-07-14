@@ -9,7 +9,6 @@ import com.levibostian.teller.Teller
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -41,5 +40,4 @@ class KoinModulesTest {
             modules(AppModules.get() + mockAndroidModule)
         }.checkModules()
     }
-
 }

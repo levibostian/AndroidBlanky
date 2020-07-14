@@ -35,8 +35,8 @@ class DependencyModule {
     @Provides
     fun provideLogger(context: Context): Logger {
         val loggers = mutableListOf(
-                CrashlyticsLogger(),
-                FirebaseLogger(context)
+            CrashlyticsLogger(),
+            FirebaseLogger(context)
         )
 
         if (Env.isDevelopment) {
@@ -49,17 +49,17 @@ class DependencyModule {
     @Provides
     fun provideRetrofit(context: Context, connectivityUtil: ConnectivityUtil, userManager: UserManager, apiHostname: ApiHostname, logger: Logger): Retrofit {
         val client = OkHttpClient.Builder()
-                .addInterceptor(HttpLoggerInterceptor(logger))
-                .addInterceptor(DefaultErrorHandlerInterceptor(context, connectivityUtil))
-                .addNetworkInterceptor(AppendHeadersInterceptor(userManager))
-                .build()
+            .addInterceptor(HttpLoggerInterceptor(logger))
+            .addInterceptor(DefaultErrorHandlerInterceptor(context, connectivityUtil))
+            .addNetworkInterceptor(AppendHeadersInterceptor(userManager))
+            .build()
 
         return Retrofit.Builder()
-                .client(client)
-                .baseUrl(apiHostname.hostname)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(MoshiConverterFactory.create(JsonAdapter.moshi))
-                .build()
+            .client(client)
+            .baseUrl(apiHostname.hostname)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addConverterFactory(MoshiConverterFactory.create(JsonAdapter.moshi))
+            .build()
     }
 
     @Provides
@@ -71,7 +71,7 @@ class DependencyModule {
     @Provides
     fun provideRemoteConfigPlugins(moshi: Moshi): BoquilaRemoteConfigAdapterPlugins {
         val plugins: MutableList<RemoteConfigAdapterPlugin> = mutableListOf(
-                MoshiRemoteConfigAdapterPlugin(moshi)
+            MoshiRemoteConfigAdapterPlugin(moshi)
         )
 
         if (Env.isDevelopment) plugins.add(LoggingRemoteConfigAdapterPlugin())
@@ -91,7 +91,6 @@ class DependencyModule {
 
         return FirebaseRemoteConfigAdapter(firebaseRemoteConfig, plugins = plugins.plugins)
     }
-
 }
 
 // Exists for Dagger. Dagger does better with concrete data types like a class instead of a List<> type.

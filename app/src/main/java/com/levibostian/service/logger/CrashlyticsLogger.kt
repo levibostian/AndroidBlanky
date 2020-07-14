@@ -1,11 +1,10 @@
 package com.levibostian.service.logger
 
 import android.os.Bundle
-import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.*
 
-class CrashlyticsLogger: DebugLogger() {
+class CrashlyticsLogger : DebugLogger() {
 
     private val crashlytics: FirebaseCrashlytics
         get() = FirebaseCrashlytics.getInstance()
@@ -16,7 +15,7 @@ class CrashlyticsLogger: DebugLogger() {
     }
 
     override fun appEventOccurred(event: ActivityEvent, extras: Map<ActivityEventParamKey, Any>?, average: Double?) {
-        crashlytics.log("event: ${event.name.toLowerCase(Locale.ENGLISH)}, extras: ${extras.toString()}")
+        crashlytics.log("event: ${event.name.toLowerCase(Locale.ENGLISH)}, extras: $extras")
     }
 
     override fun setUserProperty(key: UserPropertyKey, value: String) {
@@ -24,11 +23,10 @@ class CrashlyticsLogger: DebugLogger() {
     }
 
     override fun logDebug(message: String, extras: Bundle?) {
-        crashlytics.log("$message, extras: ${extras.toString()}")
+        crashlytics.log("$message, extras: $extras")
     }
 
     override fun logError(error: Throwable) {
         crashlytics.recordException(error)
     }
-
 }

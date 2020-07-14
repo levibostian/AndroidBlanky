@@ -4,10 +4,10 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class RepoVo(
-        val id: Long,
-        val name: String,
-        val owner: RepoOwnerVo) {
+    val id: Long,
+    val name: String,
+    val owner: RepoOwnerVo
+) {
 
     companion object
-
 }

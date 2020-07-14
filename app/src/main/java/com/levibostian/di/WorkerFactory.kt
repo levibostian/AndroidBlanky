@@ -19,17 +19,17 @@ interface ChildWorkerFactory {
 }
 
 class WorkerFactory @Inject constructor(
-        private val workerFactories: Map<Class<out Worker>, @JvmSuppressWildcards Provider<ChildWorkerFactory>>
-): WorkerFactory() {
+    private val workerFactories: Map<Class<out Worker>, @JvmSuppressWildcards Provider<ChildWorkerFactory>>
+) : WorkerFactory() {
     override fun createWorker(
-            appContext: Context,
-            workerClassName: String,
-            workerParameters: WorkerParameters
+        appContext: Context,
+        workerClassName: String,
+        workerParameters: WorkerParameters
     ): ListenableWorker? {
         val foundEntry =
-                workerFactories.entries.find { Class.forName(workerClassName).isAssignableFrom(it.key) }
+            workerFactories.entries.find { Class.forName(workerClassName).isAssignableFrom(it.key) }
         val factoryProvider = foundEntry?.value
-                ?: throw IllegalArgumentException("unknown worker class name: $workerClassName")
+            ?: throw IllegalArgumentException("unknown worker class name: $workerClassName")
         return factoryProvider.get().create(appContext, workerParameters)
     }
 }

@@ -7,10 +7,9 @@ import java.util.concurrent.TimeUnit
 /**
  * Used when you have [LiveData] in your test that you are calling [LiveData.postValue] to.
  */
-class BackgroundTasksDrainRule: CountingTaskExecutorRule() {
+class BackgroundTasksDrainRule : CountingTaskExecutorRule() {
 
     fun drain() {
         drainTasks(3, TimeUnit.SECONDS)
     }
-
 }

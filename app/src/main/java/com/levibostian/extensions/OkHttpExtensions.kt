@@ -3,7 +3,6 @@ package com.levibostian.extensions
 import com.levibostian.service.json.JsonAdapter
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 

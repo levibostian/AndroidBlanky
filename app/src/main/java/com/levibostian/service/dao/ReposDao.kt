@@ -15,5 +15,4 @@ interface ReposDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRepos(repos: List<RepoModel>)
-
 }

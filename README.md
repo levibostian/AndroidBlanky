@@ -93,6 +93,7 @@ git init
 git config user.email "you@example.com"
 git config user.name "First Last"
 git add .; git commit -m "Initial commit. Created project from levibostian/AndroidBlanky boilerplate.";
+./hooks/autohook.sh install
 ```
 
 You will need to have Ruby installed on your machine to run some of the development tools. An easy way to do this is by [installing rbenv](https://github.com/rbenv/rbenv#installation) on your machine and then running `rbenv install` to install the ruby version suggested by this project.

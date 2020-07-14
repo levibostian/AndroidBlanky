@@ -1,6 +1,5 @@
 package com.levibostian.view.ui.extensions
 
-import android.content.DialogInterface
 import android.net.Uri
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,9 +20,9 @@ fun Fragment.browse(uri: Uri) {
 
 fun Fragment.showError(message: String) {
     AlertDialog.Builder(requireActivity())
-            .setMessage(message)
-            .setNegativeButton(R.string.ok, null) // null listener dismisses the dialog
-            .show()
+        .setMessage(message)
+        .setNegativeButton(R.string.ok, null) // null listener dismisses the dialog
+        .show()
 }
 
 fun Fragment.hideToolbar() {
@@ -37,7 +36,7 @@ fun Fragment.showToolbar() {
 /**
  * Note: You do not want to use this to set the Toolbar title. Use: https://stackoverflow.com/a/55701078/1486374
  */
-//var Fragment.title: String
+// var Fragment.title: String
 //    get() = (requireActivity() as AppCompatActivity).title.toString()
 //    set(value) {
 //        (requireActivity() as AppCompatActivity).title = value

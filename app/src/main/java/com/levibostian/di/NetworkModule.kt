@@ -10,5 +10,4 @@ class NetworkModule {
 
     @Provides
     fun provideHostName(): ApiHostname = ApiHostname(Env.apiEndpoint)
-
 }

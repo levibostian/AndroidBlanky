@@ -1,10 +1,8 @@
 package com.levibostian.service.logger
 
-import android.app.Activity
 import android.os.Bundle
-import javax.inject.Inject
 
-class AppLogger(private val loggers: List<Logger>): Logger {
+class AppLogger(private val loggers: List<Logger>) : Logger {
 
     override fun setUserId(id: String?) {
         loggers.forEach { it.setUserId(id) }
@@ -37,5 +35,4 @@ class AppLogger(private val loggers: List<Logger>): Logger {
     override fun errorOccurred(error: Throwable) {
         loggers.forEach { it.errorOccurred(error) }
     }
-
 }

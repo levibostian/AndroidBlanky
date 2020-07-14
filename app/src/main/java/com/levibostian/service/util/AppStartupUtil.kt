@@ -33,30 +33,37 @@ class AppStartupUtil @Inject constructor(private val pendingTasks: PendingTasks,
 
         // start subscribing to topics.
         FirebaseMessaging.getInstance().subscribeToTopic(FcmTopicKey.ProductUpdated.fcmName)
-                .addOnCompleteListener { task ->
-                    task.exception?.let {
-                        logger.errorOccurred(it)
-                    }
-
-                    logger.appEventOccurred(ActivityEvent.PushNotificationTopicSubscribed, mapOf(
-                            Pair(ActivityEventParamKey.Name, FcmTopicKey.ProductUpdated.fcmName)
-                    ))
+            .addOnCompleteListener { task ->
+                task.exception?.let {
+                    logger.errorOccurred(it)
                 }
+
+                logger.appEventOccurred(
+                    ActivityEvent.PushNotificationTopicSubscribed,
+                    mapOf(
+                        Pair(ActivityEventParamKey.Name, FcmTopicKey.ProductUpdated.fcmName)
+                    )
+                )
+            }
 
         // When you want to test a push notification on a device during dev, you need the current token. This is an easy way to log it. Also includes that registering for push notifications works. Good for logging.
         FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { task ->
+            .addOnCompleteListener(
+                OnCompleteListener { task ->
                     if (!task.isSuccessful) {
                         task.exception?.let { logger.errorOccurred(it) }
                         return@OnCompleteListener
                     }
 
                     task.result?.token?.let { token ->
-                        logger.breadcrumb(this, "Existing FCM token received", bundleOf(
+                        logger.breadcrumb(
+                            this, "Existing FCM token received",
+                            bundleOf(
                                 Pair("token", token)
-                        ))
+                            )
+                        )
                     }
-                })
+                }
+            )
     }
-
 }

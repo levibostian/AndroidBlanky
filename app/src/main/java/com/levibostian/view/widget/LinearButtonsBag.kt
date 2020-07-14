@@ -1,6 +1,5 @@
 package com.levibostian.view.widget
 
-
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build.VERSION_CODES
@@ -16,7 +15,7 @@ import com.levibostian.extensions.random
 /**
  * Linear layout buttons bag. A container view that allows you to store and manage X number of buttons.
  */
-class LinearButtonsBag: LinearLayout, ButtonsBag {
+class LinearButtonsBag : LinearLayout, ButtonsBag {
 
     private var buttons: MutableMap<ButtonsBagButtonIdentifier, String> = mutableMapOf()
 
@@ -29,9 +28,9 @@ class LinearButtonsBag: LinearLayout, ButtonsBag {
     override lateinit var listener: ButtonsBag.Listener
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     @TargetApi(VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     override fun addButton(id: ButtonsBagButtonIdentifier, @LayoutRes buttonLayout: Int, @IdRes buttonViewId: Int, text: String) {
         removeButton(id)
@@ -65,5 +64,4 @@ class LinearButtonsBag: LinearLayout, ButtonsBag {
             buttons.remove(id)
         }
     }
-
 }

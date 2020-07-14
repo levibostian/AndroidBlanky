@@ -11,7 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.levibostian.R
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity: BaseActivity() {
+class MainActivity : BaseActivity() {
 
     private val navController: NavController
         get() = findNavController(R.id.nav_host_fragment)
@@ -28,5 +28,4 @@ class MainActivity: BaseActivity() {
         setSupportActionBar(toolbar as Toolbar)
         (toolbar as Toolbar).setupWithNavController(navController, AppBarConfiguration(navController.graph))
     }
-
 }

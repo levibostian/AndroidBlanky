@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
-import android.graphics.Color
 import android.os.Build
 import javax.inject.Inject
 
@@ -55,5 +54,4 @@ class NotificationChannelManager @Inject constructor(private val context: Contex
             }
         }
     }
-
 }

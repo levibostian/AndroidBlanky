@@ -1,8 +1,6 @@
 package com.levibostian.view.widget
 
-import android.annotation.TargetApi
 import android.content.Context
-import android.os.Build.VERSION_CODES
 import android.text.Editable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
@@ -10,12 +8,12 @@ import androidx.appcompat.widget.AppCompatEditText
 /**
  * Convenient way to set different [onTextChanged] listeners for different purposes.
  */
-class TextChangedEditText: AppCompatEditText {
+class TextChangedEditText : AppCompatEditText {
 
     var errorListener: ((text: String) -> String?)? = null
 
-    constructor(context: Context, attrs: AttributeSet): this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initialize()
     }
 
@@ -42,5 +40,4 @@ class TextChangedEditText: AppCompatEditText {
 
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
     }
-
 }

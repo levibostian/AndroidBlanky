@@ -20,10 +20,9 @@ import com.levibostian.view.ui.activity.LaunchActivity
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.service.Wendy
 import io.reactivex.plugins.RxJavaPlugins
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class MainApplication: Application(), Configuration.Provider, ResetAppRunner {
+class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
 
     lateinit var appComponent: AppGraph
 
@@ -52,9 +51,9 @@ class MainApplication: Application(), Configuration.Provider, ResetAppRunner {
 
     fun initAppComponent(): AppGraph {
         return DaggerAppGraph
-                .builder()
-                .androidModule(AndroidModule(this))
-                .build()
+            .builder()
+            .androidModule(AndroidModule(this))
+            .build()
     }
 
     override fun attachBaseContext(base: Context) {
@@ -81,5 +80,4 @@ class MainApplication: Application(), Configuration.Provider, ResetAppRunner {
             startActivity(intent)
         }
     }
-
 }

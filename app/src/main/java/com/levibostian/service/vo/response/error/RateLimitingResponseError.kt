@@ -1,6 +1,5 @@
 package com.levibostian.service.vo.response.error
 
-
 /**
  * When hit API's rate limit for the endpoint.
  *

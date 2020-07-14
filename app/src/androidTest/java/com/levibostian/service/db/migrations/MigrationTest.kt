@@ -1,17 +1,15 @@
 package com.levibostian.service.db.migrations
 
-import org.junit.Rule
-import org.junit.runner.RunWith
-import com.levibostian.service.db.Database
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth
-import org.junit.Test
-
 import com.google.common.truth.Truth.assertThat
-import com.google.common.truth.Truth.assertWithMessage
+import com.levibostian.service.db.Database
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {
@@ -42,5 +40,4 @@ class MigrationTest {
 //        // MigrationTestHelper automatically verifies the schema changes,
 //        // but you need to validate that the data was migrated properly.
     }
-
 }

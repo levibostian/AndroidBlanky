@@ -8,6 +8,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: "org.jmailen.kotlinter"
+
+// https://github.com/jeremymailen/kotlinter-gradle#configuration
+kotlinter {
+    disabledRules = ["no-wildcard-imports"]
+}
 
 androidExtensions {
     experimental = true

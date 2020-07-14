@@ -11,5 +11,4 @@ object SchedulerProvider {
 
     val main: Scheduler
         get() = AndroidSchedulers.mainThread()
-
 }

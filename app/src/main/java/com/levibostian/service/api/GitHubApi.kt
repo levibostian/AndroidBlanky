@@ -25,18 +25,23 @@ import javax.inject.Inject
  *
  * If there is an error, this class will handle it. If it's a network error, it will simply give you that message so you can display that to the user. If it's a user error, the error will be optionally parsed from the response to be shown for the user and the UI can handle the error if it wants to. If it's a developer error, the error will be logged to notify the developer team to fix it.
  */
-class GitHubApi @Inject constructor(private val context: Context,
-                                    logger: Logger,
-                                    private val service: GitHubService,
-                                    private val resetAppRunner: ResetAppRunner): Api(context, logger) {
+class GitHubApi @Inject constructor(
+    private val context: Context,
+    logger: Logger,
+    private val service: GitHubService,
+    private val resetAppRunner: ResetAppRunner
+) : Api(context, logger) {
 
     fun getRepos(username: String): Single<Result<List<RepoModel>>> {
-        return request(service.listRepos(username), extraErrorHandling = { processedResponse ->
-            when (processedResponse.statusCode) {
-                404 -> HttpRequestError.userError(ForbiddenResponseError.from(processedResponse.body!!).error_message, null)
-                else -> null
+        return request(
+            service.listRepos(username),
+            extraErrorHandling = { processedResponse ->
+                when (processedResponse.statusCode) {
+                    404 -> HttpRequestError.userError(ForbiddenResponseError.from(processedResponse.body!!).error_message, null)
+                    else -> null
+                }
             }
-        })
+        )
     }
 
     override fun handleUnsuccessfulStatusCode(processedResponse: ProcessedResponse): HttpRequestError? {
@@ -62,5 +67,4 @@ class GitHubApi @Inject constructor(private val context: Context,
             else -> null
         }
     }
-
 }

@@ -18,5 +18,4 @@ class DiGraphRule : TestWatcher() {
         val app = ApplicationProvider.getApplicationContext<Context>() as TestMainApplication
         graph = app.appComponent as TestAppGraph
     }
-
 }

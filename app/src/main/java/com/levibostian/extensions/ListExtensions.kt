@@ -60,7 +60,7 @@ fun List<String>.sortedAlphanumeric(): List<String> {
  *   Use the static "sort" method from the java.util.Collections class:
  *   Collections.sort(your list, new AlphanumComparator());
  */
-class AlphanumComparator: Comparator<String> {
+class AlphanumComparator : Comparator<String> {
 
     private fun isDigit(ch: Char): Boolean {
         return ch.toInt() in 48..57
@@ -129,5 +129,4 @@ class AlphanumComparator: Comparator<String> {
 
         return s1Length - s2Length
     }
-
 }

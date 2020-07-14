@@ -22,9 +22,12 @@ class BackgroundJobRunner @Inject constructor(private val pendingTasks: PendingT
      * @return true if the jobs ran successfully.
      */
     fun runPeriodicJobs(): Boolean {
-        logger.appEventOccurred(ActivityEvent.PerformBackgroundSync, mapOf(
+        logger.appEventOccurred(
+            ActivityEvent.PerformBackgroundSync,
+            mapOf(
                 Pair(ActivityEventParamKey.Type, "periodic")
-        ))
+            )
+        )
         pendingTasks.runAllTasks()
         syncRepos(force = false)
 
@@ -34,9 +37,12 @@ class BackgroundJobRunner @Inject constructor(private val pendingTasks: PendingT
     fun handleDataPushNotification(dataNotification: DataNotification) {
         val never = when (dataNotification.action) {
             NotificationAction.UPDATE_PROGRAM -> {
-                logger.appEventOccurred(ActivityEvent.PerformBackgroundSync, mapOf(
+                logger.appEventOccurred(
+                    ActivityEvent.PerformBackgroundSync,
+                    mapOf(
                         Pair(ActivityEventParamKey.Type, "push notification")
-                ))
+                    )
+                )
 
                 syncRepos(force = true)
 
@@ -58,5 +64,4 @@ class BackgroundJobRunner @Inject constructor(private val pendingTasks: PendingT
 
         return result.successful
     }
-
 }

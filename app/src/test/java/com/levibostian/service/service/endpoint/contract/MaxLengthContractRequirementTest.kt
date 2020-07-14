@@ -1,15 +1,12 @@
 package com.levibostian.service.service.endpoint.contract
 
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import com.levibostian.util.RandomStringUtil
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import org.junit.Before
 import org.junit.Test
-
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import kotlin.math.min
 
 @RunWith(MockitoJUnitRunner::class)
 class MaxLengthContractRequirementTest {
@@ -39,5 +36,4 @@ class MaxLengthContractRequirementTest {
 
         assertThat(contract.assert(text)).isNull()
     }
-
 }

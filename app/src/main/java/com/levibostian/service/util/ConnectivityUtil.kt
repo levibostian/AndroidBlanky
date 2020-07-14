@@ -1,9 +1,5 @@
 package com.levibostian.service.util
 
-import android.content.Context
-import android.net.NetworkInfo
-import android.content.Context.CONNECTIVITY_SERVICE
-import androidx.core.content.ContextCompat.getSystemService
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -34,12 +30,10 @@ class ConnectivityUtil @Inject constructor(private val connectivityManager: Conn
                         ConnectivityManager.TYPE_ETHERNET -> true
                         else -> false
                     }
-
                 }
             }
         }
 
         return result
     }
-
 }

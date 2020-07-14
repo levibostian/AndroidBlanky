@@ -9,5 +9,4 @@ data class ForbiddenResponseError(val error_message: String) {
     companion object {
         fun from(body: String): ForbiddenResponseError = JsonAdapter.fromJson(body)
     }
-
 }

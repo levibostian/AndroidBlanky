@@ -9,7 +9,7 @@ sealed class DynamicLinkAction {
 class DynamicLinksProcessor {
     companion object {
 
-        fun getActionFromDynamicLink(link: Uri) : DynamicLinkAction? {
+        fun getActionFromDynamicLink(link: Uri): DynamicLinkAction? {
             link.getQueryParameter("passwordless_token")?.let { return DynamicLinkAction.PasswordlessTokenExchange(it) }
 
             return null

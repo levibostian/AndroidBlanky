@@ -13,14 +13,14 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-        modules = [
-            AndroidModule::class,
-            DatabaseModule::class,
-            DependencyModule::class,
-            NetworkModule::class,
-            ViewModelModule::class,
-            WorkerModule::class
-        ]
+    modules = [
+        AndroidModule::class,
+        DatabaseModule::class,
+        DependencyModule::class,
+        NetworkModule::class,
+        ViewModelModule::class,
+        WorkerModule::class
+    ]
 )
 interface AppGraph {
     fun inject(launchActivity: LaunchActivity)

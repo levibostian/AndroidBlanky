@@ -1,12 +1,11 @@
 package com.levibostian.service.logger
 
-import android.app.Activity
 import android.os.Bundle
 
 /**
  * [Logger] intended for development purposes. It's meant to take many of the functions and turn them into strings that can be shown to the developer.
  */
-abstract class DebugLogger: Logger {
+abstract class DebugLogger : Logger {
 
     abstract fun logDebug(message: String, extras: Bundle?)
     abstract fun logError(error: Throwable)

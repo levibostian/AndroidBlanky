@@ -1,24 +1,21 @@
 package com.levibostian.service.util
 
-import com.levibostian.service.logger.Logger
-
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import androidx.core.content.edit
-import com.android.installreferrer.api.InstallReferrerClient
-import com.android.installreferrer.api.InstallReferrerStateListener
 import com.android.installreferrer.api.ReferrerDetails
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.levibostian.service.logger.Logger
 
 /**
  * Google Play Install Referrer library for UTM tracking of app install.
  * Details: https://developer.android.com/google/play/installreferrer/library.html
  */
-class InstallReferrerProcessor(private val sharedPreferences: SharedPreferences,
-                               private val logger: Logger) {
+class InstallReferrerProcessor(
+    private val sharedPreferences: SharedPreferences,
+    private val logger: Logger
+) {
 
     fun process(context: Context) {
         processHelper(context, 0)
@@ -77,5 +74,4 @@ class InstallReferrerProcessor(private val sharedPreferences: SharedPreferences,
             referrerSource.getQueryParameter("utm_content")?.let { putString(FirebaseAnalytics.Param.CONTENT, it) }
         }
     }
-
 }

@@ -18,5 +18,4 @@ class AppendHeadersInterceptor(private val userManager: UserManager) : Intercept
 
         return chain.proceed(requestBuilder.build())
     }
-
 }

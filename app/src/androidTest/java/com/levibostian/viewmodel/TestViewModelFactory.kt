@@ -16,5 +16,4 @@ class TestViewModelFactory : ViewModelProvider.Factory {
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }

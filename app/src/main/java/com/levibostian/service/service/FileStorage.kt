@@ -1,14 +1,12 @@
 package com.levibostian.service.service
 
 import android.content.Context
-import android.os.FileUtils
 import android.system.Os.open
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileWriter
-import java.nio.file.Files
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -108,7 +106,7 @@ class FileStorage @Inject constructor(private val context: Context) {
     enum class Destination {
         PROGRAM_WORKOUTS {
             override val dirName: String = "docs"
-            override val fileName: String= "program_workouts.json"
+            override val fileName: String = "program_workouts.json"
         };
 
         abstract val dirName: String
@@ -116,5 +114,4 @@ class FileStorage @Inject constructor(private val context: Context) {
         val path: String
             get() = "$dirName/$fileName"
     }
-
 }

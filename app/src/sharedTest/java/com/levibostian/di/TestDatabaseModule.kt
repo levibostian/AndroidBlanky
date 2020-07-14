@@ -2,9 +2,9 @@ package com.levibostian.di
 
 import android.content.Context
 import androidx.room.Room
+import com.levibostian.service.db.Database
 import dagger.Module
 import dagger.Provides
-import com.levibostian.service.db.Database
 import javax.inject.Singleton
 
 @Module
@@ -15,5 +15,4 @@ class TestDatabaseModule {
     fun provideDatabase(context: Context): Database {
         return Room.inMemoryDatabaseBuilder(context, Database::class.java).build()
     }
-
 }

@@ -1,11 +1,9 @@
 package com.levibostian.service.service
 
-import com.levibostian.extensions.onCreateDiGraph
-
-
 import androidx.core.os.bundleOf
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.levibostian.extensions.onCreateDiGraph
 import com.levibostian.service.logger.ActivityEvent
 import com.levibostian.service.logger.ActivityEventParamKey
 import com.levibostian.service.logger.Logger
@@ -13,7 +11,7 @@ import com.levibostian.service.manager.UserManager
 import com.levibostian.service.util.NotificationUtil
 import javax.inject.Inject
 
-class FirebaseMessagingService: FirebaseMessagingService() {
+class FirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var userManager: UserManager
     @Inject lateinit var backgroundJobRunner: BackgroundJobRunner
@@ -33,22 +31,31 @@ class FirebaseMessagingService: FirebaseMessagingService() {
     // and data payloads are treated as notification messages. The Firebase console always sends notification
 // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
     override fun onMessageReceived(message: RemoteMessage) {
-        logger.breadcrumb(this, "received push notification", bundleOf(
+        logger.breadcrumb(
+            this, "received push notification",
+            bundleOf(
                 Pair("raw", message.toString())
-        ))
+            )
+        )
 
         if (message.data.isNotEmpty()) {
-            logger.appEventOccurred(ActivityEvent.PushNotificationReceived, mapOf(
+            logger.appEventOccurred(
+                ActivityEvent.PushNotificationReceived,
+                mapOf(
                     Pair(ActivityEventParamKey.Type, "data")
-            ))
+                )
+            )
 
             NotificationUtil.parseDataNotification(message.data)?.let { dataNotification ->
                 backgroundJobRunner.handleDataPushNotification(dataNotification)
             }
         } else {
-            logger.appEventOccurred(ActivityEvent.PushNotificationReceived, mapOf(
+            logger.appEventOccurred(
+                ActivityEvent.PushNotificationReceived,
+                mapOf(
                     Pair(ActivityEventParamKey.Type, "ui")
-            ))
+                )
+            )
         }
         /**
          * Notifications with a message payload are automatically put in the system tray as a notification for the user to click when the app is in the background. This app does not need to handle message notifications when the app is in the foreground.
@@ -69,9 +76,11 @@ class FirebaseMessagingService: FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        logger.breadcrumb(this, "Push notification token received", bundleOf(
+        logger.breadcrumb(
+            this, "Push notification token received",
+            bundleOf(
                 Pair("token", token)
-        ))
+            )
+        )
     }
-
 }

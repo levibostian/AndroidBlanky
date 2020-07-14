@@ -16,5 +16,4 @@ object RandomStringUtil {
 
         return builder.toString()
     }
-
 }

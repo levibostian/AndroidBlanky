@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.levibostian.R
@@ -13,7 +12,7 @@ import com.levibostian.service.service.KeyValueStorage
 import com.levibostian.service.service.KeyValueStorageKey
 import javax.inject.Inject
 
-class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject lateinit var keyValueStorage: KeyValueStorage
 
@@ -47,5 +46,4 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
         preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
-
 }

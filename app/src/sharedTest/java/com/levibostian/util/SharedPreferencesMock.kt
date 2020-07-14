@@ -26,5 +26,4 @@ class SharedPreferencesMock {
 
         whenever(editor.clear()).thenReturn(editor)
     }
-
 }

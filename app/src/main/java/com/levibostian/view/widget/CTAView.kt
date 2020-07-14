@@ -1,20 +1,18 @@
 package com.levibostian.view.widget
 
-
-import android.widget.LinearLayout
-import android.content.Context
-import android.util.AttributeSet
 import android.annotation.TargetApi
+import android.content.Context
 import android.os.Build.VERSION_CODES
+import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.ImageView
+import android.widget.LinearLayout
 import com.levibostian.R
 import com.levibostian.extensions.textOrHide
 import com.levibostian.view.type.CTALink
 import kotlinx.android.synthetic.main.view_cta.view.*
 
-class CTAView: LinearLayout, ButtonsBag.Listener {
+class CTAView : LinearLayout, ButtonsBag.Listener {
 
     interface Listener {
         fun ctaLinkPressed(link: CTALink)
@@ -24,7 +22,7 @@ class CTAView: LinearLayout, ButtonsBag.Listener {
 
     lateinit var listener: Listener
 
-    fun populate(header: String?, subheader: String?,  links: List<CTALink>?, notice: String?) {
+    fun populate(header: String?, subheader: String?, links: List<CTALink>?, notice: String?) {
         buttons_bag.removeAllButtons() // reset view during recycling.
 
         header_textview.textOrHide = header
@@ -38,17 +36,17 @@ class CTAView: LinearLayout, ButtonsBag.Listener {
 
         buttons_bag.listener = this
 
-        notice_textview.textOrHide= notice
+        notice_textview.textOrHide = notice
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         initialize(context, attrs, 0)
     }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initialize(context, attrs, defStyleAttr)
     }
     @TargetApi(VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         initialize(context, attrs, defStyleAttr)
     }
 
@@ -63,5 +61,4 @@ class CTAView: LinearLayout, ButtonsBag.Listener {
     override fun buttonClicked(id: ButtonsBagButtonIdentifier) {
         listener.ctaLinkPressed(links!![id])
     }
-
 }

@@ -8,7 +8,6 @@ import com.levibostian.service.error.network.UnhandledHttpResultException
 import com.levibostian.service.logger.Logger
 import io.reactivex.Single
 import java.io.IOException
-import javax.inject.Inject
 
 /**
  * Class that encapsulates http requests while also handling problems that can occur for each.
@@ -19,8 +18,10 @@ import javax.inject.Inject
  *
  * If there is an error, this class will handle it. If it's a network error, it will simply give you that message so you can display that to the user. If it's a user error, the error will be optionally parsed from the response to be shown for the user and the UI can handle the error if it wants to. If it's a developer error, the error will be logged to notify the developer team to fix it.
  */
-abstract class Api constructor(private val context: Context,
-                               private val logger: Logger) {
+abstract class Api constructor(
+    private val context: Context,
+    private val logger: Logger
+) {
 
     /**
      * Performs the bulk of the network call for you. Optional help is optional (JSON parsing or handling of other status codes).
@@ -40,7 +41,7 @@ abstract class Api constructor(private val context: Context,
      * @param extraErrorHandling If an endpoint returns back other status codes this default API does not handle for you. Handle what you can with this closure. Return null if you don't catch it and an error will be logged to the developer to notify you to fix the app.
      * @param extraSuccessHandling If a response from the API is not a 200..300 response but it's still successful, return a result from this function and you will get back a [Result.success] result with what you return.
      */
-    fun <HttpResponse: Any> request(target: Single<retrofit2.adapter.rxjava2.Result<HttpResponse>>, extraErrorHandling: ((ProcessedResponse) -> HttpRequestError?)? = null, extraSuccessHandling: ((ProcessedResponse) -> HttpResponse?)? = null): Single<Result<HttpResponse>> {
+    fun <HttpResponse : Any> request(target: Single<retrofit2.adapter.rxjava2.Result<HttpResponse>>, extraErrorHandling: ((ProcessedResponse) -> HttpRequestError?)? = null, extraSuccessHandling: ((ProcessedResponse) -> HttpResponse?)? = null): Single<Result<HttpResponse>> {
         return target.map { result ->
             if (result.isError) { // http call failed. There is no response.
                 Result.failure(handleRequestFailure(result.error()!!))
@@ -57,8 +58,8 @@ abstract class Api constructor(private val context: Context,
                     }
 
                     val httpRequestError = handleUnsuccessfulStatusCode(processedResponse)
-                            ?: extraErrorHandling?.invoke(processedResponse)
-                            ?: HttpRequestError.developerError(context.getString(R.string.unhandled_http_response_error_message), UnhandledHttpResultException(result.response()!!))
+                        ?: extraErrorHandling?.invoke(processedResponse)
+                        ?: HttpRequestError.developerError(context.getString(R.string.unhandled_http_response_error_message), UnhandledHttpResultException(result.response()!!))
 
                     if (httpRequestError.faultType == HttpRequestError.FaultType.DEVELOPER) {
                         logger.errorOccurred(httpRequestError.underlyingError!!)
@@ -86,5 +87,4 @@ abstract class Api constructor(private val context: Context,
     }
 
     abstract fun handleUnsuccessfulStatusCode(processedResponse: ProcessedResponse): HttpRequestError?
-
 }

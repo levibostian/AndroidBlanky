@@ -1,6 +1,5 @@
 package com.levibostian.extensions
 
-import android.app.Activity
 import android.text.TextUtils
 import android.util.Patterns
 import android.view.inputmethod.EditorInfo

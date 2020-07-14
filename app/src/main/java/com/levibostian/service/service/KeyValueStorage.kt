@@ -47,12 +47,11 @@ class KeyValueStorage @Inject constructor(private val sharedPreferences: SharedP
 
     // Does not emit when value is nil or empty. it's recommended you check if the key has a value first and then observe for changes.
     fun observeString(key: KeyValueStorageKey): Observable<String> = sharedPreferences.observeString(key.name)
-            .filter { it.isNotEmpty() }
+        .filter { it.isNotEmpty() }
 
     fun deleteAll() {
         sharedPreferences.edit(commit = true) {
             clear()
         }
     }
-
 }

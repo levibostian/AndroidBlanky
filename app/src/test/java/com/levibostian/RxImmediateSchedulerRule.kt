@@ -2,14 +2,14 @@ package com.levibostian
 
 import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.plugins.RxJavaPlugins.setInitSingleSchedulerHandler
-import io.reactivex.plugins.RxJavaPlugins.setInitNewThreadSchedulerHandler
-import io.reactivex.plugins.RxJavaPlugins.setInitComputationSchedulerHandler
-import io.reactivex.plugins.RxJavaPlugins.setInitIoSchedulerHandler
-import io.reactivex.internal.schedulers.ExecutorScheduler.ExecutorWorker
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.schedulers.ExecutorScheduler
+import io.reactivex.internal.schedulers.ExecutorScheduler.ExecutorWorker
 import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.plugins.RxJavaPlugins.setInitComputationSchedulerHandler
+import io.reactivex.plugins.RxJavaPlugins.setInitIoSchedulerHandler
+import io.reactivex.plugins.RxJavaPlugins.setInitNewThreadSchedulerHandler
+import io.reactivex.plugins.RxJavaPlugins.setInitSingleSchedulerHandler
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement

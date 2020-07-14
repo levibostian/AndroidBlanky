@@ -8,19 +8,17 @@ class RepoOwnerModel(val name: String = "") {
 
     companion object {
 
-        fun newFrom(vo: RepoOwnerVo) : RepoOwnerModel {
+        fun newFrom(vo: RepoOwnerVo): RepoOwnerModel {
             return RepoOwnerModel(
-                    name = vo.login
+                name = vo.login
             )
         }
 
         // called with existing instance to update from VO
-        fun updateFrom(existing: RepoOwnerModel, vo: RepoOwnerVo) : RepoOwnerModel {
+        fun updateFrom(existing: RepoOwnerModel, vo: RepoOwnerVo): RepoOwnerModel {
             return RepoOwnerModel(
-                    name = vo.login
+                name = vo.login
             )
         }
-
     }
-
 }

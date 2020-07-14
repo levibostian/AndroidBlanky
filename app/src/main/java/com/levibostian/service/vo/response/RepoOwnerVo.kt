@@ -6,5 +6,4 @@ import com.squareup.moshi.JsonClass
 data class RepoOwnerVo(val login: String) {
 
     companion object
-
 }

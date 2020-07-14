@@ -1,16 +1,16 @@
 package com.levibostian.view.fragment
 
-import org.junit.Rule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.Before
-import javax.inject.Inject
 import androidx.test.filters.SdkSuppress
 import com.google.common.truth.Truth
 import com.levibostian.mock.MockWebServer
 import com.levibostian.rule.DiGraphRule
 import com.levibostian.service.vo.response.MessageResponseVo
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @SdkSuppress(minSdkVersion = 18)
@@ -31,5 +31,4 @@ class MainFragmentTest {
 
         Truth.assertThat("").isEqualTo("")
     }
-
 }

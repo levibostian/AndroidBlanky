@@ -1,6 +1,5 @@
 package com.levibostian.view.ui.adapter.viewholder
 
-import android.net.Uri
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -18,5 +17,4 @@ class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view), LayoutCo
     fun populate(name: String) {
         title_textview.text = name
     }
-
 }

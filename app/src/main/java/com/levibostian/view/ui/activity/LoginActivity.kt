@@ -16,7 +16,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
 
-class LoginActivity: AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     @Inject lateinit var logger: Logger
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,17 +55,17 @@ class LoginActivity: AppCompatActivity() {
         }
 
         swapper_view.viewMap = mapOf(
-                Pair(SwapperViews.LOADING.name, loading_view),
-                Pair(SwapperViews.ERROR.name, error_view)
+            Pair(SwapperViews.LOADING.name, loading_view),
+            Pair(SwapperViews.ERROR.name, error_view)
         )
 
         swapper_view.swapTo(SwapperViews.LOADING.name) {}
 
         compositeDisposable += loginViewModel.loginUser(passwordlessToken)
-                .subscribe { _ ->
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                }
+            .subscribe { _ ->
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
     }
 
     override fun onDestroy() {
@@ -73,5 +73,4 @@ class LoginActivity: AppCompatActivity() {
 
         compositeDisposable.clear()
     }
-
 }

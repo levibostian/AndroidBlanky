@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_fragment_testing.*
  *
  * This exists mostly for performing screenshots. Normally, [launchFragmentInContainer] will do great for your UI tests.
  */
-class FragmentTestingActivity: AppCompatActivity() {
+class FragmentTestingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,5 +38,4 @@ class FragmentTestingActivity: AppCompatActivity() {
         toolbar.visibility = View.VISIBLE
         supportActionBar!!.title = title
     }
-
 }

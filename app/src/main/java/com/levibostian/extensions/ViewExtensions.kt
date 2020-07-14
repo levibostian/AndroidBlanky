@@ -13,14 +13,14 @@ fun View.fadeOutAnimation(duration: Long, endVisibility: Int = View.GONE) {
         visibility = View.VISIBLE
 
         animate()
-                .alpha(0f)
-                .setDuration(duration)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        visibility = endVisibility
-                    }
-                })
-                .start()
+            .alpha(0f)
+            .setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    visibility = endVisibility
+                }
+            })
+            .start()
     }
 }
 
@@ -30,14 +30,14 @@ fun View.fadeInAnimation(duration: Long, startVisibility: Int = View.GONE) {
         visibility = startVisibility
 
         animate()
-                .alpha(1f)
-                .setDuration(duration)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationStart(animation: Animator?) {
-                        visibility = View.VISIBLE
-                    }
-                })
-                .start()
+            .alpha(1f)
+            .setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animation: Animator?) {
+                    visibility = View.VISIBLE
+                }
+            })
+            .start()
     }
 }
 

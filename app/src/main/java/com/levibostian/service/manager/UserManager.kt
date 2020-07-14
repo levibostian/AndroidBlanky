@@ -25,5 +25,4 @@ class UserManager @Inject constructor(private val keyValueStorage: KeyValueStora
         set(value) {
             keyValueStorage.setString(value, KeyValueStorageKey.LOGGED_IN_USER_AUTH_TOKEN)
         }
-
 }

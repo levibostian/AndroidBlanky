@@ -1,7 +1,6 @@
 package com.levibostian.service.manager
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import com.google.common.truth.Truth.assertThat
 import com.levibostian.service.model.SharedPrefersKeys
 import com.levibostian.util.SharedPreferencesMock
@@ -46,5 +45,4 @@ class UserManagerTest {
         verify(sharedPrefsEditor).putString(SharedPrefersKeys.USER_ID, id)
         verify(sharedPrefsEditor).commit()
     }
-
 }

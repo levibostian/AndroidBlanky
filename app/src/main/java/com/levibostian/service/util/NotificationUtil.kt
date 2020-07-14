@@ -2,7 +2,6 @@ package com.levibostian.service.util
 
 import com.levibostian.service.type.FcmTopicKey
 
-
 enum class NotificationAction {
     UPDATE_PROGRAM;
 }
@@ -16,7 +15,6 @@ data class DataNotification(val topicName: String) {
                 else -> null
             }
         }
-
 }
 
 object NotificationUtil {

@@ -1,6 +1,5 @@
 package com.levibostian.service.logger
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -8,7 +7,7 @@ import com.levibostian.extensions.camelToSnakeCase
 import com.levibostian.extensions.toBundle
 import java.util.*
 
-class FirebaseLogger(context: Context): Logger {
+class FirebaseLogger(context: Context) : Logger {
 
     private val firebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(context) }
 

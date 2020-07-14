@@ -1,6 +1,5 @@
 package com.levibostian.view.ui.activity
 
-
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.levibostian.extensions.onCreateDiGraph
@@ -14,7 +13,7 @@ import javax.inject.Inject
  *
  * Note: User must be logged in to use this Activity.
  */
-abstract class BaseActivity: AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
     @Inject lateinit var userManager: UserManager
     @Inject lateinit var installReferrerProcessor: InstallReferrerProcessor
@@ -27,5 +26,4 @@ abstract class BaseActivity: AppCompatActivity() {
         // I am capturing the referrer here instead of in LaunchActivity because (1) The user is logged into the app at this point and Firebase Analytics will then be associated with a user id. (2) I should only really care about where users came from that successfully logged into the app as they are users who want to use the product.
         installReferrerProcessor.process(this)
     }
-
 }

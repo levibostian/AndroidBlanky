@@ -1,6 +1,5 @@
 package com.levibostian.service.json
 
-import android.net.Uri
 import com.levibostian.service.json.type_adapter.UriJsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -17,9 +16,9 @@ object JsonAdapter {
 
     val moshi: Moshi by lazy {
         Moshi.Builder()
-                .add(Date::class.java, Rfc3339DateJsonAdapter())
-                .add(UriJsonAdapter())
-                .build()
+            .add(Date::class.java, Rfc3339DateJsonAdapter())
+            .add(UriJsonAdapter())
+            .build()
     }
 
     /**
@@ -53,7 +52,7 @@ object JsonAdapter {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    inline fun <reified T: Any> fromJson(json: String): T {
+    inline fun <reified T : Any> fromJson(json: String): T {
         val json = json.trim()
 
         if (json.isNotEmpty() && json[0] == '[') throw IllegalArgumentException("String is a list. Use `fromJsonList` instead.")
@@ -65,7 +64,7 @@ object JsonAdapter {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    inline fun <reified T: Any> fromJsonList(json: String): List<T> {
+    inline fun <reified T : Any> fromJsonList(json: String): List<T> {
         val json = json.trim()
 
         if (json.isNotEmpty() && json[0] != '[') throw IllegalArgumentException("String is not a list. Use `fromJson` instead.")
@@ -76,17 +75,16 @@ object JsonAdapter {
         return adapter.fromJson(json) as List<T>
     }
 
-    fun <T: Any> toJson(data: T): String {
+    fun <T : Any> toJson(data: T): String {
         val jsonAdapter = moshi.adapter<T>(data::class.java)
 
         return jsonAdapter.toJson(data)
     }
 
-    inline fun <reified T: Any> toJson(data: List<T>): String {
+    inline fun <reified T : Any> toJson(data: List<T>): String {
         val type = Types.newParameterizedType(List::class.java, T::class.java)
         val adapter = moshi.adapter<List<T>>(type)
 
         return adapter.toJson(data)
     }
-
 }

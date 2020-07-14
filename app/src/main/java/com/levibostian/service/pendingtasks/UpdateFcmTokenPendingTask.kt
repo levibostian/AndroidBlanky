@@ -3,12 +3,13 @@ package com.levibostian.service.pendingtasks
 import com.levibostian.service.manager.UserManager
 import com.levibostian.wendy.service.PendingTask
 import com.levibostian.wendy.types.PendingTaskResult
-import io.reactivex.schedulers.Schedulers
 
-class UpdateFcmTokenPendingTask(userId: String): PendingTask(dataId = userId, // userId is the dataId to simply be the unique ID for this task for Wendy to only keep 1 at a time.
-        groupId = null,
-        manuallyRun = false,
-        tag = UpdateFcmTokenPendingTask.TAG) {
+class UpdateFcmTokenPendingTask(userId: String) : PendingTask(
+    dataId = userId, // userId is the dataId to simply be the unique ID for this task for Wendy to only keep 1 at a time.
+    groupId = null,
+    manuallyRun = false,
+    tag = UpdateFcmTokenPendingTask.TAG
+) {
 
     lateinit var userManager: UserManager
 
@@ -34,5 +35,4 @@ class UpdateFcmTokenPendingTask(userId: String): PendingTask(dataId = userId, //
 //        }
         return PendingTaskResult.SUCCESSFUL
     }
-
 }

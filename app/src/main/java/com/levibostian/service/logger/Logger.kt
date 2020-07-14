@@ -1,8 +1,6 @@
 package com.levibostian.service.logger
 
-import android.app.Activity
 import android.os.Bundle
-import com.google.firebase.analytics.FirebaseAnalytics
 
 /**
  * Log the many activities/events that can happen within the app.

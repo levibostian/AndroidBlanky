@@ -6,6 +6,6 @@ import com.levibostian.service.dao.ReposDao
 import com.levibostian.service.model.RepoModel
 
 @Database(entities = [RepoModel::class], version = 1, exportSchema = true)
-abstract class Database: RoomDatabase() {
+abstract class Database : RoomDatabase() {
     abstract fun reposDao(): ReposDao
 }

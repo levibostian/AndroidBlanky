@@ -7,10 +7,12 @@ package com.levibostian.service.error.network
  * If it's a network error...the app should tell the user it's a network error.
  * If it's a user error (http response 400, for example)...the app should tell user the error and help them fix it.
  */
-class HttpRequestError private constructor(message: String,
-                                           val faultType: FaultType,
-        // Optional error which is intended for UI of app to respond to an error in a specific way such as "ConflictResponseError". Check if underlying error is of a type of error and if so, do something special in the app.
-                                           val underlyingError: Throwable?): Throwable(message) {
+class HttpRequestError private constructor(
+    message: String,
+    val faultType: FaultType,
+    // Optional error which is intended for UI of app to respond to an error in a specific way such as "ConflictResponseError". Check if underlying error is of a type of error and if so, do something special in the app.
+    val underlyingError: Throwable?
+) : Throwable(message) {
 
     companion object {
         fun developerError(message: String, underlyingError: Throwable): HttpRequestError = HttpRequestError(message, FaultType.DEVELOPER, underlyingError)

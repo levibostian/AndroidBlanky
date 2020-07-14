@@ -18,11 +18,10 @@ class WorkManagerWrapper @Inject constructor(val context: Context) {
     fun startPeriodicTasks() {
         val pendingTaskWorkerBuilder = PeriodicWorkRequest.Builder(PeriodicTasksWorker::class.java, 30, TimeUnit.MINUTES)
         val constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
         // Name the periodic job so that when we schedule it each time the app opens, we only ever have 1 periodic job made to prevent the job running X number of times.
         WorkManager.getInstance(context).enqueueUniquePeriodicWork("Periodic background jobs", ExistingPeriodicWorkPolicy.REPLACE, pendingTaskWorkerBuilder.setConstraints(constraints).build())
     }
-
 }

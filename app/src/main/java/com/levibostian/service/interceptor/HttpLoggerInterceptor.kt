@@ -6,7 +6,7 @@ import com.levibostian.service.logger.Logger
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class HttpLoggerInterceptor(private val logger: Logger): Interceptor {
+class HttpLoggerInterceptor(private val logger: Logger) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -21,25 +21,24 @@ class HttpLoggerInterceptor(private val logger: Logger): Interceptor {
         // We only care about the body if the response is not a successful one.
         if (response.isSuccessful) {
             logger.httpSuccessEvent(
-                    method = method,
-                    url = url,
-                    code = response.code,
-                    reqHeaders = request.getHeadersString(),
-                    resHeaders = response.getHeadersString(),
-                    resBody = response.getBodyCopy()
+                method = method,
+                url = url,
+                code = response.code,
+                reqHeaders = request.getHeadersString(),
+                resHeaders = response.getHeadersString(),
+                resBody = response.getBodyCopy()
             )
         } else {
             logger.httpFailEvent(
-                    method = method,
-                    url = url,
-                    code = response.code,
-                    reqHeaders = request.getHeadersString(),
-                    resHeaders = response.getHeadersString(),
-                    resBody = response.getBodyCopy()
+                method = method,
+                url = url,
+                code = response.code,
+                reqHeaders = request.getHeadersString(),
+                resHeaders = response.getHeadersString(),
+                resBody = response.getBodyCopy()
             )
         }
 
         return response
     }
-
 }

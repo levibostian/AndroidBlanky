@@ -20,7 +20,7 @@ fun String.snakeToCamelCase(): String {
     val snakeRegex = "_[a-zA-Z]".toRegex()
 
     return snakeRegex.replace(this) {
-        it.value.replace("_","")
-                .toUpperCase()
+        it.value.replace("_", "")
+            .toUpperCase()
     }
 }

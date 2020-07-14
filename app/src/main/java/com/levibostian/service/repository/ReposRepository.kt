@@ -7,8 +7,10 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class ReposRepository @Inject constructor(private val api: GitHubApi,
-                                          private val db: Database) {
+class ReposRepository @Inject constructor(
+    private val api: GitHubApi,
+    private val db: Database
+) {
 
     fun getRepos(username: String): Single<Result<List<RepoModel>>> {
         return api.getRepos(username)
@@ -21,6 +23,4 @@ class ReposRepository @Inject constructor(private val api: GitHubApi,
     fun observeReposForUsername(username: String): Observable<List<RepoModel>> {
         return db.reposDao().observeReposForUser(username).toObservable()
     }
-
-
 }

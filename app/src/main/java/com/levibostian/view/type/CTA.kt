@@ -4,21 +4,25 @@ import android.net.Uri
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CTA(val title: String,
-               val links: List<CTALink>?,
-               val notice: String?) {
+data class CTA(
+    val title: String,
+    val links: List<CTALink>?,
+    val notice: String?
+) {
     companion object
 }
 
 @JsonClass(generateAdapter = true)
-data class CTALink(val title: String,
-                   val url: Uri?,
-                   val action: String?) {
+data class CTALink(
+    val title: String,
+    val url: Uri?,
+    val action: String?
+) {
 
     companion object {}
 
-    constructor(title: String, url: Uri): this(title, url, null)
-    constructor(title: String, action: String): this(title, null, action)
+    constructor(title: String, url: Uri) : this(title, url, null)
+    constructor(title: String, action: String) : this(title, null, action)
 
     val type: LinkType
         get() {
@@ -33,8 +37,7 @@ data class CTALink(val title: String,
         }
 
     sealed class LinkType {
-        class Url(val url: Uri): LinkType()
-        class Action(val action: String): LinkType()
+        class Url(val url: Uri) : LinkType()
+        class Action(val action: String) : LinkType()
     }
-
 }

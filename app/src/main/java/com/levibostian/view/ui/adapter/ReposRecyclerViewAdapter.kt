@@ -1,11 +1,9 @@
 package com.levibostian.view.ui.adapter
 
 import android.content.Context
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.util.ViewInfo
 import com.levibostian.extensions.view
 import com.levibostian.service.type.list_item.RepoListItem
 import com.levibostian.view.ui.adapter.viewholder.CtaViewHolder
@@ -22,7 +20,7 @@ import com.levibostian.view.widget.CTAView
  *
  * ConcatAdapter is good if you want to add a header or footer to your RV. Not headers/footers for each section - but headers/footers for the entire RV. That's why it's good for paging to show a loading view to the end.
  */
-class ReposRecyclerViewAdapter(val context: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ReposRecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     enum class ViewType {
         REPO,
@@ -34,7 +32,7 @@ class ReposRecyclerViewAdapter(val context: Context): RecyclerView.Adapter<Recyc
         }
     }
 
-    interface Listener: CTAView.Listener {
+    interface Listener : CTAView.Listener {
         fun repoItemClicked(item: RepoListItem)
     }
 
@@ -107,5 +105,4 @@ class ReposRecyclerViewAdapter(val context: Context): RecyclerView.Adapter<Recyc
             listener.repoItemClicked(rowItem.item)
         }
     }
-
 }

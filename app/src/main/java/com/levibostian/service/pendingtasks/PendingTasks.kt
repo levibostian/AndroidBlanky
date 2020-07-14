@@ -12,5 +12,4 @@ class PendingTasks @Inject constructor() {
     fun runAllTasks() {
         Wendy.shared.runTasks(null)
     }
-
 }

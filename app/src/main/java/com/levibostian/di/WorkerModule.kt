@@ -12,5 +12,4 @@ abstract class WorkerModule {
     @IntoMap
     @WorkerKey(PeriodicTasksWorker::class)
     internal abstract fun bindPendingTasksWorker(worker: PeriodicTasksWorker.Factory): ChildWorkerFactory
-
 }

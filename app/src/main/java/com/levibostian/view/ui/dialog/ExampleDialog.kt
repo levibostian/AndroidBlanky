@@ -13,38 +13,38 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 class ExampleDialog : DialogFragment(), FooRecyclerViewAdapter.Listener {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val fooViewModel by activityViewModels<FooViewModel> { viewModelFactory }
+ @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+ private val fooViewModel by activityViewModels<FooViewModel> { viewModelFactory }
 
-    private val args: ExampleDialogArgs by navArgs()
+ private val args: ExampleDialogArgs by navArgs()
 
-    override fun onAttach(context: Context) {
-        onAttachDiGraph().inject(this)
-        super.onAttach(context)
-    }
+ override fun onAttach(context: Context) {
+ onAttachDiGraph().inject(this)
+ super.onAttach(context)
+ }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_dialog_foo, container, false)
-    }
+ override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+ return inflater.inflate(R.layout.fragment_dialog_foo, container, false)
+ }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+ super.onViewCreated(view, savedInstanceState)
 
-        options_recyclerview.apply {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = FooRecyclerViewAdapter(requireActivity()).apply {
-                listener = this@ExampleDialog
-            }
-        }
+ options_recyclerview.apply {
+ layoutManager = LinearLayoutManager(activity)
+ adapter = FooRecyclerViewAdapter(requireActivity()).apply {
+ listener = this@ExampleDialog
+ }
+ }
 
-        (options_recyclerview.adapter as FooRecyclerViewAdapter).data = args.options.toList()
-    }
+ (options_recyclerview.adapter as FooRecyclerViewAdapter).data = args.options.toList()
+ }
 
-    override fun highlightOptionSelected(option: String) {
-        fooViewModel.valueSelected(option)
+ override fun highlightOptionSelected(option: String) {
+ fooViewModel.valueSelected(option)
 
-        dismiss()
-    }
+ dismiss()
+ }
 
 }
-        */
+ */

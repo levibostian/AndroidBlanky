@@ -1,9 +1,5 @@
 package com.levibostian.view.widget
 
-
-import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
-
 /**
  * When a ViewGroup becomes a buttons bag, this is the Api you can expect from it.
  */

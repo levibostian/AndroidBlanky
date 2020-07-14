@@ -23,5 +23,4 @@ class CtaViewHolder(val view: View) : RecyclerView.ViewHolder(view), LayoutConta
         cta_view.populate(header = null, subheader = cta.title, links = cta.links, notice = cta.notice)
         cta_view.listener = listener
     }
-
 }

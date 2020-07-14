@@ -6,7 +6,7 @@ import com.levibostian.Env
 import com.levibostian.extensions.isDevelopment
 import java.util.*
 
-class LogcatLogger: DebugLogger() {
+class LogcatLogger : DebugLogger() {
 
     companion object {
         val TAG = Env.appName.toUpperCase(Locale.ENGLISH)
@@ -18,7 +18,7 @@ class LogcatLogger: DebugLogger() {
     }
 
     override fun appEventOccurred(event: ActivityEvent, extras: Map<ActivityEventParamKey, Any>?, average: Double?) {
-        Log.d(TAG, "event: ${event.name}, extras: ${extras.toString()}")
+        Log.d(TAG, "event: ${event.name}, extras: $extras")
     }
 
     override fun setUserProperty(key: UserPropertyKey, value: String) {
@@ -26,7 +26,7 @@ class LogcatLogger: DebugLogger() {
     }
 
     override fun logDebug(message: String, extras: Bundle?) {
-        Log.d(TAG, "$message, extras: ${extras.toString()}")
+        Log.d(TAG, "$message, extras: $extras")
     }
 
     override fun logError(error: Throwable) {
@@ -36,5 +36,4 @@ class LogcatLogger: DebugLogger() {
         // Throw because during dev mode, it's best to catch these errors to fix them.
         if (Env.isDevelopment) throw error
     }
-
 }

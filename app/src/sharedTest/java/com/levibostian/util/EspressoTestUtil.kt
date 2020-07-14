@@ -9,7 +9,6 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.test.rule.ActivityTestRule
 
 /*
  * Copyright (C) 2017 The Android Open Source Project
@@ -37,19 +36,20 @@ object EspressoTestUtil {
      */
     fun disableProgressBarAnimations(activity: FragmentActivity) {
         activity.supportFragmentManager
-                .registerFragmentLifecycleCallbacks(
-                        object : FragmentManager.FragmentLifecycleCallbacks() {
-                            override fun onFragmentViewCreated(
-                                    fm: FragmentManager,
-                                    f: Fragment,
-                                    v: View,
-                                    savedInstanceState: Bundle?
-                            ) {
-                                // traverse all views, if any is a progress bar, replace its animation
-                                traverseViews(v)
-                            }
-                        }, true
-                )
+            .registerFragmentLifecycleCallbacks(
+                object : FragmentManager.FragmentLifecycleCallbacks() {
+                    override fun onFragmentViewCreated(
+                        fm: FragmentManager,
+                        f: Fragment,
+                        v: View,
+                        savedInstanceState: Bundle?
+                    ) {
+                        // traverse all views, if any is a progress bar, replace its animation
+                        traverseViews(v)
+                    }
+                },
+                true
+            )
     }
 
     private fun traverseViews(view: View?) {

@@ -1,6 +1,5 @@
 package com.levibostian.view.ui.adapter.viewholder
 
-import android.net.Uri
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -18,5 +17,4 @@ class RepoViewHolder(val view: View) : RecyclerView.ViewHolder(view), LayoutCont
     fun populate(name: String) {
         name_textview.text = name
     }
-
 }

@@ -1,13 +1,5 @@
 package com.levibostian
 
-import android.os.PowerManager.ON_AFTER_RELEASE
-import android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP
-import android.os.PowerManager.FULL_WAKE_LOCK
-import android.content.Context.POWER_SERVICE
-import android.os.PowerManager
-import android.content.Context.KEYGUARD_SERVICE
-import android.app.KeyguardManager
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -49,5 +41,4 @@ class AndroidTestTestRunner : AndroidJUnitRunner() {
         intent.putExtras(extras)
         context.sendBroadcast(intent)
     }
-
 }
