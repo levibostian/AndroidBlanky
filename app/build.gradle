@@ -45,7 +45,6 @@ android {
 
         testInstrumentationRunner "${env.PACKAGE_NAME}.AndroidTestTestRunner"
 
-        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -120,8 +119,6 @@ dependencies {
     implementation "com.google.android.material:material:1.1.0"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'androidx.preference:preference:1.1.1'
-    // Required to support SDK < 21
-    implementation 'com.android.support:multidex:1.0.3'
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"

@@ -3,7 +3,6 @@ package com.levibostian.view.ui
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import androidx.multidex.MultiDex
 import androidx.work.Configuration
 import com.google.firebase.FirebaseApp
 import com.levibostian.BuildConfig
@@ -54,11 +53,6 @@ class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
             .builder()
             .androidModule(AndroidModule(this))
             .build()
-    }
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
     }
 
     private fun initDependencies() {
