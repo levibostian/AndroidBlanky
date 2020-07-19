@@ -2,6 +2,13 @@ language: android
 jdk:
   - openjdk11
 
+####################
+# Build version
+# 1. Set android > components
+# 2. Set global environment version
+# 3. In fastlane/Fastfile, edit the UI tests devices list
+####################
+
 # Installs the newest platform tools instead of the outdated v23 travis has by default
 android:
   components:
@@ -16,8 +23,15 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 
-install:
-  - bundle install
+after_success:
+  - bash <(curl -s https://codecov.io/bash) # upload test coverage     
+
+before_install:
+  - gem install cici 
+  - travis_retry bundle install # we have a script or two that's written in ruby we need during building    
+  - nvm install lts/* # Nodejs lang. used for conventional commits and semantic-release stuff
+  - curl -sL https://firebase.tools | bash # firebase CLI for dev app testing
+
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -29,33 +43,39 @@ cache:
     - $HOME/.android/build-cache
 env:
   global:
-    # DANGER_GITHUB_API_TOKEN
-    # DEVELOPER_EMAIL=you@you.com
+    ANDROID_BUILD_TOOLS_VERSION=29.0.2
+    # FIREBASE_DISTRIBUTION_APP_ID= firebase app id for app you want to use for firebase app distribution. 
+    # GITHUB_TOKEN= personal access token where github username has push access to the repo to make comments and releases. 
+    # FIREBASE_TOKEN="123" - token to login to Firebase account that is added to Firebase project. https://firebase.google.com/docs/cli#cli-ci-systems
+    # CODECOV_TOKEN - codecov.io token for repository. Used for test coverage. Make sure code coverage is enabled in XCode https://github.com/codecov/example-swift#produce-coverage-reports
+    # FIREBASE_PROJECT_ID - Found in Firebase project > Settings > General. 
+    # GOOGLE_APPLICATION_CREDENTIALS - path to the service account key file to authenticate with firebase service account. Readme talks about this. 
 
 jobs:
   include:
-    - stage: tests
-      name: "Tests"
-      script: ruby ./bin/ci/run_unit_tests.rb
-    - # Tests
-      # Using `travis_wait` because task may take >10 minutes to run without any output to the console while running tests on test lab.
-      script: travis_wait ruby ./bin/ci/run_ui_integration_tests.rb
-    - stage: staging-release
-      name: "Deploy staging app"
-      script: bundle exec fastlane staging_deployment
-    - stage: beta-release
-      name: "Deploy beta app"
-      script: bundle exec fastlane beta_deployment
-    - stage: prod-release
-      name: "Deploy prod app"
-      script: bundle exec fastlane production_deployment
+  - stage: tests
+    script:
+      - set -e
+      - npm i @commitlint/travis-cli && npx commitlint-travis
+      - ruby android_linting.rb
+      - bundle exec fastlane unit_test
+      - bundle exec fastlane ui_test
+  - stage: pr
+    script:
+      - set -e
+      - cici decrypt --set testing 
+      - fastlane qa_deploy
+  - stage: deploy
+    script: 
+      # Use nvm to install and use the Node LTS version (nvm is installed on all Travis images)
+      - set -e
+      - cici decrypt --set production       
+      - npm i @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/exec && npx semantic-release
 
 stages:
-  - name: tests # Run tests on every commit to help keep tests passing as long as possible.
-    if: type IN (push, pull_request) # Testing on pull requests assert that after merge, the branch wont be broken.
-  - name: staging-release
-    if: branch = staging AND type IN (push)
-  - name: beta-release
-    if: branch = beta AND type IN (push)
-  - name: prod-release
-    if: branch = production AND type IN (push)
+  - name: tests
+    if: type IN (push, pull_request) AND tag IS blank
+  - name: pr
+    if: type IN (pull_request) 
+  - name: deploy
+    if: type IN (push) AND branch IN (master, beta, alpha)

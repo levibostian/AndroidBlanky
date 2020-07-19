@@ -19,16 +19,10 @@ androidExtensions {
     experimental = true
 }
 
-repositories {
-    mavenCentral()
-    google()
-    jcenter()
-}
-
 android {
-    compileSdkVersion 29
-    // Make sure to also update .travis.yml, and fastlane/Fastfile build tools version values.
-    buildToolsVersion "29.0.2"
+    // This needs to be updated in .travis, too
+    compileSdkVersion 29    
+    buildToolsVersion "29.0.2" 
 
     packagingOptions {
         exclude 'META-INF/ASL2.0'
@@ -75,19 +69,6 @@ android {
         }
     }
 
-    flavorDimensions "mode"
-    productFlavors {
-        development {
-            // Set dev only rules to skip compiling some parts of app.
-            minSdkVersion 23
-            resConfigs "en", "xxhdpi"
-
-            dimension "mode"
-        }
-        production {
-            dimension "mode"
-        }
-    }
     testOptions {
         animationsDisabled = true
         // robolectric: http://robolectric.org/getting-started/
