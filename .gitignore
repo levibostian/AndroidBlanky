@@ -2,6 +2,7 @@ secrets.tar
 _secrets
 .env
 app/src/main/res/values/env.xml
+results/
 
 # Built application files
 *.apk

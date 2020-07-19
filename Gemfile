@@ -10,4 +10,3 @@ eval_gemfile(plugins_path) if File.exist?(plugins_path)
 
 gem "dotenv-android"
 gem "dotenv"
-gem "cici"
