@@ -39,6 +39,7 @@ android {
 
         testInstrumentationRunner "com.app.AndroidTestTestRunner"
 
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -60,6 +61,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            defaultConfig.minSdkVersion 23
+            defaultConfig.multiDexEnabled false
+        }
         release {
             minifyEnabled true
             shrinkResources true
@@ -100,6 +105,9 @@ dependencies {
     implementation "com.google.android.material:material:1.1.0"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'androidx.preference:preference:1.1.1'
+
+    // multidex support for android sdk versions below v21
+    implementation "androidx.multidex:multidex:2.0.1"
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
