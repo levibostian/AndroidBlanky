@@ -1,7 +1,9 @@
 package com.app.view.ui
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
+import androidx.multidex.MultiDex
 import androidx.work.Configuration
 import com.app.BuildConfig
 import com.app.di.AndroidModule
@@ -59,6 +61,11 @@ class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
 
         Wendy.init(this, pendingTasksFactory)
         WendyConfig.debug = BuildConfig.DEBUG
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 
     override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder().build()
