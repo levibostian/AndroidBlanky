@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.levibostian.view.widget.TextChangedEditText
+        <com.app.view.widget.TextChangedEditText
             android:id="@+id/username_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.levibostian.view.widget.UpdateTextView
+            <com.app.view.widget.UpdateTextView
                 android:id="@+id/data_age_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

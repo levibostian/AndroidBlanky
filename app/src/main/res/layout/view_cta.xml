@@ -24,7 +24,7 @@
         android:layout_marginBottom="20dp"
         tools:text="What’s holding you back from reaching your health goals? Get into it with our latest Podcast episode."/>
 
-    <com.levibostian.view.widget.LinearButtonsBag
+    <com.app.view.widget.LinearButtonsBag
         android:id="@+id/buttons_bag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

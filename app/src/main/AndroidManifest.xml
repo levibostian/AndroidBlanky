@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.levibostian">
+    package="com.app">
 
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" android:maxSdkVersion="22"/>
     <uses-permission
@@ -31,21 +31,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.ui.activity.MainActivity"/>
-        <activity android:name=".view.ui.activity.auth.AuthenticatorActivity"/>
-        <activity android:name=".view.ui.activity.auth.PasswordTokenExchangeActivity"/>
-        <activity android:name=".view.ui.activity.auth.LogoutAccountActivity"/>
-        <activity android:name=".view.ui.activity.auth.PasswordlessEmailLoginActivity"/>
-        <activity android:name=".view.ui.activity.auth.UnlockLoggedInAccountActivity"/>
         <service android:name=".service.service.FirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-        </service>
-        <service android:name=".service.service.auth.AuthenticatorService">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator"/>
-            </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
         </service>
         <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. See README(https://goo.gl/l4GJaQ) for more. -->
         <meta-data
