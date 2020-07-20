@@ -17,9 +17,9 @@
 #}
 
 # Keep models and VOs for your package.
--keep class com.levibostian.**.models.** { *; }
--keep class com.levibostian.**.vo.** { *; }
--keep class com.levibostian.service.error.** { *; }
+-keep class com.app.service.model.** { *; }
+-keep class com.app.service.vo.** { *; }
+-keep class com.app.service.error.** { *; }
 
 # Crashlytics required
 -keepattributes *Annotation*
