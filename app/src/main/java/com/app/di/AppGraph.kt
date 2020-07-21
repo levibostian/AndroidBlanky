@@ -1,6 +1,6 @@
 package com.app.di
 
-import com.app.service.service.FirebaseMessagingService
+import com.app.service.FirebaseMessagingService
 import com.app.view.ui.MainApplication
 import com.app.view.ui.activity.LaunchActivity
 import com.app.view.ui.activity.LoginActivity

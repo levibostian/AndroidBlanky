@@ -64,7 +64,7 @@ jobs:
     script:
       - set -e
       - cici decrypt --set testing 
-      - fastlane qa_deploy
+      - bundle exec fastlane qa_deploy
   - stage: deploy
     script: 
       # Use nvm to install and use the Node LTS version (nvm is installed on all Travis images)

@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "${env.APPLICATION_ID}"
+        applicationId env.APPLICATION_ID
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1528215515
@@ -229,13 +229,17 @@ dependencies {
 
     // Robolectric
     testImplementation 'org.robolectric:robolectric:4.3.1'
+    
+    // recyclerview matcher
+    testImplementation 'com.github.levibostian:RecyclerViewMatcher:0.1.0'
+    androidTestImplementation 'com.github.levibostian:RecyclerViewMatcher:0.1.0'
 
     // Android Testing Support Library's runner and rules
     def androidTestLibVersion = "1.2.0"
-    androidTestImplementation "androidx.test:core:$androidTestLibVersion"
+    androidTestImplementation "androidx.test:core-ktx:$androidTestLibVersion"
     androidTestImplementation "androidx.test:runner:$androidTestLibVersion"
     androidTestImplementation "androidx.test:rules:$androidTestLibVersion"
-    testImplementation "androidx.test:core:$androidTestLibVersion"
+    testImplementation "androidx.test:core-ktx:$androidTestLibVersion"
     testImplementation "androidx.test:runner:$androidTestLibVersion"
     testImplementation "androidx.test:rules:$androidTestLibVersion"
 

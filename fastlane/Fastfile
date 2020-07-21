@@ -10,7 +10,6 @@ platform :android do
   lane :unit_test do |values|
     gradle(
       task: 'test', 
-      flavor: 'Development',
       build_type: 'DebugUnitTest'
     )
   end 

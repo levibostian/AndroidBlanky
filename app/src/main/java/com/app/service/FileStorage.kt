@@ -1,13 +1,11 @@
-package com.app.service.service
+package com.app.service
 
 import android.content.Context
-import android.system.Os.open
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileWriter
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 

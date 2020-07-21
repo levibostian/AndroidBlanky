@@ -2,8 +2,6 @@ package com.app.service
 
 import android.os.AsyncTask
 import com.app.service.db.Database
-import com.app.service.service.FileStorage
-import com.app.service.service.KeyValueStorage
 import com.levibostian.teller.Teller
 import com.levibostian.wendy.service.Wendy
 import javax.inject.Inject

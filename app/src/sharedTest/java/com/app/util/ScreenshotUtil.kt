@@ -17,7 +17,7 @@ class ScreenshotUtil(val activity: Activity) {
 
     // Fastlane screengrab for store pics
     fun takeForStore(name: String) {
-        sleep(300) // Assert that the view is refreshed enough to take pic.
+        sleep(1000) // Assert that the view is refreshed enough to take pic.
 
         name.replace(' ', '_').let { cleanedName ->
             try {

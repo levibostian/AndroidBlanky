@@ -9,6 +9,14 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers.*
+import com.app.matcher.OrientationChangeAction
+import com.levibostian.recyclerviewmatcher.RecyclerViewMatcher
+import com.levibostian.swapper.SwapperView
 
 /*
  * Copyright (C) 2017 The Android Open Source Project
@@ -28,6 +36,12 @@ import androidx.fragment.app.FragmentManager
 
 // Found: https://github.com/googlesamples/android-architecture-components
 object EspressoTestUtil {
+
+    fun disableAnimations(activity: FragmentActivity) {
+        disableProgressBarAnimations(activity)
+
+        SwapperView.config.animationDuration = 0
+    }
 
     /**
      * Disables progress bar animations for the views of the given activity rule
@@ -74,5 +88,46 @@ object EspressoTestUtil {
      */
     private fun disableProgressBarAnimation(progressBar: ProgressBar) {
         progressBar.indeterminateDrawable = ColorDrawable(Color.BLUE)
+    }
+
+    fun scrollToTopOfList(recyclerViewId: Int) {
+        onView(withId(recyclerViewId))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
+    }
+
+    /**
+     * Way to run view assertions on RecylerViews.
+     *
+     * Example:
+     assertListItems(programsRecyclerViewId, ProgramListItem.realistics) { index, item ->
+     matches(hasDescendant(withText((item as ProgramListItem.Prog).program.name)))
+     }
+     */
+    fun <T> assertListItems(recyclerViewId: Int, list: List<T>, onViewAssertion: (Int, T) -> ViewAssertion) {
+        list.forEachIndexed { index, item ->
+            onView(withId(recyclerViewId))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
+
+            onView(RecyclerViewMatcher.recyclerViewWithId(recyclerViewId).itemViewAtIndex(index))
+                .check(onViewAssertion(index, item))
+        }
+    }
+
+    /**
+     * Handy if you want to only check if a RecyclerView item is visible without scrolling. Use if you have a complex list (such as a Hash data structure) and it's difficult to use [assertListItems].
+     */
+    fun assertVisibleListItem(recyclerViewId: Int, onViewAssertions: List<ViewAssertion>, startingIndex: Int = 0) {
+        onViewAssertions.forEachIndexed { index, viewAssertion ->
+            onView(RecyclerViewMatcher.recyclerViewWithId(recyclerViewId).itemViewAtIndex(index + startingIndex))
+                .check(viewAssertion)
+        }
+    }
+
+    fun orientationLandscape() {
+        onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+    }
+
+    fun orientationPortrait() {
+        onView(isRoot()).perform(OrientationChangeAction.orientationPortrait())
     }
 }

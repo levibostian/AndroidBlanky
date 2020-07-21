@@ -1,4 +1,4 @@
-package com.app.service.service
+package com.app.service
 
 import androidx.core.os.bundleOf
 import com.app.extensions.onCreateDiGraph

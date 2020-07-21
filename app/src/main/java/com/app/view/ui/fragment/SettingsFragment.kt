@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import com.app.R
 import com.app.extensions.onAttachDiGraph
-import com.app.service.service.KeyValueStorage
-import com.app.service.service.KeyValueStorageKey
+import com.app.service.KeyValueStorage
+import com.app.service.KeyValueStorageKey
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import javax.inject.Inject

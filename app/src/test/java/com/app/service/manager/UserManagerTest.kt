@@ -1,48 +1,81 @@
 package com.app.service.manager
 
-import android.annotation.SuppressLint
-import com.app.util.SharedPreferencesMock
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.app.UnitTest
 import com.google.common.truth.Truth.assertThat
-import com.levibostian.service.model.SharedPrefersKeys
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
-class UserManagerTest {
-
-    @Mock private lateinit var deviceAccountManager: DeviceAccountManager
-
-    private val sharedPrefsMock = SharedPreferencesMock()
-    private val sharedPrefs = sharedPrefsMock.sharedPrefs
-    private val sharedPrefsEditor = sharedPrefsMock.editor
+@RunWith(AndroidJUnit4::class)
+class UserManagerTest : UnitTest() {
 
     private lateinit var manager: UserManager
 
     @Before
-    fun setUp() {
-        manager = UserManager(sharedPrefs, deviceAccountManager)
+    override fun setup() {
+        super.setup()
+
+        /**
+         * Convert this test into a robolectric test so that we can use a robo version of shared prefs to test this test in an integration way
+         */
+
+        manager = UserManager(keyValueStorage)
     }
 
     @Test
     fun authToken_getNullNotSet() {
-        whenever(sharedPrefs.getString(SharedPrefersKeys.USER_ID, null)).thenReturn(null)
-
         assertThat(manager.id).isNull()
     }
 
-    @SuppressLint("CommitPrefEdits")
     @Test
-    fun authToken_commitTokenAfterSetting() {
-        val id = "12345"
+    fun authToken_givenAuthToken_expectGetIt() {
+        val givenToken = "access-token"
 
-        manager.id = id
+        manager.authToken = givenToken
 
-        verify(sharedPrefsEditor).putString(SharedPrefersKeys.USER_ID, id)
-        verify(sharedPrefsEditor).commit()
+        assertThat(manager.authToken).isEqualTo(givenToken)
+    }
+
+    // logout
+
+    @Test
+    fun `logout - expect delete properties`() {
+        manager.id = 1
+        manager.authToken = "test"
+
+        manager.logout()
+
+        assertThat(manager.id).isNull()
+        assertThat(manager.authToken).isNull()
+    }
+
+    // isUserLoggedIn
+
+    @Test
+    fun `isUserLoggedIn - given no data written to manager yet, expect false`() {
+        assertThat(manager.isUserLoggedIn).isFalse()
+    }
+
+    @Test
+    fun `isUserLoggedIn - given id saved, expect false`() {
+        manager.id = 1
+
+        assertThat(manager.isUserLoggedIn).isFalse()
+    }
+
+    @Test
+    fun `isUserLoggedIn - given auth saved, expect false`() {
+        manager.authToken = "123"
+
+        assertThat(manager.isUserLoggedIn).isFalse()
+    }
+
+    @Test
+    fun `isUserLoggedIn - given all properties have a value, expect true`() {
+        manager.id = 1
+        manager.authToken = "123"
+
+        assertThat(manager.isUserLoggedIn).isTrue()
     }
 }

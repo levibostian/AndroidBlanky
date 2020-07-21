@@ -9,7 +9,7 @@
         "@semantic-release/github",
         "@semantic-release/git",
         ["@semantic-release/exec", {
-            "publishCmd": "fastlane deploy new_version:${nextRelease.version}"
+            "publishCmd": "bundle exec fastlane deploy new_version:${nextRelease.version}"
         }]
     ]
 }
