@@ -22,8 +22,9 @@ RESULT=$?
 git add .
 
 # Re-apply original unstaged changes
-git stash pop -q $STASH_NAME
-echo "[GIT HOOK] popping stash $STASH_NAME"
+echo "[GIT HOOK] popping stash"
+git reset -q --hard
+git stash pop -q --index
 
 [ $RESULT -ne 0 ] && exit 1
 exit 0
