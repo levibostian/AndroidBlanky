@@ -11,7 +11,8 @@ import javax.inject.Singleton
         TestDatabaseModule::class,
         DependencyModule::class,
         TestNetworkModule::class,
-        ViewModelModule::class
+        TestViewModelModule::class,
+        WorkerModule::class
     ]
 )
 interface TestAppGraph : AppGraph {

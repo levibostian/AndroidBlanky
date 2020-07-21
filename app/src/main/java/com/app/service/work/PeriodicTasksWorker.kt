@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.app.di.ChildWorkerFactory
-import com.app.service.service.BackgroundJobRunner
+import com.app.service.BackgroundJobRunner
 import javax.inject.Inject
 
 class PeriodicTasksWorker(

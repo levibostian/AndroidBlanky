@@ -1,7 +1,7 @@
 package com.app.service.manager
 
-import com.app.service.service.KeyValueStorage
-import com.app.service.service.KeyValueStorageKey
+import com.app.service.KeyValueStorage
+import com.app.service.KeyValueStorageKey
 import javax.inject.Inject
 
 class UserManager @Inject constructor(private val keyValueStorage: KeyValueStorage) {

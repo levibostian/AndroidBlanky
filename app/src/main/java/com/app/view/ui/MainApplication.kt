@@ -22,7 +22,7 @@ import com.levibostian.wendy.service.Wendy
 import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
 
-class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
+open class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
 
     lateinit var appComponent: AppGraph
 
@@ -49,7 +49,7 @@ class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
          */
     }
 
-    fun initAppComponent(): AppGraph {
+    open fun initAppComponent(): AppGraph {
         return DaggerAppGraph
             .builder()
             .androidModule(AndroidModule(this))

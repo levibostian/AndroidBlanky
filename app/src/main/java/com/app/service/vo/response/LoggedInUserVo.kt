@@ -8,4 +8,7 @@ data class LoggedInUserVo(
     val email: String,
     val username: String?,
     val access_token: String
-)
+) {
+
+    companion object
+}

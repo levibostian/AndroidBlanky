@@ -1,4 +1,4 @@
-package com.app.service.service
+package com.app.service
 
 import com.app.service.datasource.ReposTellerRepository
 import com.app.service.logger.ActivityEvent

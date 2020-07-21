@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.R
 import com.app.extensions.onAttachDiGraph
 import com.app.service.ResetAppRunner
-import com.app.service.service.ViewDataProvider
+import com.app.service.ViewDataProvider
 import com.app.service.type.list_item.RepoListItem
 import com.app.view.ui.adapter.ReposRecyclerViewAdapter
 import com.app.view.ui.extensions.closeKeyboard

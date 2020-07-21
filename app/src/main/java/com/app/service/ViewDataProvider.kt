@@ -1,4 +1,4 @@
-package com.app.service.service
+package com.app.service
 
 import android.content.Context
 import com.app.R

@@ -1,4 +1,4 @@
-package com.app
+package com.app.rule
 
 import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins

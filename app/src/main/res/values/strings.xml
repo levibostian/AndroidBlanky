@@ -59,4 +59,5 @@
     <string name="username_too_short">Username is %s too short.</string>
     <string name="licenses">Licenses</string>
     <string name="logging_into_app_title">Logging into account...</string>
+    <string name="repos">Repos</string>
 </resources>
