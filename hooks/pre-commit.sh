@@ -1,30 +1,14 @@
 #!/bin/bash
 
-# We are going to modify files that are staged and ready for commit. 
-# But once you modify it, that file is no longer staged in that commit so you will need to:
-# `git add` files, run this script to modify files, then you will need to `git add` files again that were modified. 
-# 
-# But instead, we will stash unstaged files, script to modify files, `git add` all files, then unstage files. 
-# Thanks, https://stackoverflow.com/a/26911078/1486374 and https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/
+set -e
 
-# Stash unstaged changes
-STASH_NAME="pre-commit-hook-$(date +%s)"
-git stash save -q --keep-index $STASH_NAME
-echo "[GIT HOOK] created stash for unstaged files: $STASH_NAME"
+RED='\033[0;31m'
 
-########### All scripts here ##################
-echo "[GIT HOOK] running hook scripts"
-./gradlew formatKotlin
-RESULT=$?
-##############################################
+if ! [ -x "$(command -v pre-commit)" ]; then
+    echo -e "${RED}You need to install the program 'pre-commit' on your machine to continue."
+    echo ""
+    echo -e "${RED}The easiest way is 'brew install pre-commit'. If you're not on macOS, check out other instructions for installing: https://pre-commit.com/#install"
+    exit 1
+fi
 
-# Stage updated files
-git add .
-
-# Re-apply original unstaged changes
-echo "[GIT HOOK] popping stash"
-git reset -q --hard
-git stash pop -q --index
-
-[ $RESULT -ne 0 ] && exit 1
-exit 0
+pre-commit run
