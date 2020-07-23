@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.app.UnitTest
 import com.app.extensions.result
-import com.app.service.ResetAppRunner
 import com.app.service.error.network.HttpRequestError
 import com.app.service.error.network.NoInternetConnectionException
 import com.app.service.logger.Logger
@@ -28,7 +27,6 @@ class ApiTests : UnitTest() {
 
     @Mock lateinit var logger: Logger
     @Mock lateinit var service: GitHubService
-    @Mock lateinit var resetAppRunner: ResetAppRunner
 
     private lateinit var api: Api
 

@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.app.R
-import com.app.extensions.onAttachDiGraph
 import com.app.service.util.ConnectivityUtil
 import com.app.view.ui.extensions.getListener
 import com.levibostian.wendy.WendyConfig
@@ -18,8 +17,10 @@ import com.levibostian.wendy.listeners.TaskRunnerListener
 import com.levibostian.wendy.service.PendingTask
 import com.levibostian.wendy.service.Wendy
 import com.levibostian.wendy.types.ReasonPendingTaskSkipped
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class AreYouSureLogoutWendyDialogFragment : DialogFragment(), TaskRunnerListener {
 
     companion object {
@@ -33,7 +34,6 @@ class AreYouSureLogoutWendyDialogFragment : DialogFragment(), TaskRunnerListener
 
     override fun onAttach(context: Context) {
         getListener<Listener>()?.let { listener = it }
-        onAttachDiGraph().inject(this)
         super.onAttach(context)
     }
 

@@ -2,6 +2,7 @@ package com.app.service.work
 
 import android.content.Context
 import androidx.work.*
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -10,7 +11,7 @@ import javax.inject.Singleton
  * Wrapper for AndroidX WorkManager. To abstract it, make it testable, and to have more control over how it's initialized.
  */
 @Singleton
-class WorkManagerWrapper @Inject constructor(val context: Context) {
+class WorkManagerWrapper @Inject constructor(@ApplicationContext val context: Context) {
 
     /**
      * Schedule workmanager to start running the app background refresh.

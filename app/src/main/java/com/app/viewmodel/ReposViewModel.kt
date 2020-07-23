@@ -1,5 +1,6 @@
 package com.app.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.app.extensions.toLiveData
@@ -8,9 +9,8 @@ import com.app.service.model.RepoModel
 import com.levibostian.teller.cachestate.OnlineCacheState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
-class ReposViewModel @Inject constructor(private val reposRepository: ReposTellerRepository) : ViewModel() {
+class ReposViewModel @ViewModelInject constructor(private val reposRepository: ReposTellerRepository) : ViewModel() {
 
     fun setUsername(username: String) {
         reposRepository.requirements = ReposTellerRepository.GetRequirements(username)

@@ -1,7 +1,6 @@
 package com.app.service
 
 import androidx.core.os.bundleOf
-import com.app.extensions.onCreateDiGraph
 import com.app.service.logger.ActivityEvent
 import com.app.service.logger.ActivityEventParamKey
 import com.app.service.logger.Logger
@@ -9,18 +8,15 @@ import com.app.service.manager.UserManager
 import com.app.service.util.NotificationUtil
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class FirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var userManager: UserManager
     @Inject lateinit var backgroundJobRunner: BackgroundJobRunner
     @Inject lateinit var logger: Logger
-
-    override fun onCreate() {
-        onCreateDiGraph().inject(this)
-        super.onCreate()
-    }
 
     // From Firebase's quickstart: https://github.com/firebase/quickstart-android/blob/master/messaging/app/src/main/java/com/google/firebase/quickstart/fcm/MyFirebaseMessagingService.java
     // There are two types of messages data messages and notification messages. Data messages are handled

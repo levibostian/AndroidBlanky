@@ -4,12 +4,13 @@ import android.content.Context
 import com.app.R
 import com.app.service.error.network.NoInternetConnectionException
 import com.app.service.util.ConnectivityUtil
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
 class DefaultErrorHandlerInterceptor @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val connectivityUtil: ConnectivityUtil
 ) : Interceptor {
 

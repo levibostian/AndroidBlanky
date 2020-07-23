@@ -1,15 +1,15 @@
 package com.app.service.work
 
 import android.content.Context
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.app.di.ChildWorkerFactory
 import com.app.service.BackgroundJobRunner
-import javax.inject.Inject
 
-class PeriodicTasksWorker(
-    appContext: Context,
-    workerParams: WorkerParameters,
+class PeriodicTasksWorker @WorkerInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters,
     private val backgroundJobRunner: BackgroundJobRunner
 ) : Worker(appContext, workerParams) {
 
@@ -17,14 +17,5 @@ class PeriodicTasksWorker(
         backgroundJobRunner.runPeriodicJobs()
 
         return Result.success()
-    }
-
-    class Factory @Inject constructor(
-        private val backgroundJobRunner: BackgroundJobRunner
-    ) : ChildWorkerFactory {
-
-        override fun create(appContext: Context, params: WorkerParameters): Worker {
-            return PeriodicTasksWorker(appContext, params, backgroundJobRunner)
-        }
     }
 }

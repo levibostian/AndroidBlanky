@@ -13,6 +13,7 @@ import com.app.service.vo.response.error.FieldsErrorException
 import com.app.service.vo.response.error.FieldsErrorResponse
 import com.app.service.vo.response.error.ForbiddenResponseError
 import com.app.service.vo.response.error.RateLimitingResponseError
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -26,7 +27,7 @@ import javax.inject.Inject
  * If there is an error, this class will handle it. If it's a network error, it will simply give you that message so you can display that to the user. If it's a user error, the error will be optionally parsed from the response to be shown for the user and the UI can handle the error if it wants to. If it's a developer error, the error will be logged to notify the developer team to fix it.
  */
 class GitHubApi @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     logger: Logger,
     private val service: GitHubService,
     private val resetAppRunner: ResetAppRunner

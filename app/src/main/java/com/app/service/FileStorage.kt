@@ -1,6 +1,7 @@
 package com.app.service
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import java.io.File
@@ -28,7 +29,7 @@ import javax.inject.Singleton
  * https://developer.android.com/training/data-storage/app-specific
  */
 @Singleton // we require a singleton because we have observables in memory
-class FileStorage @Inject constructor(private val context: Context) {
+class FileStorage @Inject constructor(@ApplicationContext private val context: Context) {
 
     private var fileObservables: MutableMap<Destination, BehaviorSubject<String>> = mutableMapOf()
 

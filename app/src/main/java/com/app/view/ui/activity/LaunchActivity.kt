@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.app.extensions.onCreateDiGraph
 import com.app.service.logger.ActivityEvent
 import com.app.service.logger.Logger
 import com.app.service.manager.NotificationChannelManager
@@ -14,8 +13,10 @@ import com.app.service.util.DynamicLinksProcessor
 import com.app.service.work.WorkManagerWrapper
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class LaunchActivity : AppCompatActivity() {
 
     @Inject lateinit var notificationChannelManager: NotificationChannelManager
@@ -26,7 +27,6 @@ class LaunchActivity : AppCompatActivity() {
     private val LOGIN_ACTIVITY_REQUEST_CODE = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        onCreateDiGraph().inject(this)
         super.onCreate(savedInstanceState)
 
         notificationChannelManager.createChannels()

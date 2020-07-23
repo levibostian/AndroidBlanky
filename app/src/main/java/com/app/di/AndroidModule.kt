@@ -1,6 +1,6 @@
 package com.app.di
 
-import android.accounts.AccountManager
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -9,39 +9,24 @@ import com.app.service.ResetAppRunner
 import com.app.view.ui.MainApplication
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module
-class AndroidModule(private val application: MainApplication) {
+@InstallIn(ApplicationComponent::class)
+object AndroidModule {
 
     @Provides
-    fun provideAppResetRunner(): ResetAppRunner {
-        return application
-    }
+    fun provideAppResetRunner(application: Application): ResetAppRunner = (application as MainApplication)
 
     @Provides
-    fun provideApplication(): MainApplication {
-        return application
-    }
-
-    @Provides
-    @Singleton
-    fun provideContext(): Context {
-        return application
-    }
-
-    @Provides
-    fun provideAccountManager(context: Context): AccountManager {
-        return AccountManager.get(context)
-    }
-
-    @Provides
-    fun provideSharedPreferences(context: Context): SharedPreferences {
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     @Provides
-    fun provideConnectivityManager(): ConnectivityManager {
+    fun provideConnectivityManager(application: Application): ConnectivityManager {
         return application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 }

@@ -6,21 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.app.R
-import com.app.extensions.onCreateDiGraph
 import com.app.extensions.plusAssign
 import com.app.service.logger.Logger
 import com.app.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     @Inject lateinit var logger: Logger
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val loginViewModel by viewModels<LoginViewModel> { viewModelFactory }
+    private val loginViewModel: LoginViewModel by viewModels()
 
     companion object {
         private val PASSWORDLESS_TOKEN_KEY = "LoginActivity.PASSWORDLESS_TOKEN_KEY"
@@ -41,7 +40,6 @@ class LoginActivity : AppCompatActivity() {
         get() = intent.getStringExtra(PASSWORDLESS_TOKEN_KEY)!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        onCreateDiGraph().inject(this)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)

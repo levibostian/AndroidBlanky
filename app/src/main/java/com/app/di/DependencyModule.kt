@@ -23,6 +23,9 @@ import com.levibostian.moshiboquilaplugin.MoshiRemoteConfigAdapterPlugin
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -30,10 +33,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
-class DependencyModule {
+@InstallIn(ApplicationComponent::class)
+object DependencyModule {
 
     @Provides
-    fun provideLogger(context: Context): Logger {
+    fun provideLogger(@ApplicationContext context: Context): Logger {
         val loggers = mutableListOf(
             CrashlyticsLogger(),
             FirebaseLogger(context)
@@ -47,7 +51,7 @@ class DependencyModule {
     }
 
     @Provides
-    fun provideRetrofit(context: Context, connectivityUtil: ConnectivityUtil, userManager: UserManager, apiHostname: ApiHostname, logger: Logger): Retrofit {
+    fun provideRetrofit(@ApplicationContext context: Context, connectivityUtil: ConnectivityUtil, userManager: UserManager, apiHostname: ApiHostname, logger: Logger): Retrofit {
         val client = OkHttpClient.Builder()
             .addInterceptor(HttpLoggerInterceptor(logger))
             .addInterceptor(DefaultErrorHandlerInterceptor(context, connectivityUtil))

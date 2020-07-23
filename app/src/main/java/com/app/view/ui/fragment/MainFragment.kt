@@ -1,18 +1,15 @@
 package com.app.view.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.R
-import com.app.extensions.onAttachDiGraph
 import com.app.service.ResetAppRunner
 import com.app.service.ViewDataProvider
 import com.app.service.type.list_item.RepoListItem
@@ -21,18 +18,19 @@ import com.app.view.ui.extensions.closeKeyboard
 import com.app.viewmodel.ReposViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.moshi.JsonClass
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private var fetchingSnackbar: Snackbar? = null
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var resetAppRunner: ResetAppRunner
     @Inject lateinit var viewDataProvider: ViewDataProvider
-    private val reposViewModel by viewModels<ReposViewModel> { viewModelFactory }
+    private val reposViewModel: ReposViewModel by viewModels()
 
     private val recyclerViewAdapter: ReposRecyclerViewAdapter
         get() = repos_recyclerview.adapter as ReposRecyclerViewAdapter
@@ -51,11 +49,6 @@ class MainFragment : Fragment() {
         LOADING_VIEW,
         EMPTY_VIEW,
         REPOS
-    }
-
-    override fun onAttach(context: Context) {
-        onAttachDiGraph().inject(this)
-        super.onAttach(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
