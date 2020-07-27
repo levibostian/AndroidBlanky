@@ -28,6 +28,7 @@ after_success:
 
 before_install:
   - gem install cici 
+  - gem install bundler
   - travis_retry bundle install # we have a script or two that's written in ruby we need during building    
   - nvm install lts/* # Nodejs lang. used for conventional commits and semantic-release stuff
   - curl -sL https://firebase.tools | bash # firebase CLI for dev app testing
