@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.multidex.MultiDex
 import androidx.work.Configuration
-import com.app.BuildConfig
 import com.app.Env
 import com.app.di.AndroidModule
 import com.app.di.AppGraph
