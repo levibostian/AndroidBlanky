@@ -18,6 +18,7 @@ import com.google.firebase.FirebaseApp
 import com.levibostian.teller.Teller
 import com.levibostian.wendy.WendyConfig
 import com.levibostian.wendy.service.Wendy
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
