@@ -6,9 +6,11 @@ import android.content.Intent
 import androidx.multidex.MultiDex
 import androidx.work.Configuration
 import com.app.BuildConfig
+import com.app.Env
 import com.app.di.AndroidModule
 import com.app.di.AppGraph
 import com.app.di.DaggerAppGraph
+import com.app.extensions.isDevelopment
 import com.app.service.DataDestroyer
 import com.app.service.ResetAppRunner
 import com.app.service.logger.ActivityEvent
@@ -60,7 +62,7 @@ open class MainApplication : Application(), Configuration.Provider, ResetAppRunn
         Teller.init(this)
 
         Wendy.init(this, pendingTasksFactory)
-        WendyConfig.debug = BuildConfig.DEBUG
+        WendyConfig.debug = Env.isDevelopment
     }
 
     override fun attachBaseContext(base: Context) {
