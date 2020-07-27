@@ -35,6 +35,15 @@ android {
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation":"$projectDir/schemas".toString(),
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"]
+            }
+        }
     }
 
     compileOptions {
@@ -72,11 +81,6 @@ android {
         animationsDisabled = true
         // robolectric: http://robolectric.org/getting-started/
         unitTests.includeAndroidResources = true
-    }
-    kapt {
-        arguments {
-            arg("room.schemaLocation", "$projectDir/schemas".toString())
-        }
     }
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
