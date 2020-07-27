@@ -6,6 +6,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.app.R
 import com.app.ScreenshotOnly
+import com.app.di.DatabaseModule
 import com.app.service.datasource.ReposTellerRepository
 import com.app.service.model.RepoModel
 import com.app.service.model.RepoOwnerModel
@@ -15,11 +16,12 @@ import com.app.util.TestSetupUtil
 import com.app.view.FragmentEspressoTest
 import com.app.view.ui.activity.FragmentTestingActivity
 import com.app.viewmodel.ReposViewModel
-import com.app.viewmodel.TestViewModelFactory
 import com.google.common.truth.Truth.*
 import com.levibostian.teller.cachestate.OnlineCacheState
 import com.levibostian.teller.testing.extensions.cache
 import com.nhaarman.mockitokotlin2.*
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,11 +30,14 @@ import java.util.*
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+@UninstallModules(DatabaseModule::class)
 class MainFragmentTest : FragmentEspressoTest<MainFragment>() {
+
+    override fun provideTestClass(): Any = this
 
     @Mock lateinit var reposViewModel: ReposViewModel
 
-    @Inject lateinit var viewModelFactory: TestViewModelFactory
     @Inject lateinit var testSetup: TestSetupUtil
 
     private val reposListItemsLiveData: MutableLiveData<OnlineCacheState<List<RepoModel>>> = MutableLiveData()
@@ -53,10 +58,8 @@ class MainFragmentTest : FragmentEspressoTest<MainFragment>() {
     override fun setup() {
         super.setup()
 
-        diGraph.inject(this)
+        diRule.inject()
         testSetup.setup()
-
-        viewModelFactory.models = listOf(reposViewModel)
 
         whenever(reposViewModel.observeRepos()).thenReturn(reposListItemsLiveData)
     }

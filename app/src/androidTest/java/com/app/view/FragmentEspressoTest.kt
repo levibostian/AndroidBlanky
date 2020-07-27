@@ -6,14 +6,15 @@ import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.platform.app.InstrumentationRegistry
-import com.app.di.TestAppGraph
 import com.app.util.EspressoTestUtil
 import com.app.util.ScreenshotUtil
-import com.app.view.ui.TestMainApplication
 import com.app.view.ui.activity.FragmentTestingActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltTestApplication
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.rules.RuleChain
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import tools.fastlane.screengrab.locale.LocaleTestRule
@@ -27,17 +28,22 @@ import tools.fastlane.screengrab.locale.LocaleTestRule
  */
 abstract class FragmentEspressoTest<Frag : Fragment> {
 
+    abstract fun provideTestClass(): Any
+
     val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     val context = instrumentation.targetContext
-    val application: TestMainApplication = instrumentation.targetContext.applicationContext as TestMainApplication
+    val application: HiltTestApplication = instrumentation.targetContext.applicationContext as HiltTestApplication
 
-    @get:Rule val localeTestRule = LocaleTestRule() // fastlane can switch locales to take screenshots and test.
+    protected val diRule = HiltAndroidRule(provideTestClass())
+
+    // Hilt requires that tests run in a specific order. https://developer.android.com/training/dependency-injection/hilt-testing#multiple-testrules
+    @get:Rule var rules = RuleChain
+        .outerRule(diRule)
+        .around(LocaleTestRule()) // fastlane can switch locales to take screenshots and test.
+        .around(InstantTaskExecutorRule())
+
     // @get:Rule val screenshotOnErrorRule = ScreenshotOnErrorRule.getRule()
-    @get:Rule val mockitoTestRule: MockitoRule = MockitoJUnit.rule()
-    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    protected val diGraph: TestAppGraph
-        get() = application.appComponent as TestAppGraph
+    @get:Rule val mockitoTestRule: MockitoRule = MockitoJUnit.rule() // This is a MethodClass for junit, not TestClass so doesn't need to be in RuleChain
 
     protected lateinit var activityScenario: ActivityScenario<FragmentTestingActivity>
 

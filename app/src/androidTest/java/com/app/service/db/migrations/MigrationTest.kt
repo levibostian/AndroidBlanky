@@ -4,9 +4,8 @@ import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.app.service.db.Database
 import com.google.common.truth.Truth.assertThat
-import com.levibostian.service.db.Database
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +21,7 @@ class MigrationTest {
 
     @Test
     fun migrate1to2() {
-        Truth.assertThat("delete me when want to write actual test").isEqualTo("delete me when want to write actual test")
+        assertThat("delete me when want to write actual test").isEqualTo("delete me when want to write actual test")
 
 //        var db = helper.createDatabase(TEST_DB, 1)
 //

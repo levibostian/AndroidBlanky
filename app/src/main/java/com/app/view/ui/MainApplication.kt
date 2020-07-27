@@ -23,7 +23,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
 
 @HiltAndroidApp
-open class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
+class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
 
     @Inject lateinit var pendingTasksFactory: PendingTasksFactory
     @Inject lateinit var logger: Logger
