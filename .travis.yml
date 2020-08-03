@@ -45,12 +45,15 @@ cache:
 env:
   global:
     ANDROID_BUILD_TOOLS_VERSION=29.0.2
+    GOOGLE_APPLICATION_CREDENTIALS=fastlane/firebase_testlab_google_service_account.json
     # FIREBASE_DISTRIBUTION_APP_ID= firebase app id for app you want to use for firebase app distribution. 
     # GITHUB_TOKEN= personal access token where github username has push access to the repo to make comments and releases. 
     # FIREBASE_TOKEN="123" - token to login to Firebase account that is added to Firebase project. https://firebase.google.com/docs/cli#cli-ci-systems
-    # CODECOV_TOKEN - codecov.io token for repository. Used for test coverage. Make sure code coverage is enabled in XCode https://github.com/codecov/example-swift#produce-coverage-reports
+    # CODECOV_TOKEN - codecov.io token for repository. Used for test coverage. 
     # FIREBASE_PROJECT_ID - Found in Firebase project > Settings > General. 
-    # GOOGLE_APPLICATION_CREDENTIALS - path to the service account key file to authenticate with firebase service account. Readme talks about this. 
+    # ANDROID_SIGNING_ALIAS= alias used for your upload.keystore file. 
+    # ANDROID_SIGNING_STORE_PASSWORD= store password used for your upload.keystore file. 
+    # ANDROID_SIGNING_KEY_PASSWORD= key password used for your upload.keystore file. 
 
 jobs:
   include:

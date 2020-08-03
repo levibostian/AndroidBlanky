@@ -3,6 +3,13 @@ default: # default is dev/testing values
   secrets:
     - ".env"
     - "app/src/main/res/values/env.xml"
+    - "app/google-services.json"
 sets:
+  common: 
+    path: "_common"
+    secrets: 
+      - "keystores/upload.keystore"
+      - "fastlane/fastlane_google_service_account.json"
+      - "fastlane/firebase_testlab_google_service_account.json"
   production:
     path: "_production"

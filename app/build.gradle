@@ -56,10 +56,10 @@ android {
 
     signingConfigs {
         releaseSigning {
-            storeFile rootProject.file('keystores/keystore-name.keystore')
-            storePassword 'password'
-            keyAlias 'android-blanky'
-            keyPassword 'password'
+            storeFile rootProject.file('keystores/upload.keystore')
+            storePassword env.ANDROID_SIGNING_STORE_PASSWORD
+            keyAlias env.ANDROID_SIGNING_ALIAS
+            keyPassword env.ANDROID_SIGNING_KEY_PASSWORD
         }
     }
 

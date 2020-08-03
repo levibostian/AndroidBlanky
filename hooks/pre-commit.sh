@@ -11,4 +11,4 @@ if ! [ -x "$(command -v pre-commit)" ]; then
     exit 1
 fi
 
-pre-commit run
+pre-commit run || true # pre-commit will fail if it formats any files. It's annoying when it fails and you need to run `git commit` again. So, always let it succeed. We will see in PRs if you ran pre-commit or not. 

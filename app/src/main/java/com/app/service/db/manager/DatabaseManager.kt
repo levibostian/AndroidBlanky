@@ -2,12 +2,13 @@ package com.app.service.db.manager
 
 import android.content.Context
 import androidx.room.Room
+import com.app.Env
 import com.app.service.db.Database
 
 class DatabaseManager {
 
     companion object {
-        private const val DATABASE_NAME = "database"
+        private val DATABASE_NAME = Env.appName.replace(" ", "_")
     }
 
     fun dbInstance(context: Context): Database {
