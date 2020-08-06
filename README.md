@@ -81,6 +81,8 @@ Configure: There is a section in this README for Danger under Getting Started.
 
 # Getting started
 
+Project requires Java 9 or above because of running Robolectric. 11 is recommended because it's a LTS release. Set the runtime version in the build configurations in Android Studio.
+
 The instructions below assume you are on a macOS machine and are comfortable with the command line. Are you on Windows or want to use a GUI? Feel free to make a pull request with the instructions!
 
 ```
@@ -91,6 +93,10 @@ git init
 git config user.email "you@example.com"
 git config user.name "First Last"
 git add .; git commit -m "Initial commit. Created project from levibostian/AndroidBlanky boilerplate.";
+
+# Get git hooks working
+./hooks/autohook.sh install
+brew install pre-commit 
 ```
 
 You will need to have Ruby installed on your machine to run some of the development tools. An easy way to do this is by [installing rbenv](https://github.com/rbenv/rbenv#installation) on your machine and then running `rbenv install` to install the ruby version suggested by this project.

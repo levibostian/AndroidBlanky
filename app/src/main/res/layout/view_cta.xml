@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="android.widget.LinearLayout"
+    tools:orientation="vertical">
+
+    <TextView
+        android:id="@+id/header_textview"
+        android:layout_width="match_parent"
+        style="@style/h2"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        tools:text="What’s holding you back from reaching your health goals? Get into it with our latest Podcast episode."/>
+
+    <TextView
+        android:id="@+id/subheader_textview"
+        android:layout_width="match_parent"
+        style="@style/p"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        tools:text="What’s holding you back from reaching your health goals? Get into it with our latest Podcast episode."/>
+
+    <com.app.view.widget.LinearButtonsBag
+        android:id="@+id/buttons_bag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"/>
+
+    <TextView
+        android:id="@+id/notice_textview"
+        android:layout_width="match_parent"
+        style="@style/p_lighter"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="Note: Continue to use workout schedule handout as it contains important tips not in the app."/>
+
+</merge>

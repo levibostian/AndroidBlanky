@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.levibostian.view.widget.TextChangedEditText
+        <com.app.view.widget.TextChangedEditText
             android:id="@+id/username_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -36,8 +36,7 @@
         <com.levibostian.pleasehold.PleaseHoldView
             android:id="@+id/frag_main_loading"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:pleasehold_message_text="@string/loading_repos"/>
+            android:layout_height="match_parent" />
 
         <com.levibostian.empty.EmptyView
             android:id="@+id/frag_main_empty"
@@ -50,7 +49,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.levibostian.view.widget.UpdateTextView
+            <com.app.view.widget.UpdateTextView
                 android:id="@+id/data_age_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

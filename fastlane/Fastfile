@@ -1,125 +1,136 @@
 require 'dotenv'
 Dotenv.load("../.env")
 
-def get_env(name)
-  value = ENV[name]
-  raise "Forgot to define #{name} in environment variables" unless value 
+UI = FastlaneCore::UI unless Fastlane.const_defined?("UI")
 
-  return value 
-end 
-
-env = {
-  :app_name => get_env("APP_NAME"),
-  :app_icon_badge => get_env("APP_ICON_BADGE")
-}
-
-build_tools_version = "29.0.2"
+default_platform :android
 
 platform :android do
-  before_all do
-    ENV["RELEASE"] = "true"
-  end
 
-  lane :deploy do |values|
-    UI.user_error!('Not on CI') unless ENV["CI"]
-
-    generate_icons()
-
-    changelog = File.read("./release_notes.txt")    
-    description = File.read("./metadata/android/en-US/description.txt")    
-    buildVersion = Time.now.to_i.to_s
-    versionOfApp = android_get_version_name()
-    latest_demo = File.read('./latest_demo.txt')
-    developer_email = get_env("DEVELOPER_EMAIL")
-    
-    if ENV["TRAVIS_TAG"].end_with?("-beta")
-      deploy_app_store("beta", buildVersion) 
-      
-      message = [      
-        "Android: #{env[:app_name]} Beta v#{versionOfApp}, build: #{buildVersion} ready for download.",        
-        "\n",
-        "Link to demo and notes for release:",
-        latest_demo,
-        "\n",
-        "Note: this is an automated message. Please email #{developer_email} if you have questions."
-      ].join("\n") + "\n"
-
-      notify_app_update("#{env[:app_name]} Beta updated. (v#{versionOfApp}, Android)", message)
-    else
-      create_screenshots()
-      deploy_app_store("production", buildVersion)
-
-      message = [      
-        "Android: #{env[:app_name]} v#{versionOfApp}, build: #{buildVersion} has been submitted to the Google PlayStore",
-        "\n",
-        "Link to demo and notes for release:",
-        latest_demo,
-        "\n",
-        "Note: this is an automated message. Please email #{developer_email} if you have questions."
-      ].join("\n") + "\n"
-
-      notify_app_update("#{env[:app_name]} submitted for review. (v#{versionOfApp}, Android)", message)
-    end     
+  lane :unit_test do |values|
+    gradle(
+      task: 'test', 
+      build_type: 'DebugUnitTest'
+    )
   end 
+
+  lane :ui_test do |values|
+    build_android_app(
+      task: 'assemble',
+      build_type: 'Debug'
+    )
+    build_android_app(
+      task: 'assemble',
+      build_type: 'AndroidTest'
+    )
+
+    # https://github.com/pink-room/fastlane-plugin-run_tests_firebase_testlab
+    run_tests_firebase_testlab(
+      project_id: ENV["FIREBASE_PROJECT_ID"],
+      gcloud_service_key_file: ENV["GOOGLE_APPLICATION_CREDENTIALS"],
+      output_dir: "results",
+      devices: [
+        {
+          model: "Pixel2", # virtual device
+          version: "29"
+        }
+      ]
+    )
+  end 
+
+  desc "Deploy testing build for internal QA testing"
+  lane :qa_deploy do 
+    new_version_name = "#{git_branch}-#{last_git_commit[:abbreviated_commit_hash]}"
+    new_build_code = Time.now.to_i
+    UI.success("Deploying new app version, #{new_version_name}")
+
+    android_set_version_name(version_name: new_version_name)
+    android_set_version_code(version_code: new_build_code)
   
-  # track = "beta", "production"
-  def deploy_app_store(track, version_code)
-    changelog = File.read("../release_notes.txt")
-    android_set_version_code(version_code: version_code)
-    File.open('metadata/android/en-US/changelogs/' + android_get_version_code().to_s + '.txt', 'w') { |file| file.write(changelog) }
+    build_android_app(
+      task: 'assemble', # APKs, only are required 
+      build_type: 'Release'
+    )
+  
+    firebase_app_distribution(
+      app: ENV["FIREBASE_DISTRIBUTION_APP_ID"],
+      groups: "qa-team"
+    ) 
 
-    gradle(task: ":app:bundleProductionRelease")
+    pull_request_comment = [
+      "App build ready for testing!",
+      "",
+      "version: #{new_version_name}, build number: #{new_build_code}"
+    ].join("\n") + "\n"
 
-    upload_to_play_store(aab: "app/build/outputs/bundle/productionRelease/app.aab",
-               mapping: 'app/build/outputs/mapping/production/release/mapping.txt',
-               package_name: prod_package_name,
-               metadata_path: "./fastlane/metadata/android/en-US/",
-               json_key: './fastlane/metadata/google_play_dev.json',
-               track: track)               
+    gh_pr_comment(pull_request_comment)
+  end
+  
+  # We are only deploying to 'beta' track because we will manually deploy to production from the console. We will also update the metadata through the console. 
+  lane :deploy do |values|
+    app_version = values[:new_version]
+
+    android_set_version_name(version_name: app_version)
+    android_set_version_code(version_code: Time.now.to_i.to_s)
+
+    build_android_app(
+      task: 'bundle',
+      build_type: 'Release'
+    )
+
+    upload_to_play_store(
+      package_name: ENV["APPLICATION_ID"],
+      json_key: './fastlane/metadata/google_play_dev.json',
+      track: 'beta'
+    ) 
   end
 
+  # Screenshots are meant to be generated manually on your machine. In the future you can have it run on a CI but will need to upload to a remote storage place to locate. 
   desc "Create screenshots used for the Play Store"
-    lane :create_screenshots do
-      capture_android_screenshots(
-        locales: ['en-US'],
-        clear_previous_screenshots: true,
-        app_apk_path: "app/build/outputs/apk/development/debug/app-development-debug.apk",
-        tests_apk_path: "app/build/outputs/apk/androidTest/development/debug/app-development-debug-androidTest.apk",
-        build_tools_version: build_tools_version,
-        output_directory: "fastlane/app/metadata/android",
-        skip_open_summary: false,
-        launch_arguments: ["annotation #{get_env("PACKAGE_NAME")}.ScreenshotOnly"],
-        exit_on_test_failure: true,
-        reinstall_app: false
-      )
+  lane :create_screenshots do
+    build_android_app(
+      task: 'assemble',
+      build_type: 'Debug'
+    )
+    debugAppApk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+
+    build_android_app(
+      task: 'assemble',
+      build_type: 'AndroidTest'
+    )
+    testAppApk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+
+    capture_android_screenshots(
+      locales: ['en-US'],
+      use_adb_root: true, # use if getting "permission denied" errors
+      clear_previous_screenshots: true,
+      app_package_name: ENV["APPLICATION_ID"],
+      tests_package_name: "#{ENV["APPLICATION_ID"]}.test",
+      app_apk_path: debugAppApk,
+      tests_apk_path: testAppApk,
+      test_instrumentation_runner: "com.app.AndroidTestTestRunner",
+      build_tools_version: ENV["ANDROID_BUILD_TOOLS_VERSION"],      
+      skip_open_summary: false,
+      launch_arguments: ["annotation com.app.ScreenshotOnly"],
+      exit_on_test_failure: true,
+      reinstall_app: false,
+    )
+
+    screenshots_output = lane_context[SharedValues::SCREENGRAB_OUTPUT_DIRECTORY]
+    UI.success("Screenshots made but you need to manually upload to the Play Console. Output in: #{screenshots_output}")
   end
 
-  def notify_app_update(subject, message)
-    postmark(
-      subject: subject,
-      message_text: message
+  def gh_pr_comment(comment) 
+    result = github_api(
+      api_token: ENV["GITHUB_TOKEN"],
+      http_method: "POST",
+      path: "/repos/#{ENV["TRAVIS_REPO_SLUG"]}o/issues/#{ENV["TRAVIS_PULL_REQUEST"]}/comments",
+      body: { body: comment },
+      error_handlers: {
+        '*' => proc do |result|
+          UI.error("ERROR! Code: #{result[:status]}, body: #{result[:body]}")
+        end
+      }
     )
-  end   
-
-  # You must: `brew install graphicsmagick` to install the GraphicsMagick library as required by `appicon` action
-  # You must `brew install librsvg` to install RSVG as required by `add_badge` action
-  lane :generate_icons do    
-    app_icon_path = "./fastlane/icons/icon.jpg"
-
-    android_appicon(
-      appicon_image_file: app_icon_path,
-      appicon_icon_types: [:launcher],
-      appicon_path: 'app/src/main/res/mipmap'
-    )
-
-    badge = env[:app_icon_badge]
-    if badge != "no"
-      add_badge(
-        glob: "/**/app/src/main/res/mipmap-**/ic_launcher.png",
-        dark: false, # add a dark badge instead of white one.
-        alpha: badge == "alpha", # uses "alpha" text instead of "beta"
-        badge_gravity: "SouthEast" # where to position the badge 
-      )
-    end
-  end  
+  end 
 end
