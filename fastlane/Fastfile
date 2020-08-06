@@ -92,22 +92,31 @@ platform :android do
       task: 'assemble',
       build_type: 'Debug'
     )
+    debugAppApk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+
     build_android_app(
       task: 'assemble',
       build_type: 'AndroidTest'
     )
+    testAppApk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
 
     capture_android_screenshots(
       locales: ['en-US'],
+      use_adb_root: true, # use if getting "permission denied" errors
       clear_previous_screenshots: true,
+      app_package_name: ENV["APPLICATION_ID"],
+      tests_package_name: "#{ENV["APPLICATION_ID"]}.test",
+      app_apk_path: debugAppApk,
+      tests_apk_path: testAppApk,
+      test_instrumentation_runner: "com.app.AndroidTestTestRunner",
       build_tools_version: ENV["ANDROID_BUILD_TOOLS_VERSION"],      
       skip_open_summary: false,
       launch_arguments: ["annotation com.app.ScreenshotOnly"],
       exit_on_test_failure: true,
-      reinstall_app: false
+      reinstall_app: false,
     )
 
-    screenshots_output = lane_context[SharedValues:SCREENGRAB_OUTPUT_DIRECTORY]
+    screenshots_output = lane_context[SharedValues::SCREENGRAB_OUTPUT_DIRECTORY]
     UI.success("Screenshots made but you need to manually upload to the Play Console. Output in: #{screenshots_output}")
   end
 

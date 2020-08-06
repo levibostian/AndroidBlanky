@@ -2,14 +2,15 @@ package com.app.service
 
 import android.os.AsyncTask
 import com.app.service.db.Database
+import com.app.service.pendingtasks.PendingTasks
 import com.levibostian.teller.Teller
-import com.levibostian.wendy.service.Wendy
 import javax.inject.Inject
 
 class DataDestroyer @Inject constructor(
     private val db: Database,
     private val fileStorage: FileStorage,
-    private val keyValueStorage: KeyValueStorage
+    private val keyValueStorage: KeyValueStorage,
+    private val pendingTasks: PendingTasks
 ) {
 
     fun destroyAll(complete: (() -> Unit)?) {
@@ -24,7 +25,7 @@ class DataDestroyer @Inject constructor(
         destroySqlite()
         deleteAllFiles()
         destroySharedPreferences()
-        Wendy.shared.clear() // clears pending tasks
+        pendingTasks.delete()
         deleteCacheManager()
     }
 
@@ -45,7 +46,7 @@ class DataDestroyer @Inject constructor(
     }
 
     fun destroyWendy(complete: () -> Unit?) {
-        Wendy.shared.clearAsync(complete)
+        pendingTasks.deleteAsync(complete)
     }
 
     private class DataDestroyerDestroyAllAsyncTask(private val destroyer: DataDestroyer, private val complete: (error: Throwable?) -> Unit?) : AsyncTask<Unit?, Unit?, Unit?>() {

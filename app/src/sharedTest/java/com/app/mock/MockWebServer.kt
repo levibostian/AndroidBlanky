@@ -23,6 +23,10 @@ class MockWebServer @Inject constructor(private val mockWebServer: MockWebServer
         this.url = mockWebServer.url("/").toString()
     }
 
+    fun stop() {
+        mockWebServer.shutdown()
+    }
+
     fun <T : Any> queue(statusCode: Int, data: T, headers: Map<String, String>? = null) {
         this.queueResponse(statusCode, data, headers)
     }

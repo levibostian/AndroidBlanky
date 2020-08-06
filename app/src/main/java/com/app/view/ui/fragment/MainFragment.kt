@@ -134,6 +134,9 @@ class MainFragment : Fragment() {
                 }
             )
 
+        // In order to populate
+        // reposViewModel.setUsername("")
+
         go_button.setOnClickListener {
             username_edittext.textIfValid?.let { username ->
                 reposViewModel.setUsername(username.toString())

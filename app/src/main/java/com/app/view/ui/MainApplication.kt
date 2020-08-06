@@ -6,19 +6,14 @@ import android.content.Intent
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.multidex.MultiDex
 import androidx.work.Configuration
-import com.app.Env
-import com.app.extensions.isDevelopment
 import com.app.service.DataDestroyer
 import com.app.service.ResetAppRunner
 import com.app.service.logger.ActivityEvent
 import com.app.service.logger.Logger
-import com.app.service.pendingtasks.PendingTasksFactory
+import com.app.service.pendingtasks.PendingTasks
 import com.app.view.ui.activity.LaunchActivity
 import com.google.firebase.FirebaseApp
 import com.levibostian.teller.Teller
-import com.levibostian.wendy.WendyConfig
-import com.levibostian.wendy.service.Wendy
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
@@ -26,10 +21,10 @@ import javax.inject.Inject
 @HiltAndroidApp
 class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
 
-    @Inject lateinit var pendingTasksFactory: PendingTasksFactory
     @Inject lateinit var logger: Logger
     @Inject lateinit var dataDestroyer: DataDestroyer
     @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject lateinit var pendingTasks: PendingTasks
 
     override fun onCreate() {
         super.onCreate()
@@ -50,8 +45,7 @@ class MainApplication : Application(), Configuration.Provider, ResetAppRunner {
     private fun initDependencies() {
         Teller.init(this)
 
-        Wendy.init(this, pendingTasksFactory)
-        WendyConfig.debug = Env.isDevelopment
+        pendingTasks.initPendingTasks()
     }
 
     override fun attachBaseContext(base: Context) {

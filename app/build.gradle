@@ -280,8 +280,8 @@ dependencies {
     testImplementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
 
     // Fastlane screengrab
-    androidTestImplementation "tools.fastlane:screengrab:1.2.0"
-    testImplementation "tools.fastlane:screengrab:1.2.0"
+    androidTestImplementation "tools.fastlane:screengrab:2.0.0"
+    testImplementation "tools.fastlane:screengrab:2.0.0"
 
     // Firebase screenshots
     androidTestImplementation(name:'cloudtestingscreenshotter_lib', ext:'aar')
