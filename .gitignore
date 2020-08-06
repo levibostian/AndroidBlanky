@@ -3,6 +3,7 @@ _secrets
 .env
 app/src/main/res/values/env.xml
 results/
+fastlane/metadata/
 
 # Built application files
 *.apk
