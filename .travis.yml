@@ -28,10 +28,10 @@ after_success:
 
 before_install:
   - gem install cici
+  - cici decrypt --set ci
   - gem install bundler
   - travis_retry bundle install # we have a script or two that's written in ruby we need during building    
   - nvm install lts/* # Nodejs lang. used for conventional commits and semantic-release stuff
-  - curl -sL https://firebase.tools | bash # firebase CLI for dev app testing
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -48,7 +48,7 @@ env:
     GOOGLE_APPLICATION_CREDENTIALS=fastlane/firebase_testlab_google_service_account.json
     # FIREBASE_DISTRIBUTION_APP_ID= firebase app id for app you want to use for firebase app distribution. 
     # GITHUB_TOKEN= personal access token where github username has push access to the repo to make comments and releases. 
-    # FIREBASE_TOKEN="123" - token to login to Firebase account that is added to Firebase project. https://firebase.google.com/docs/cli#cli-ci-systems
+    # FIREBASE_TOKEN="123" - token to login to Firebase account that is added to Firebase project. Run `bundle exec fastlane run firebase_app_distribution_login` to login and get a token. https://firebase.google.com/docs/cli#cli-ci-systems
     # CODECOV_TOKEN - codecov.io token for repository. Used for test coverage. Make sure code coverage is enabled in XCode https://github.com/codecov/example-swift#produce-coverage-reports
     # FIREBASE_PROJECT_ID - Found in Firebase project > Settings > General.
     # ANDROID_SIGNING_ALIAS= alias used for your upload.keystore file.

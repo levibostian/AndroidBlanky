@@ -81,7 +81,8 @@ platform :android do
     upload_to_play_store(
       package_name: ENV["APPLICATION_ID"],
       json_key: './fastlane/metadata/google_play_dev.json',
-      track: 'beta'
+      track: 'internal',
+      release_status: 'draft'
     ) 
   end
 
