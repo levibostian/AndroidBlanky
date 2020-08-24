@@ -3,6 +3,16 @@ Dotenv.load("../.env")
 
 UI = FastlaneCore::UI unless Fastlane.const_defined?("UI")
 
+def assert_env_vars(env_vars) 
+  env_vars.each { |env_var| 
+    if !ENV[env_var] 
+      return false 
+    end 
+  }
+
+  return true 
+end 
+
 default_platform :android
 
 platform :android do
@@ -40,50 +50,59 @@ platform :android do
 
   desc "Deploy testing build for internal QA testing"
   lane :qa_deploy do 
-    new_version_name = "#{git_branch}-#{last_git_commit[:abbreviated_commit_hash]}"
-    new_build_code = Time.now.to_i
-    UI.success("Deploying new app version, #{new_version_name}")
+    if !assert_env_vars(["FIREBASE_DISTRIBUTION_APP_ID"])
+      UI.important "Skipping deployment. Missing environment variables required for deployment." 
+      gh_pr_comment("Skipping deployment. Missing environment variables required for deployment.")
+    else       
+      new_version_name = "#{git_branch}-#{last_git_commit[:abbreviated_commit_hash]}"
+      new_build_code = Time.now.to_i
+      UI.success("Deploying new app version, #{new_version_name}")
 
-    android_set_version_name(version_name: new_version_name)
-    android_set_version_code(version_code: new_build_code)
-  
-    build_android_app(
-      task: 'assemble', # APKs, only are required 
-      build_type: 'Release'
-    )
-  
-    firebase_app_distribution(
-      app: ENV["FIREBASE_DISTRIBUTION_APP_ID"],
-      groups: "qa-team"
-    ) 
+      android_set_version_name(version_name: new_version_name)
+      android_set_version_code(version_code: new_build_code)
+    
+      build_android_app(
+        task: 'assemble', # APKs, only are required 
+        build_type: 'Release'
+      )
+    
+      firebase_app_distribution(
+        app: ENV["FIREBASE_DISTRIBUTION_APP_ID"],
+        groups: "qa-team"
+      ) 
 
-    pull_request_comment = [
-      "App build ready for testing!",
-      "",
-      "version: #{new_version_name}, build number: #{new_build_code}"
-    ].join("\n") + "\n"
+      pull_request_comment = [
+        "App build ready for testing!",
+        "",
+        "version: #{new_version_name}, build number: #{new_build_code}"
+      ].join("\n") + "\n"
 
-    gh_pr_comment(pull_request_comment)
+      gh_pr_comment(pull_request_comment)
+    end
   end
   
   # We are only deploying to 'beta' track because we will manually deploy to production from the console. We will also update the metadata through the console. 
   lane :deploy do |values|
-    app_version = values[:new_version]
+    if !assert_env_vars(["ANDROID_SIGNING_ALIAS", "ANDROID_SIGNING_STORE_PASSWORD", "ANDROID_SIGNING_KEY_PASSWORD"])
+      UI.important "Skipping deployment. Missing environment variables required for deployment." 
+    else 
+      app_version = values[:new_version]
 
-    android_set_version_name(version_name: app_version)
-    android_set_version_code(version_code: Time.now.to_i.to_s)
+      android_set_version_name(version_name: app_version)
+      android_set_version_code(version_code: Time.now.to_i.to_s)
 
-    build_android_app(
-      task: 'bundle',
-      build_type: 'Release'
-    )
+      build_android_app(
+        task: 'bundle',
+        build_type: 'Release'
+      )
 
-    upload_to_play_store(
-      package_name: ENV["APPLICATION_ID"],
-      json_key: './fastlane/metadata/google_play_dev.json',
-      track: 'internal',
-      release_status: 'draft'
-    ) 
+      upload_to_play_store(
+        package_name: ENV["APPLICATION_ID"],
+        json_key: './fastlane/metadata/google_play_dev.json',
+        track: 'internal',
+        release_status: 'draft'
+      ) 
+    end    
   end
 
   # Screenshots are meant to be generated manually on your machine. In the future you can have it run on a CI but will need to upload to a remote storage place to locate. 
