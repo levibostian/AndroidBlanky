@@ -2,22 +2,32 @@ package com.app.service.db.migrations
 
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.app.InstrumentationTest
+import com.app.di.DatabaseModule
+import com.app.di.NetworkModule
 import com.app.service.db.Database
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class MigrationTest {
+@HiltAndroidTest
+@UninstallModules(DatabaseModule::class, NetworkModule::class)
+class MigrationTest : InstrumentationTest() {
 
     companion object {
         private const val TEST_DB = "migration-test"
     }
 
-    @get:Rule var helper: MigrationTestHelper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(), Database::class.java.canonicalName, FrameworkSQLiteOpenHelperFactory())
+    private val helper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(), Database::class.java.canonicalName, FrameworkSQLiteOpenHelperFactory())
+
+    override fun provideTestClass(): Any = this
+    @get:Rule val rules = instrumentationTestRules.around(helper)
 
     @Test
     fun migrate1to2() {

@@ -12,6 +12,13 @@ import javax.inject.Inject
  */
 class MockWebServer @Inject constructor(private val mockWebServer: MockWebServer) {
 
+    /**
+     * The URL pointing to the web server. The URL is populated by calling [MockWebServer.url] to get the URL and then setting this variable. [MockWebServer.url] requires that you call it on a background thread! Luckily, test functions execute on background threads. So, call [MockWebServer.url] in your test function before your test code starts. Then, use dependency injection singletons to make sure that the app code has the same URL so it gets used there. [MockWebServer.url] starts the server for you. No need to call [MockWebServer.start]
+     *
+     * You can make this url not lateinit. `val url: String = "http://localhost:13714/" // 13714 is a random port number. One that a program is probably not using on the device already`
+     * Then, start the mock web server with [MockWebServer.start] providing the port number to the function.
+     * However, it's best to use a lateinit because it will always find a port that is unused by the system to avoid tests failing.
+     */
     lateinit var url: String
 
     /**

@@ -1,3 +1,5 @@
+app/google-services.json
+fastlane/firebase_testlab_google_service_account.json
 secrets.tar
 _secrets
 .env

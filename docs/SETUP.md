@@ -97,6 +97,9 @@ We are using [this fastlane plugin](https://github.com/pink-room/fastlane-plugin
 * You need to create a Service Account on Google Cloud to authenticate into your Google Cloud project. To do this, Firebase project > Settings > Service accounts > Click on "X service accounts from Google Cloud Platform. It opens up Google Cloud Platform webpage for you. Your Firebase project should be selected as the Google Cloud project when this webpage is opened. This is because when you have a Firebase project, a Google Cloud project gets created for you without you even knowing it.
 * If you have not already created a service account *just for firebase test lab* then let's create one. Click "Create service account" > for the name enter "firebase test lab" > for roles/permissions select "Project - Editor" > Create.
 * Once you created the service account you need to then create a key file for this account to authenticate with this service account. Do this by clicking "Add key" > JSON under the service account you just created. Save this file to `_secrets/_common/fastlane/firebase_testlab_google_service_account.json` for cici to encrypt for you.
+* While in the Google Cloud developer console, you need to go into the APIs section of the site and enable these 2 APIs:
+  * Cloud Testing API
+  * Cloud Tool Results API
 * You need to now tell Firebase what device you want to run tests against. Install `gcloud` CLI on your machine with `brew cask install google-cloud-sdk`. Then run `gcloud beta firebase test android models list` to get a table list of all the devices you have available for you.
 * Set `FIREBASE_PROJECT_ID` on your CI server and you're ready to go! `fastlane ui_test` is all setup for you in the Fastfile.
 

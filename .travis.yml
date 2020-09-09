@@ -23,9 +23,6 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash) # upload test coverage     
-
 before_install:
   - gem install cici
   - cici decrypt --set ci
@@ -60,9 +57,10 @@ jobs:
   - stage: tests
     script:
       - set -e
-      - npm i @commitlint/travis-cli && npx commitlint-travis
+      - npm i @commitlint/travis-cli @commitlint/config-conventional && npx commitlint-travis
       - ruby android_linting.rb
-      - bundle exec fastlane unit_test
+      - sudo pip install --upgrade pip && curl https://raw.githubusercontent.com/levibostian/ci-bootstrap/master/google-cloud/cloud-storage/crc32c_install.sh | bash # google cloud (`gsutil`) requires some native C modules to run smoothly without errors.
+      - cici decrypt && ./gradlew jacocoTestReport && bash <(curl -s https://codecov.io/bash)
       - bundle exec fastlane ui_test
   - stage: pr
     script:

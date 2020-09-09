@@ -18,6 +18,7 @@ default_platform :android
 platform :android do
 
   lane :unit_test do |values|
+    # We usually run `./gradlew jacocoTestReport` to run tests because it also generates code coverage. This will only run tests.
     gradle(
       task: 'test', 
       build_type: 'DebugUnitTest'

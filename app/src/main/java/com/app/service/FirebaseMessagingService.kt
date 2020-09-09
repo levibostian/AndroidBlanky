@@ -1,82 +1,43 @@
 package com.app.service
 
-import androidx.core.os.bundleOf
-import com.app.service.logger.ActivityEvent
-import com.app.service.logger.ActivityEventParamKey
-import com.app.service.logger.Logger
-import com.app.service.manager.UserManager
-import com.app.service.util.NotificationUtil
+import android.app.Service
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-@AndroidEntryPoint
+/**
+ * This class is an Android [Service]. [Service]s can use Hilt to directly inject dependencies into them. However, I have found that when running UI/integration tests in Firebase Test Lab with FCM that this service tries to get created well before any of my test code can execute. This results in the Hilt dependency graph not having any of the required mocks it needs to successfully run in our tests. This results in our test application crashing (see the stacktrace pasted below). This crash only happens 50% of the time but that's far too much! The entire test suite fails and does not run because of this crash.
+ *
+ * Therefore, this class contains a hack. As long as this class does *not* use Hilt dependency injection, the hack will work. We delegate the work to another class that uses Hilt dependency injection. The hack is that we do not use Hilt dependency injection in this class, ever. We also manually initialize FCM in our app. This means that none of the functions in this [Service] class will ever execute because FCM is not initialized.
+ *
+Caused by: java.lang.IllegalStateException: The component was not created. Check that you have added the HiltAndroidRule.
+at dagger.hilt.internal.Preconditions.checkState(Preconditions.java:83)
+at dagger.hilt.android.internal.testing.TestApplicationComponentManager.generatedComponent(TestApplicationComponentManager.java:79)
+at dagger.hilt.android.testing.HiltTestApplication.generatedComponent(HiltTestApplication.java:49)
+at dagger.hilt.EntryPoints.get(EntryPoints.java:46)
+at dagger.hilt.android.internal.managers.ServiceComponentManager.createComponent(ServiceComponentManager.java:70)
+at dagger.hilt.android.internal.managers.ServiceComponentManager.generatedComponent(ServiceComponentManager.java:58)
+at com.app.service.Hilt_FirebaseMessagingService.generatedComponent(Hilt_FirebaseMessagingService.java:53)
+at com.app.service.Hilt_FirebaseMessagingService.inject(Hilt_FirebaseMessagingService.java:48)
+at com.app.service.Hilt_FirebaseMessagingService.onCreate(Hilt_FirebaseMessagingService.java:27)
+at android.app.ActivityThread.handleCreateService(ActivityThread.java:3953)
+ */
 class FirebaseMessagingService : FirebaseMessagingService() {
 
-    @Inject lateinit var userManager: UserManager
-    @Inject lateinit var backgroundJobRunner: BackgroundJobRunner
-    @Inject lateinit var logger: Logger
+    private val pushNotificationProcessor by lazy {
+        PushNotificationProcessor(application)
+    }
 
-    // From Firebase's quickstart: https://github.com/firebase/quickstart-android/blob/master/messaging/app/src/main/java/com/google/firebase/quickstart/fcm/MyFirebaseMessagingService.java
-    // There are two types of messages data messages and notification messages. Data messages are handled
-    // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
-    // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
-    // is in the foreground. When the app is in the background an automatically generated notification is displayed.
-    // When the user taps on the notification they are returned to the app. Messages containing both notification
-    // and data payloads are treated as notification messages. The Firebase console always sends notification
-// messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
     override fun onMessageReceived(message: RemoteMessage) {
-        logger.breadcrumb(
-            this, "received push notification",
-            bundleOf(
-                Pair("raw", message.toString())
-            )
-        )
-
-        if (message.data.isNotEmpty()) {
-            logger.appEventOccurred(
-                ActivityEvent.PushNotificationReceived,
-                mapOf(
-                    Pair(ActivityEventParamKey.Type, "data")
-                )
-            )
-
-            NotificationUtil.parseDataNotification(message.data)?.let { dataNotification ->
-                backgroundJobRunner.handleDataPushNotification(dataNotification)
-            }
-        } else {
-            logger.appEventOccurred(
-                ActivityEvent.PushNotificationReceived,
-                mapOf(
-                    Pair(ActivityEventParamKey.Type, "ui")
-                )
-            )
-        }
-        /**
-         * Notifications with a message payload are automatically put in the system tray as a notification for the user to click when the app is in the background. This app does not need to handle message notifications when the app is in the foreground.
-         */
-//        else {
-//            message.notification?.let { notificationMessage ->
-//                val notification = NotificationCompat.Builder(applicationContext, NotificationChannelManager.announcements.id)
-//                        .setSmallIcon(R.drawable.ic_announcement_white_24dp)
-//                        .setContentTitle(NotificationChannelManager.announcements.name)
-//                        .setContentText(notificationMessage.body)
-//                        .build()
-//
-//                val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//
-//                notificationManager.notify(NotificationChannelManager.ANNOUNCEMENTS_NOTIFY_ID, notification)
-//            }
-//        }
+        // No need to block this code from running because it never should. This code will only run if the MainApplication code runs. It will not run for tests because tests use a separate test Application class. We setup FCM for manual initialization which means we will not receive any messages when tests run.
+        pushNotificationProcessor.processFirebaseMessage(message)
     }
 
     override fun onNewToken(token: String) {
-        logger.breadcrumb(
-            this, "Push notification token received",
-            bundleOf(
-                Pair("token", token)
-            )
-        )
+//        logger.breadcrumb(
+// //            this, "Push notification token received",
+// //            bundleOf(
+// //                Pair("token", token)
+// //            )
+// //        )
     }
 }

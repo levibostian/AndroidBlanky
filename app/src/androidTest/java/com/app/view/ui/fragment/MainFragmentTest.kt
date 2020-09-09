@@ -26,6 +26,7 @@ import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
@@ -37,6 +38,8 @@ import javax.inject.Inject
 class MainFragmentTest : FragmentEspressoTest<MainFragment>() {
 
     override fun provideTestClass(): Any = this
+    @get:Rule val rules = uiTestRules
+    @get:Rule val mockito = mockitoTestRule
 
     @Inject lateinit var mockWebServer: MockWebServer
     @Inject lateinit var testSetup: TestSetupUtil

@@ -10,6 +10,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'dagger.hilt.android.plugin'
 
+apply from: '../code-cov.gradle'
+
 hilt {
     enableTransformForLocalTests = true // to get unit tests (robolectric) working
 }
@@ -86,6 +88,13 @@ android {
         animationsDisabled = true
         // robolectric: http://robolectric.org/getting-started/
         unitTests.includeAndroidResources = true
+
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+                excludes = ['jdk.internal.*']
+            }
+        }
     }
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
