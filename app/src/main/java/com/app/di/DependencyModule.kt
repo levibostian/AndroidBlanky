@@ -3,7 +3,7 @@ package com.app.di
 import android.content.Context
 import com.app.Env
 import com.app.extensions.isDevelopment
-import com.app.service.api.ApiHostname
+import com.app.service.api.GitHubApiHostname
 import com.app.service.api.GitHubService
 import com.app.service.interceptor.AppendHeadersInterceptor
 import com.app.service.interceptor.DefaultErrorHandlerInterceptor
@@ -51,23 +51,20 @@ object DependencyModule {
     }
 
     @Provides
-    fun provideRetrofit(@ApplicationContext context: Context, connectivityUtil: ConnectivityUtil, userManager: UserManager, apiHostname: ApiHostname, logger: Logger): Retrofit {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(HttpLoggerInterceptor(logger))
-            .addInterceptor(DefaultErrorHandlerInterceptor(context, connectivityUtil))
-            .addNetworkInterceptor(AppendHeadersInterceptor(userManager))
-            .build()
-
-        return Retrofit.Builder()
-            .client(client)
-            .baseUrl(apiHostname.hostname)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-            .addConverterFactory(MoshiConverterFactory.create(JsonAdapter.moshi))
-            .build()
-    }
+    fun provideOkHttp(@ApplicationContext context: Context, connectivityUtil: ConnectivityUtil, userManager: UserManager, logger: Logger): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(HttpLoggerInterceptor(logger))
+        .addInterceptor(DefaultErrorHandlerInterceptor(context, connectivityUtil))
+        .addNetworkInterceptor(AppendHeadersInterceptor(userManager))
+        .build()
 
     @Provides
-    fun provideGitHubService(retrofit: Retrofit): GitHubService = retrofit.create(GitHubService::class.java)
+    fun provideGitHubService(client: OkHttpClient, hostname: GitHubApiHostname): GitHubService = Retrofit.Builder()
+        .client(client)
+        .baseUrl(hostname.hostname)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+        .addConverterFactory(MoshiConverterFactory.create(JsonAdapter.moshi))
+        .build()
+        .create(GitHubService::class.java)
 
     @Provides
     fun provideMoshi(): Moshi = JsonAdapter.moshi

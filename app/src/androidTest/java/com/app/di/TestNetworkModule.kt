@@ -2,7 +2,7 @@ package com.app.di
 
 import com.app.mock.MockWebServer
 import com.app.service.ResetAppRunner
-import com.app.service.api.ApiHostname
+import com.app.service.api.GitHubApiHostname
 import com.app.service.pendingtasks.PendingTasks
 import dagger.Module
 import dagger.Provides
@@ -21,7 +21,7 @@ object TestNetworkModule {
 
     @Provides
     @Singleton
-    fun provideHostName(mockWebServer: MockWebServer): ApiHostname = ApiHostname(mockWebServer.url)
+    fun provideGitHubHostname(mockWebServer: MockWebServer): GitHubApiHostname = GitHubApiHostname(mockWebServer.url)
 
     @Provides
     @Singleton

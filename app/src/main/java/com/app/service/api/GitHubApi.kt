@@ -36,9 +36,19 @@ class GitHubApi @Inject constructor(
     fun getRepos(username: String): Single<Result<List<RepoModel>>> {
         return request(
             service.listRepos(username),
+            /*
+            extraErrorHandling is an optional parameter. It allows you to perform error handling that is specific to this 1 endoint in our API. 
+            For an example, here we are handling the scenario of when we get a 404 status code. When you recieve a 404 response code from the GitHub API endpoint get repositories,
+            a 404 means that the GitHub user does not exist. But if you get a 404 when trying to call another endpoint, a 404 might mean something entirely different or it means that 
+            you the developer made a typo and the HTTP endpoint does not exist. 
+
+            When there is a HTTP status code that means the same thing for all endpoints of an API, we handle that status code in the function `handleUnsuccessfulStatusCode()` in this file. 
+            When a status code means something different for each endpoint, we must handle that status code in the endpoint function like we are doing here. 
+             */
             extraErrorHandling = { processedResponse ->
                 when (processedResponse.statusCode) {
                     404 -> HttpRequestError.userError(ForbiddenResponseError.from(processedResponse.body!!).error_message, null)
+                    // Handle all of the scenarios your endpoint could encounter. When you have exhausted all of the scenarios, return null for all other scenarios. 
                     else -> null
                 }
             }

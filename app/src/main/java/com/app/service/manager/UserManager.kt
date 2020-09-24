@@ -4,6 +4,9 @@ import com.app.service.KeyValueStorage
 import com.app.service.KeyValueStorageKey
 import javax.inject.Inject
 
+/**
+ * Used to store data about the user of the app. If your app allows people to login with email and password, for example, we use this class to store information about the user such as name or ID number.
+ */
 class UserManager @Inject constructor(private val keyValueStorage: KeyValueStorage) {
 
     val isUserLoggedIn: Boolean

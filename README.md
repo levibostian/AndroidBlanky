@@ -42,6 +42,10 @@ Below is a list of development tools that are used in this project. These are to
 * [fastlane](https://fastlane.tools/ - Tool used by the CI server to run tests and deploy the app, easily. 
 * [semantic-release](https://github.com/semantic-release/semantic-release) - Tool used by the CI server to automatically deploy the app. All you need to do is follow a specific workflow in GitHub and the app will automatically deploy for you! See the [section in this doc on workflow](#workflow) to learn how to do this.
 
+### Documentation
+
+Besides this document, there are many more documents provided in this project to help you better understand how this project works, the decisions made in this project, and how you can use this project. Begin reading the detailed documentation [here](docs/README.md). 
+
 # Getting started
 
 Follow the instructions below to get the code compiling on your machine so you can begin development!

@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.app.Env
 import com.app.service.ResetAppRunner
-import com.app.service.api.ApiHostname
+import com.app.service.api.GitHubApiHostname
 import com.app.service.pendingtasks.PendingTasks
 import com.app.service.pendingtasks.PendingTasksFactory
 import com.app.service.pendingtasks.WendyPendingTasks
@@ -20,7 +20,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 object NetworkModule {
 
     @Provides
-    fun provideHostName(): ApiHostname = ApiHostname(Env.apiEndpoint)
+    fun provideGitHubHostname(): GitHubApiHostname = GitHubApiHostname(Env.apiEndpoint)
 
     @Provides
     fun providePendingTasks(@ApplicationContext context: Context, pendingTasksFactory: PendingTasksFactory): PendingTasks = WendyPendingTasks(context, pendingTasksFactory)
