@@ -11,7 +11,7 @@ If you are building a brand new app from this project, read [Setup](SETUP.md). H
 
 # How to
 
-* Perform HTTP network requests to an API. To learn how to do this, read the documents [libs/RETROFIT.md], [libs/MOSHI.md] and [libs/RXJAVA.md]. 
+* Perform HTTP network requests to an API. To learn how to do this, read the documents [Retrofit](libs/RETROFIT.md), [Moshi](libs/MOSHI.md) and [RxJava](libs/RXJAVA.md). 
 * Load an image from a URL (https://...) in the app. Open the file `RemoteImageView.kt` in this project and read the comment at the top. It will tell you how. 
 
 # Design decisions 
