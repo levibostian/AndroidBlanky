@@ -11,9 +11,9 @@ There are some alternatives to using Retrofit but I would say that Retrofit is b
 
 If you are new to Retrofit, I recommend you read this document in full. However if you are only here to remind yourself how to use Retrofit specifically in this project, skip to the section on [How do I use it?](#how-do-i-use-it). 
 
-* [How is it installed and configured?](#how-is-it-installed-and-configured?) - Retrofit is installed and configured in this project already. This section of the doc will walk you through how Retrofit is installed and configured in this project. This section is meant for reference only to understand how Retrofit is setup in this project. It is also a good section to teach you the basics of Retrofit if you are not familiar with it. 
+* [How is it installed and configured?](#how-is-it-installed-and-configured) - Retrofit is installed and configured in this project already. This section of the doc will walk you through how Retrofit is installed and configured in this project. This section is meant for reference only to understand how Retrofit is setup in this project. It is also a good section to teach you the basics of Retrofit if you are not familiar with it. 
 * [Use Retrofit with tests](#Use-Retrofit-with-tests) - How Retrofit is configured in this project to work with integration and UI tests. 
-* [How do I use it?](#how-do-i-use-it) - Learn how this project expects you use Retrofit. Even if you are familiar with Retrofit, read this section to learn the opinionated way that this project uses Retrofit for maintainability and testability of the code. 
+* [How do I use it in this project?](#how-do-i-use-it-in-this-project) - Learn how this project expects you use Retrofit. Even if you are familiar with Retrofit, read this section to learn the opinionated way that this project uses Retrofit for maintainability and testability of the code. 
 
 # How is it installed and configured? 
 
@@ -165,9 +165,28 @@ interface GitHubService {
 }
 ```
 
+> Tip: To make things easy to find, put *all* endpoints for each API is contained in 1 file. 1 interface file for each API that you use in that app. 
+
 > Note: The file `GitHubService.kt` is already created for you. See that file for an example of an interface file for creating endpoints. 
 
-To make things easy to find, *all* endpoints for each API is contained in 1 file. 1 interface file for each API that you use in that app. 
+In your interface file, you will have code that looks like this:
+```kotlin
+@GET("users/{user}/repos")
+fun listRepos(@Path("user") user: String): Single<Result<List<RepoVo>>>
+```
+This defines 1 endpoint in the API. It's syntax helps to tell Retrofit how to call your API endpoint. Let's break this code down. 
+`@GET` - This is the HTTP method to use. Use `@GET` for a HTTP GET request. `@POST` for a HTTP POST request. `@PUT` for PUT and `@DELETE` for DELETE. And so on...
+
+`"users/{user}/repos"` - This is the URL endpoint path. `users` and `repos` in this example are static. `{user}` is dynamic and will be replaced at runtime. This allows you to perform a HTTP request to a path like `users/levibostian/repos` where `levibostian` replaces `{user}`. To do this, you need to use `@Path(...)` to do the replacement. `@Path()` is explained below. 
+
+`fun listRepos` - You can name the function whatever you want. Try to make it descriptive to what the HTTP endpoint is doing for you.
+
+`(@Path("user") user: String)` - The parameters of the function. The parameters allows you to add data to the HTTP call. Let's get into those. You have some options:
+1. `@Path("user") username: String` - This will dynamically replace `{user}` in the URL endpoint path with the value `username: String` that you pass into the function. 
+2. `@Query("user") username: String` - This will create a HTTP query parameter with the key `user` and value is the value of the `username` variable. Adding query parameters can be added to any HTTP request method but it's most common with GET requests. 
+3. `@Body user: User` - This adds a Body to the HTTP request. Adding a Body can be added to any HTTP request method but it's most common with POST, PUT, and DELETE requests. `User` is the name of a Kotlin data class. See the document [Moshi](MOSHI.md) to learn about how to create data classes and a Moshi Adapter to be able to send a JSON string as the body of a request. 
+
+`Single<Result<List<RepoVo>>>` - `Single<>` is specific to RxJava. See the [RxJava](RXJAVA.md) document to learn more about that. `Result<>` is a Retrofit class that contains a HTTP response. You always want to use this for all responses. `List<RepoVo>` This is the HTTP response data type that you predict to receive when the response gets back. Because we are using Moshi with Retrofit in this project, we expect the HTTP response that comes back to be a JSON string that we parse to be a List of `RepoVo` data classes. See the [Moshi](MOSHI.md) document to learn more about how to create `RepoVo`. 
 
 * Open `ApiHostname.kt` and create a new `ApiHostname` subclass that will contain the URL string that points to the API server. 
 
