@@ -1,4 +1,6 @@
-# Retrofit 
+# HTTP  
+
+This document covers how you can perform HTTP requests in this project. We do so with an open source library called Retrofit. 
 
 Retrofit is a popular open source library for performing network requests in Android. Anytime that you need to perform a HTTP request to a server to get some data, send data to the server, upload or download files, Retrofit makes this experience quick and easy. 
 
@@ -166,6 +168,8 @@ interface GitHubService {
 ```
 
 > Tip: To make things easy to find, put *all* endpoints for each API is contained in 1 file. 1 interface file for each API that you use in that app. 
+
+> Tip: I use a free desktop software [Advanced Rest Client](https://advancedrestclient.com/) to learn how to interact with a network API. Advanced Rest Client allows you to quickly and easily perform HTTP requests from your computer to help you debug your code and better understand a network API you are working with. 
 
 > Note: The file `GitHubService.kt` is already created for you. See that file for an example of an interface file for creating endpoints. 
 

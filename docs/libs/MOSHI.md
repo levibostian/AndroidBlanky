@@ -127,6 +127,8 @@ data class Job(
 )
 ```
 
+> Tip: If you are not sure what the HTTP response JSON string looks like for a HTTP endpoint, I use a free desktop software [Advanced Rest Client](https://advancedrestclient.com/) to help me with this. I use this tool to perform a HTTP to the API I am working with and it prints to me the JSON response string. I can then use that to help me create my data classes. 
+
 With the code above, here are some notes about it:
 * We use `data class` instead of `class`. Kotlin [data classes](https://kotlinlang.org/docs/reference/data-classes.html) are handy for JSON parsing because Kotlin data classes automatically add `equals()` and `toString()` functions that you would need to manually create in Java. Data classes are great when you need to have a class that stores data like this. 
 * Compare the JSON string and the data classes that we created. Do you understand how we came up with these data classes? Always start at the root of the JSON:

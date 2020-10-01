@@ -31,11 +31,3 @@ object TestNetworkModule {
     @Singleton
     fun provideAppResetRunner(): ResetAppRunner = Mockito.mock(ResetAppRunner::class.java)
 }
-
-data class Introduction(
-    val name: String,
-    val pronouns: String,
-    val job: Job? = null,
-    val jobs: List<Job>? = null,
-    val enjoy: List<String>
-)
