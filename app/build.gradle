@@ -1,11 +1,5 @@
 apply plugin: 'com.android.application'
-if (env.DEVELOPMENT != "true") {
-    apply plugin: 'com.google.firebase.firebase-perf'
-}
-
-apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'dagger.hilt.android.plugin'
@@ -16,23 +10,17 @@ hilt {
     enableTransformForLocalTests = true // to get unit tests (robolectric) working
 }
 
-androidExtensions {
-    experimental = true
-}
-
 android {
-    // This needs to be updated in .travis, too
-    compileSdkVersion 29    
-    buildToolsVersion "29.0.2" 
-
+    compileSdkVersion 29
     packagingOptions {
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
+        resources {
+            excludes += ['META-INF/ASL2.0', 'META-INF/LICENSE', 'META-INF/NOTICE']
+        }
     }
 
+
     defaultConfig {
-        applicationId env.APPLICATION_ID
+        applicationId "earth.levi.androidblanky"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1528215515
@@ -64,9 +52,9 @@ android {
     signingConfigs {
         releaseSigning {
             storeFile rootProject.file('keystores/upload.keystore')
-            storePassword env.ANDROID_SIGNING_STORE_PASSWORD
-            keyAlias env.ANDROID_SIGNING_ALIAS
-            keyPassword env.ANDROID_SIGNING_KEY_PASSWORD
+            storePassword System.getenv("ANDROID_SIGNING_STORE_PASSWORD") ?: ""
+            keyAlias System.getenv("ANDROID_SIGNING_ALIAS") ?: ""
+            keyPassword System.getenv("ANDROID_SIGNING_KEY_PASSWORD") ?: ""
         }
     }
 
@@ -137,38 +125,8 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$work_version"
     androidTestImplementation "androidx.work:work-testing:$work_version"
 
-    // Firebase
-    implementation 'com.google.firebase:firebase-core:17.4.4'
-    implementation 'com.google.firebase:firebase-perf:19.0.8'
-    implementation 'com.google.firebase:firebase-messaging:20.2.3'
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
-    implementation 'com.google.firebase:firebase-config-ktx:19.2.0'
-    implementation 'com.google.firebase:firebase-dynamic-links-ktx:19.1.0'
-    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.4' // required for remote config, dynamic links
-
-    // Boquila - remote config
-    def boquila_version = "1.0.0-alpha.1"
-    implementation "com.levibostian.boquila:boquila:$boquila_version"
-    implementation "com.levibostian.boquila:moshi-boquila-plugin:$boquila_version"
-    implementation "com.levibostian.boquila:firebase-boquila-adapter:$boquila_version"
-    androidTestImplementation "com.levibostian.boquila:boquila-testing:$boquila_version"
-
     // Coil
     implementation 'io.coil-kt:coil:0.11.0'
-
-    // Custom views
-    implementation 'com.levibostian.swapper:swapper:0.1.0'
-    implementation 'com.levibostian.pleasehold:pleasehold:0.1.0'
-    implementation 'com.levibostian.empty:empty:0.1.0'
-
-    // Architecture components
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0" // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0" // lifecycle compiler for java8
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.2.0" // Rx support for LiveData
-    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0"
 
     // Room
     def roomVersion = "2.2.5"
@@ -190,7 +148,6 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
 
     // Hilt testing
-    // Robolectric
     testImplementation "com.google.dagger:hilt-android-testing:$hiltVersion"
     kaptTest "com.google.dagger:hilt-android-compiler:$hiltVersion"
     kaptTest "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
@@ -199,29 +156,6 @@ dependencies {
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hiltVersion"
     kaptAndroidTest "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
-
-    // RxJava
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
-    implementation "com.f2prateek.rx.preferences2:rx-preferences:2.0.0"
-
-    // Moshi
-    def moshiVersion = '1.9.3'
-    implementation "com.squareup.moshi:moshi:$moshiVersion"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
-    implementation "com.squareup.moshi:moshi-adapters:$moshiVersion"
-
-    // Retrofit
-    def retrofitVersion = '2.9.0'
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
-
-    // OkHttp
-    def okhttpVersion = '4.8.0'
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
-    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
-    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
 
     // JUnit
     def junitVersion = '4.13'
@@ -234,12 +168,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-
-    // Truth
-    testImplementation "com.google.truth:truth:1.0.1"
-    androidTestImplementation "com.google.truth:truth:1.0.1"
-    androidTestImplementation 'androidx.test.ext:truth:1.2.0'
-    testImplementation 'androidx.test.ext:truth:1.2.0'
 
     // Mockito
     def mockitoVersion = '3.3.3'
@@ -287,14 +215,6 @@ dependencies {
     // testImplementation "androidx.test.espresso:espresso-web:$espressoVersion"
     testImplementation "androidx.test.espresso.idling:idling-concurrent:$espressoVersion"
     testImplementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
-
-    // Fastlane screengrab
-    androidTestImplementation "tools.fastlane:screengrab:2.0.0"
-    testImplementation "tools.fastlane:screengrab:2.0.0"
-
-    // Firebase screenshots
-    androidTestImplementation(name:'cloudtestingscreenshotter_lib', ext:'aar')
-    testImplementation(name:'cloudtestingscreenshotter_lib', ext:'aar')
 }
 
 configurations.all {
@@ -308,11 +228,3 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         jvmTarget = "1.8"
     }
 }
-
-task generateEnv(type:Exec) {
-    workingDir '../'
-    commandLine './generate_env.sh'
-}
-preBuild.dependsOn generateEnv
-
-apply plugin: 'com.google.gms.google-services'

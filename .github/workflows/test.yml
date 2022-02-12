@@ -1,0 +1,88 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  jvm-test:
+    runs-on: ubuntu-latest
+    name: JVM tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11' # Robolectric requires v9, but we choose LTS: https://adoptopenjdk.net/
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Run unit tests
+        run: ./gradlew :app:testDebugUnitTest
+
+      - name: Publish test results
+        uses: mikepenz/action-junit-report@v2
+        with:
+          check_name: JVM test results
+          report_paths: 'app/build/test-results/test*/TEST-*.xml'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_failure: true
+          require_tests: true
+        if: ${{ always() }} # if running tests fails, we still want to parse the test results
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: instrumentation-test-results
+          path: app/build/test-results/
+        if: ${{ always() }}
+
+  android-test:
+    runs-on: ubuntu-latest
+    name: Android instrumentation tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11' # Robolectric requires v9, but we choose LTS: https://adoptopenjdk.net/
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Setup Ruby to run Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Set up Google Cloud SDK for Firebase Test Lab
+        uses: google-github-actions/setup-gcloud@master
+      - name: Setup for Firebase Test Lab
+        run: echo "${{ secrets.FIREBASE_TEST_LAB_GOOGLE_AUTH }}" | base64 -d > firebase_testlab_service_account.json
+        env:
+          FIREBASE_TEST_LAB_GOOGLE_AUTH: ${{ secrets.FIREBASE_TEST_LAB_GOOGLE_AUTH }}
+
+      - name: Run tests on Firebase Test Lab
+        uses: maierj/fastlane-action@v2.0.1
+        with:
+          lane: 'instrumentation_tests'
+          skip-tracking: true
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      - name: Publish test results
+        uses: mikepenz/action-junit-report@v2
+        with:
+          check_name: Android test results
+          report_paths: 'test-results/**/*.xml'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_failure: true
+          require_tests: true
+        if: ${{ always() }} # if running tests fails, we still want to parse the test results
+      # upload artifacts action does not allow ",:,<,>,|,*,?. characters in directory names.
+      # test results contain : and . so we need to remove them. Create an archive to avoid this issue.
+      - name: Prepare upload test results
+        run: tar -czvf test-results.tar.gz test-results
+        if: ${{ always() }}
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: instrumentation-test-results
+          path: test-results.tar.gz
+        if: ${{ always() }}
+
