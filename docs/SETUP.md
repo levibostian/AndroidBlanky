@@ -20,14 +20,6 @@ bundle install
 ./hooks/autohook.sh install
 ```
 
-* Lastly, to get the app to compile you need to create some files that are hidden by default because they may contain sensitive information.
-
-```
-cp .env.example .env
-cp app/src/main/res/values/env.xml.example app/src/main/res/values/env.xml
-cp app/google-services.json.example app/google-services.json
-```
-
 > This project uses [cici](https://github.com/levibostian/cici/) to maintain sensitive information. Check out the project to learn how to use it.
 
 * Delete the LICENSE file if you're writing closed source: `rm LICENSE`
@@ -44,20 +36,6 @@ Done! Well, with getting your app project renamed and built. Now comes configura
 
 Continue reading this doc to learn about next steps to do to take full advantage of this project.
 
-# Environments
-
-This project assumes that you have 2 environments for your app. Production and Testing.
-
-Production:
-* Used for the public when they download the app from the App Store.
-* Used for public beta testing through TestFlight.
-
-Testing:
-* Used during QA testing. QA testing at this time is only for the development team.
-* Used for internal team during internal testing. This is meant for internal team to have the app on their devices to test out new features that are coming out. They can test out things that are very fresh.
-
-Sure, you may also have a development environment. But that is unique to everyone. So, I recommend that you set the environment to the testing environment, then just edit the `.env` to edit things like the API endpoint to a development server. Try to keep as much as possible to the original testing environment.
-
 # Next steps
 
 Beyond getting your project to build, there are many more steps to get your project working with all of the various projects and get it deployed for others to use.
@@ -70,25 +48,24 @@ After you create your developer account, manually create a new Android app in th
 
 - [ ] Open up Android Studio. Whe you get to the main menu, select Import project > open the root directory of your project.
 
-There are many environment variables within the `.travis.yml` file that you will need to set to get things like deployment working. In the steps below when we say to *set an environment variable on the CI server*, [this is what we mean](https://docs.travis-ci.com/user/environment-variables/).
+There are many environment variables within the `./github/workflows/` files that you will need to set to get things like deployment working. In the steps below when we say to *set an environment variable on the CI server*, [this is what we mean](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository).
 
 - [ ] This project uses the tool [cici](https://github.com/levibostian/cici/) to store secret files in the source code of this project. The `.cici.yml` file is already setup for you to have a testing (aka staging) environment and a production environment.
 
 Read up on this tool so you can use it in this project.
 
-- [ ] Create a new Firebase project. Do this by going to the [Firebase console](https://console.firebase.google.com/) and selecting "Add project". Then, you need to [create a new Android app](https://firebase.google.com/docs/android/setup) under the new Firebase project. I like to create 2 Android apps: 1 for production and 1 for the testing environment.
+- [ ] GitHub Actions is setup to perform some automated tasks for you such as building and deploying your app for you, automatically. In order to do that, you need to create a GitHub bot and configure it to your repo. A bot account is simply another GitHub account that you create that is not your personal GitHub account. 
 
-After you have added the Firebase apps, you need to download the `google-services.json` file that Firebase provides to you. Download this file and save it to `app/google-services.json` in your project.
+Have a private GitHub repo? 
+1. Create 1 new GitHub account for your bot. 
+2. Add the bot account as a collaborator to your repo so that the bot has write access to the repo. 
+3. [Create a new GitHub personal access token](https://github.com/settings/tokens/new) under your bot account. Set the scope to `repo`. Set the environment variables `WRITE_ACCESS_BOT_TOKEN` and `READ_ONLY_BOT_TOKEN` to this access token that you just generated. 
 
-> Don't forget: You will also want to store your new `google-services.json` file inside of the `_secrets` directory for cici to encrypt the file for you as well.
-
-- [ ] Select *Set up Crashlytics* [in the Firebase console](https://console.firebase.google.com/project/_/crashlytics) for the project you just created.
-
-- [ ] Enable Travis-CI for your GitHub repository. The `.travis.yml` file is already made and fully configured for you. You should just need to [enable Travis](https://docs.travis-ci.com/user/tutorial/) and you're good to go!
-
-- [ ] Travis CI is setup to perform some automated tasks for you such as building and deploying your app for you, automatically. In order to do that, you need to create a GitHub bot and configure it to your repo. A bot account is simply another GitHub account that you create that is not your personal GitHub account. Once you create this account, you need to add this GitHub username to your GitHub repo. Make sure to give that username write permissions. For public projects this usually just means adding them as a contributor. For private projects, make this bot account an admin as it's required in order for the bot account to skip your branch management checks.
-
-Then, [create a new github token](https://github.com/settings/tokens/new) for this GitHub bot account. For public projects, do not select any of the scopes. For private projects, select `repo` to give full access to private repos. Set the environment variable `GITHUB_TOKEN` in Travis CI where the value is the token that was just generated.
+Have a public GitHub repo? 
+1. Create 2 new GitHub accounts for bots. 1 bot will have write access to your repository and the other will have read-only access. I like to name 1 bot as my "deployment bot" and the other as my "OSS bot". 
+2. Add the deployment bot account as a collaborator to your repo so that the bot has write access to the repo. Do *not* add the OSS bot as a collaborator to the repository! 
+3. [Create a new GitHub personal access token](https://github.com/settings/tokens/new) under your deployment bot account. Set the scope to `public_repo`. Set the environment variables `WRITE_ACCESS_BOT_TOKEN` to this access token that you just generated. 
+4. [Create a new GitHub personal access token](https://github.com/settings/tokens/new) under your OSS bot account. Set the scope to `public_repo`. Set the environment variables `READ_ONLY_BOT_TOKEN` to this access token that you just generated. 
 
 - [ ] Now to setup running UI tests inside of Firebase Test Lab.
 

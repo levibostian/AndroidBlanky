@@ -3,12 +3,13 @@
 set -e
 
 RED='\033[0;31m'
+YELLOW='\033[0;33m'
 
-if ! [ -x "$(command -v pre-commit)" ]; then
-    echo -e "${RED}You need to install the program 'pre-commit' on your machine to continue."
+if ! [ -x "$(command -v ktlint)" ]; then
+    echo -e "${RED}You need to install the program 'ktlint' on your machine to continue."
     echo ""
-    echo -e "${RED}The easiest way is 'brew install pre-commit'. If you're not on macOS, check out other instructions for installing: https://pre-commit.com/#install"
+    echo -e "${RED}The easiest way is 'brew install ktlint'. If you're not on macOS, check out other instructions for installing: https://ktlint.github.io/#getting-started"
     exit 1
 fi
 
-pre-commit run
+ktlint --android --format  "app/src/**/*.kt" 2> /dev/null
