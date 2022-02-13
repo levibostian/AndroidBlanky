@@ -4,7 +4,7 @@ import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.app.InstrumentationTest
+import com.app.BaseInstrumentationTest
 import com.app.di.DatabaseModule
 import com.app.di.NetworkModule
 import com.app.service.db.Database
@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 @UninstallModules(DatabaseModule::class, NetworkModule::class)
-class MigrationTest : InstrumentationTest() {
+class MigrationTest : BaseInstrumentationTest() {
 
     companion object {
         private const val TEST_DB = "migration-test"

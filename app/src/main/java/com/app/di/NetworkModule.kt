@@ -1,29 +1,26 @@
 package com.app.di
 
 import android.app.Application
-import android.content.Context
-import com.app.Env
+import com.app.service.DispatcherProvider
+import com.app.service.ImplementationDispatcherProvider
 import com.app.service.ResetAppRunner
-import com.app.service.api.GitHubApiHostname
-import com.app.service.pendingtasks.PendingTasks
-import com.app.service.pendingtasks.PendingTasksFactory
-import com.app.service.pendingtasks.WendyPendingTasks
+import com.app.service.http.PokemonHttpClient
 import com.app.view.ui.MainApplication
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     @Provides
-    fun provideGitHubHostname(): GitHubApiHostname = GitHubApiHostname(Env.apiEndpoint)
+    fun providePokemonHttpClient(client: OkHttpClient): PokemonHttpClient = PokemonHttpClient("https://pokeapi.co/api/v2/", client)
 
     @Provides
-    fun providePendingTasks(@ApplicationContext context: Context, pendingTasksFactory: PendingTasksFactory): PendingTasks = WendyPendingTasks(context, pendingTasksFactory)
+    fun provideDispatcherProvider(): DispatcherProvider = ImplementationDispatcherProvider()
 
     @Provides
     fun provideAppResetRunner(application: Application): ResetAppRunner = (application as MainApplication)

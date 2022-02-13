@@ -1,17 +1,7 @@
 package com.app.extensions
 
 import android.content.SharedPreferences
-import com.f2prateek.rx.preferences2.RxSharedPreferences
-import io.reactivex.Observable
 import java.util.*
-
-fun SharedPreferences.observeString(key: String, defaultValue: String = ""): Observable<String> {
-    return rxInstance().getString(key, defaultValue).asObservable()
-}
-
-fun SharedPreferences.rxInstance(): RxSharedPreferences {
-    return RxSharedPreferences.create(this)
-}
 
 /**
  * Date

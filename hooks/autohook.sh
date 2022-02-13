@@ -5,6 +5,7 @@
 # Author:   Nik Kantar <http://nkantar.com>
 # Version:  2.1.1
 # Website:  https://github.com/nkantar/Autohook
+# fork by: https://github.com/levibostian/Autohook
 
 
 echo() {

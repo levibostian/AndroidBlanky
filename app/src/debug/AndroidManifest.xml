@@ -19,7 +19,6 @@
 
     <application tools:ignore="GoogleAppIndexingWarning"
         android:networkSecurityConfig="@xml/network_security_config">
-        <activity android:name=".view.ui.activity.FragmentTestingActivity"/>
     </application>
 
 </manifest>

@@ -2,33 +2,28 @@ package com.app.view.ui.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
-import com.app.R
+import com.app.service.logger.Logger
+import com.app.viewmodel.PokemonViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val navController: NavController
-        get() = findNavController(R.id.nav_host_fragment)
-
     companion object {
-        fun getIntent(context: Context): Intent = Intent(context, MainActivity::class.java)
+        fun getIntent(context: Context) = Intent(context, MainActivity::class.java)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val pokemonViewModel: PokemonViewModel by viewModels()
+    @Inject lateinit var logger: Logger
 
-        setContentView(R.layout.activity_main)
+    override fun onStart() {
+        super.onStart()
 
-        setSupportActionBar(toolbar as Toolbar)
-        (toolbar as Toolbar).setupWithNavController(navController, AppBarConfiguration(navController.graph))
+        pokemonViewModel.getPokemon("ditto") { apiResult ->
+            logger.debug(apiResult.getOrThrow().sprites.frontDefault.toString())
+        }
     }
 }

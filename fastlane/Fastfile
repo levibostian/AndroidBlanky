@@ -1,17 +1,5 @@
-require 'dotenv'
-Dotenv.load("../.env")
 
 UI = FastlaneCore::UI unless Fastlane.const_defined?("UI")
-
-def assert_env_vars(env_vars) 
-  env_vars.each { |env_var| 
-    if !ENV[env_var] 
-      return false 
-    end 
-  }
-
-  return true 
-end 
 
 default_platform :android
 
@@ -25,7 +13,14 @@ platform :android do
     )
   end 
 
-  lane :ui_test do |values|
+  lane :update_app_version do |values|
+    new_version = values[:new_version]
+
+    android_set_version_name(version_name: new_version)
+    android_set_version_code(version_code: Time.now.to_i.to_s)
+  end 
+
+  lane :instrumentation_tests do |values|
     build_android_app(
       task: 'assemble',
       build_type: 'Debug'
@@ -38,120 +33,35 @@ platform :android do
     # https://github.com/pink-room/fastlane-plugin-run_tests_firebase_testlab
     run_tests_firebase_testlab(
       project_id: ENV["FIREBASE_PROJECT_ID"],
-      gcloud_service_key_file: ENV["GOOGLE_APPLICATION_CREDENTIALS"],
-      output_dir: "results",
+      gcloud_service_key_file: './firebase_testlab_service_account.json',
+      download_results_from_firebase: true,
+      output_dir: "test-results",
+      # run `gcloud beta firebase test android models list` to get list of devices to test on 
       devices: [
-        {
-          model: "Pixel2", # virtual device
-          version: "29"
-        }
+        # Pixel 4 physical
+        { model: "flame", version: "30" }
       ]
     )
   end 
-
-  desc "Deploy testing build for internal QA testing"
-  lane :qa_deploy do 
-    if !assert_env_vars(["FIREBASE_DISTRIBUTION_APP_ID"])
-      UI.important "Skipping deployment. Missing environment variables required for deployment." 
-      gh_pr_comment("Skipping deployment. Missing environment variables required for deployment.")
-    else       
-      new_version_name = "#{git_branch}-#{last_git_commit[:abbreviated_commit_hash]}"
-      new_build_code = Time.now.to_i
-      UI.success("Deploying new app version, #{new_version_name}")
-
-      android_set_version_name(version_name: new_version_name)
-      android_set_version_code(version_code: new_build_code)
-    
-      build_android_app(
-        task: 'assemble', # APKs, only are required 
-        build_type: 'Release'
-      )
-    
-      firebase_app_distribution(
-        app: ENV["FIREBASE_DISTRIBUTION_APP_ID"],
-        groups: "qa-team"
-      ) 
-
-      pull_request_comment = [
-        "App build ready for testing!",
-        "",
-        "version: #{new_version_name}, build number: #{new_build_code}"
-      ].join("\n") + "\n"
-
-      gh_pr_comment(pull_request_comment)
-    end
-  end
   
   # We are only deploying to 'beta' track because we will manually deploy to production from the console. We will also update the metadata through the console. 
   lane :deploy do |values|
-    if !assert_env_vars(["ANDROID_SIGNING_ALIAS", "ANDROID_SIGNING_STORE_PASSWORD", "ANDROID_SIGNING_KEY_PASSWORD"])
-      UI.important "Skipping deployment. Missing environment variables required for deployment." 
-    else 
-      app_version = values[:new_version]
+    new_version = values[:new_version]
 
-      android_set_version_name(version_name: app_version)
-      android_set_version_code(version_code: Time.now.to_i.to_s)
-
-      build_android_app(
-        task: 'bundle',
-        build_type: 'Release'
-      )
-
-      upload_to_play_store(
-        package_name: ENV["APPLICATION_ID"],
-        json_key: './fastlane/metadata/google_play_dev.json',
-        track: 'internal',
-        release_status: 'draft'
-      ) 
-    end    
-  end
-
-  # Screenshots are meant to be generated manually on your machine. In the future you can have it run on a CI but will need to upload to a remote storage place to locate. 
-  desc "Create screenshots used for the Play Store"
-  lane :create_screenshots do
-    build_android_app(
-      task: 'assemble',
-      build_type: 'Debug'
+    update_app_version(
+      new_version: new_version
     )
-    debugAppApk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
 
     build_android_app(
-      task: 'assemble',
-      build_type: 'AndroidTest'
-    )
-    testAppApk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
-
-    capture_android_screenshots(
-      locales: ['en-US'],
-      use_adb_root: true, # use if getting "permission denied" errors
-      clear_previous_screenshots: true,
-      app_package_name: ENV["APPLICATION_ID"],
-      tests_package_name: "#{ENV["APPLICATION_ID"]}.test",
-      app_apk_path: debugAppApk,
-      tests_apk_path: testAppApk,
-      test_instrumentation_runner: "com.app.AndroidTestTestRunner",
-      build_tools_version: ENV["ANDROID_BUILD_TOOLS_VERSION"],      
-      skip_open_summary: false,
-      launch_arguments: ["annotation com.app.ScreenshotOnly"],
-      exit_on_test_failure: true,
-      reinstall_app: false,
+      task: 'bundle',
+      build_type: 'Release'
     )
 
-    screenshots_output = lane_context[SharedValues::SCREENGRAB_OUTPUT_DIRECTORY]
-    UI.success("Screenshots made but you need to manually upload to the Play Console. Output in: #{screenshots_output}")
+    upload_to_play_store(
+      package_name: ENV["APPLICATION_ID"],
+      json_key: './fastlane/metadata/google_play_dev.json',
+      track: 'internal',
+      release_status: 'draft'
+    ) 
   end
-
-  def gh_pr_comment(comment) 
-    result = github_api(
-      api_token: ENV["GITHUB_TOKEN"],
-      http_method: "POST",
-      path: "/repos/#{ENV["TRAVIS_REPO_SLUG"]}o/issues/#{ENV["TRAVIS_PULL_REQUEST"]}/comments",
-      body: { body: comment },
-      error_handlers: {
-        '*' => proc do |result|
-          UI.error("ERROR! Code: #{result[:status]}, body: #{result[:body]}")
-        end
-      }
-    )
-  end 
 end

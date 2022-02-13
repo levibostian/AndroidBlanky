@@ -1,0 +1,27 @@
+{
+    "tagFormat": "${version}",
+    "branches": [
+        "main",
+        { "name": "beta", "prerelease": true },
+        { "name": "alpha", "prerelease": true }
+    ],
+    "plugins": [
+        ["@semantic-release/commit-analyzer", {
+            "preset": "conventionalcommits"
+        }],
+        ["@semantic-release/release-notes-generator", {
+            "preset": "conventionalcommits"
+        }],
+        ["@semantic-release/exec", {
+            "verifyReleaseCmd": "bundle exec fastlane update_app_version new_version:${nextRelease.version}"
+        }],
+        ["@semantic-release/changelog",{
+            "changelogFile": "CHANGELOG.md"
+        }],
+        ["@semantic-release/git", {
+            "assets": ["CHANGELOG.md", "app/build.gradle"],
+            "message": "chore: prepare for ${nextRelease.version}\n\n${nextRelease.notes}"
+        }],
+        "@semantic-release/github"
+    ]
+}

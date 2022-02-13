@@ -1,0 +1,40 @@
+name: Deploy app builds 
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy-app:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Ruby to run Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11' # Robolectric requires v9, but we choose LTS: https://adoptopenjdk.net/
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Setup Fastlane
+        uses: maierj/fastlane-action@v2.0.1
+        with:
+          lane: 'list' # give action a lane that doesn't perform an action to get fastlane installed on machine to use later. 
+          skip-tracking: true
+
+      - name: Deploy build via Fastlane
+        uses: maierj/fastlane-action@v2.0.1
+        with:
+          lane: 'deploy_app'
+          options: '{ "version": ${{ github.event.release.tag_name }} }'
+          skip-tracking: true
+        env:
+          ANDROID_SIGNING_ALIAS: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+          ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+          ANDROID_SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
