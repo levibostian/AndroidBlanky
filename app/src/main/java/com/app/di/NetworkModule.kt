@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient
 object NetworkModule {
 
     @Provides
-    fun providePokemonHttpClient(client: OkHttpClient): PokemonHttpClient = PokemonHttpClient("https://pokeapi.co/api/v2", client)
+    fun providePokemonHttpClient(client: OkHttpClient): PokemonHttpClient = PokemonHttpClient("https://pokeapi.co/api/v2/", client)
 
     @Provides
     fun provideDispatcherProvider(): DispatcherProvider = ImplementationDispatcherProvider()

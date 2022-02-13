@@ -9,13 +9,19 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DependencyModule {
 
     @Provides
-    fun provideOkHttp(@ApplicationContext context: Context, connectivityUtil: ConnectivityUtil, logger: Logger): OkHttpClient = OkHttpClient.Builder()
-        .build()
+    fun provideOkHttp(@ApplicationContext context: Context): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
+    }
 
 }

@@ -10,6 +10,7 @@
         android:name=".view.ui.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:theme="@style/AppTheme"
         android:label="@string/app_name">
         <meta-data android:name="android.max_aspect" android:value="2.1" />
         <activity
@@ -20,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.ui.activity.MainActivity"/>
     </application>
 
 </manifest>

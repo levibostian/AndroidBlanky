@@ -2,6 +2,7 @@ package com.app.view.ui.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.Intent.getIntent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -22,10 +23,12 @@ class LaunchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         notificationChannelManager.createChannels()
+
+        goToMainPartOfApp()
     }
 
     private fun goToMainPartOfApp() {
-        // startActivity(MainActivity.getIntent(this))
+        startActivity(MainActivity.getIntent(this))
 
         finish()
     }
