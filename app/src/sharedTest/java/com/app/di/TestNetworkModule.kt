@@ -6,12 +6,11 @@ import com.app.service.http.PokemonHttpClient
 import com.app.testutils.MockWebServer
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import org.mockito.Mockito
-import javax.inject.Singleton
 
 @Module
 @TestInstallIn(

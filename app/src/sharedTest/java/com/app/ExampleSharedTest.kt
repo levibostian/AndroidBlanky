@@ -2,15 +2,15 @@ package com.app
 
 import android.content.SharedPreferences
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.app.service.store.KeyValueStorageKey
 import com.app.service.http.PokemonHttpClient
 import com.app.service.store.KeyValueStorage
+import com.app.service.store.KeyValueStorageKey
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -41,5 +41,4 @@ class ExampleSharedTest : BaseTest() {
 
         assertThat(actualBody).isEqualTo(expectedBody)
     }
-
 }

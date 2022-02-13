@@ -4,17 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.test.platform.app.InstrumentationRegistry
-import com.app.service.util.ConnectivityUtil
-import com.app.service.ResetAppRunner
-import com.app.service.http.PokemonHttpClient
-import com.app.testutils.MockWebServer
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import org.mockito.Mockito
 import javax.inject.Singleton
+import org.mockito.Mockito
 
 @Module
 @TestInstallIn(

@@ -23,8 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         pokemonViewModel.getPokemon("ditto") { apiResult ->
-             logger.debug(apiResult.getOrThrow().sprites.frontDefault.toString())
+            logger.debug(apiResult.getOrThrow().sprites.frontDefault.toString())
         }
     }
-
 }

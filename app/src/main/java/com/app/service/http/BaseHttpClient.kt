@@ -1,12 +1,12 @@
 package com.app.service.http
 
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.CompletionHandler
-import okhttp3.*
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CompletionHandler
+import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.*
 
 /**
  * @param hostname Example: https://foo.com/

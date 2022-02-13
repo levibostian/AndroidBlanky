@@ -9,7 +9,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class PokemonViewModel @Inject constructor(private val pokemonRepository: PokemonRepository): ViewModel() {
+class PokemonViewModel @Inject constructor(private val pokemonRepository: PokemonRepository) : ViewModel() {
 
     fun getPokemon(name: String, callback: (result: Result<PokemonVo>) -> Unit) {
         viewModelScope.launch {

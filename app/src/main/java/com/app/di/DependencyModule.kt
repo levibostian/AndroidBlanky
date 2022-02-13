@@ -1,8 +1,6 @@
 package com.app.di
 
 import android.content.Context
-import com.app.service.logger.Logger
-import com.app.service.util.ConnectivityUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,10 +16,11 @@ object DependencyModule {
     @Provides
     fun provideOkHttp(@ApplicationContext context: Context): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+            )
             .build()
     }
-
 }

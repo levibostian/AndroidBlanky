@@ -2,13 +2,12 @@ package com.app
 
 import androidx.test.espresso.IdlingRegistry
 import com.app.service.DispatcherProvider
-import com.app.service.http.PokemonHttpClient
 import com.app.service.store.KeyValueStorage
 import com.app.testutils.MockWebServer
 import com.app.testutils.OkHttpIdlingResource
 import com.nhaarman.mockitokotlin2.whenever
-import okhttp3.OkHttpClient
 import javax.inject.Inject
+import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Before
 import org.mockito.MockitoAnnotations

@@ -1,6 +1,5 @@
 package com.app.testutils
 
-import com.app.service.util.ThreadUtil
 import okhttp3.mockwebserver.*
 import okhttp3.mockwebserver.MockWebServer
 

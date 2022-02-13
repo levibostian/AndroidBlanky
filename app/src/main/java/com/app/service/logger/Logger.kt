@@ -1,7 +1,6 @@
 package com.app.service.logger
 
 import android.content.Context
-import android.os.Bundle
 import android.util.Log
 import com.app.R
 import dagger.hilt.android.qualifiers.ApplicationContext
