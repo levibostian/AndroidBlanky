@@ -13,7 +13,7 @@
             "preset": "conventionalcommits"
         }],
         ["@semantic-release/exec", {
-            "verifyReleaseCmd": "bundle exec fastlane update_app_version ${nextRelease.version}"
+            "verifyReleaseCmd": "bundle exec fastlane update_app_version new_version:${nextRelease.version}"
         }],
         ["@semantic-release/changelog",{
             "changelogFile": "CHANGELOG.md"

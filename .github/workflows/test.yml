@@ -37,6 +37,7 @@ jobs:
   android-test:
     runs-on: ubuntu-latest
     name: Android instrumentation tests
+    if: ${{ secrets.FIREBASE_TEST_LAB_GOOGLE_AUTH }} != ""
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK

@@ -1,8 +1,8 @@
 package com.app.di
 
 import android.content.Context
+import androidx.room.Room
 import com.app.service.db.Database
-import com.app.service.db.manager.DatabaseManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,11 +12,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+object TestDatabaseModule {
 
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): Database {
-        return DatabaseManager().dbInstance(context)
+        return Room.inMemoryDatabaseBuilder(context, Database::class.java).build()
     }
 }

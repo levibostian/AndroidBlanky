@@ -1,6 +1,6 @@
 fastlane/firebase_testlab_google_service_account.json
-secrets.tar
-_secrets
+fastlane/report.xml
+fastlane/README.md
 
 # Gradle files
 .gradle/

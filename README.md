@@ -19,6 +19,26 @@ AndroidBlanky comes equipped with the following goals:
 - Unit, integration, and UI testing. I love a good test suite! 
 - Leverage a CI server to run tests, build the app, and deploy it. 
 
+This project attempts to be as small as possible to help you get up and running, fast. To stay small, here are the specific tasks that the project attempts to complete. Try to be no more, no less. 
+
+- Dependency injection setup. 
+- JVM testing. Locally and on CI server. 
+- Android instrumentation tests. Locally and on CI server. (Requires setup on CI server)
+- JUnit test reporting when running tests so CI server can parse the results. 
+- Linting of Android and Kotlin. 
+- Deployment to Google Play Store via CI server. (Requires setup)
+- Git hooks to perform certain tasks for you such as linting. 
+- Code coverage generating if you choose to use that in some way. 
+- Automated semantic versioning and git tag deployments via various CI server tools. 
+- Various testing utilities:
+  - Disable animations for Espresso testing. 
+  - Setup mock web server to allow tests to ping a mock web server. 
+
+Decisions made for this project
+- Installed OkHttp to perform networking. Because Coil is installed, OkHttp is used for performing HTTP requests for this app. I want to challenge myself to have as little dependencies as possible in my apps for build size and maintenance. Not using a HTTP request library would be a nice challenge. However, the dependency Coil uses OkHttp in it so until I can find a good image loading library with zero HTTP request libraries in it, I'll use OkHttp. 
+- Hilt is installed for dependency injection. I have considered doing dependency injection manually as my DI setup in my apps is simple: 1 graph with some dependencies singleton, most not singletons. I do not use scopes at this time for simplicity reasons. Hilt is handy because it generates my graph for me and I don't need to run tests against the graph. If my app compiles, I can feel confident that my graph will work at runtime. There are other DI tools out there but Hilt has great support and simply requires adding `@Inject` to classes. I like to avoid dependencies that deeply embed in a project and are difficult to replace at a later time if chosen. 
+- Firebase Test Lab runs instrumentation tests. You can use other services to run tests against a device. 
+
 ### Services 
 
 When I build apps, I like to use some external development services/tools to improve my developer experience and user experience. Here is a list of these services:
@@ -31,7 +51,6 @@ For privacy reasons, I like to avoid using 3rd party services for my apps.
 
 Below is a list of development tools that are used in this project. These are tools beyond the typical Android development tools that are common amongst Android developers such as Android Studio. Check out the app's `build.gradle` files to see what Android specific tools and libraries are installed in the app. 
 
-* [cici](https://github.com/levibostian/cici/) - Used to securely store secret files within the source code repository. If you have files in your project that contain secret passwords or API keys, use cici to store those files in your code base. Do not commit these secret files into your source code repository! cici is a great way to store your upload keystore files, share secrets with your development team, white label your app, prepare for your app environments (staging, QA, beta, production builds of your app). 
 * [fastlane](https://fastlane.tools/ - Tool used by the CI server to run tests and deploy the app, easily. 
 * [semantic-release](https://github.com/semantic-release/semantic-release) - Tool used by the CI server to automatically deploy the app. All you need to do is follow a specific workflow in GitHub and the app will automatically deploy for you! See the [section in this doc on workflow](#workflow) to learn how to do this.
 
@@ -59,6 +78,8 @@ After you clone the GitHub repository on your computer, follow these instruction
 * You're all set! Compile the app within Android Studio. You can also execute unit, integration, and UI tests within Android Studio. [This document](https://developer.android.com/training/testing/unit-testing/local-unit-tests#run) tells you how to run tests within Android Studio. 
 
 ### Generate screenshots
+
+This may not work at this time... I want to take a step back and reconsider the implementation. See if there is a better way. 
 
 Need to take screenshots of the app for the app store? Screenshots are generated automatically for you through Espresso UI tests. To create screenshots, do the following steps:
 

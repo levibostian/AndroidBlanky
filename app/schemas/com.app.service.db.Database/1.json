@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "835ceb8fbe667ba300129c091c2dba14",
+    "identityHash": "77211923207bb2a38f09100b5f057eb6",
     "entities": [
       {
         "tableName": "repo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `repo_owner_name` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,12 +17,6 @@
           {
             "fieldPath": "name",
             "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "owner.name",
-            "columnName": "repo_owner_name",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -40,7 +34,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '835ceb8fbe667ba300129c091c2dba14')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '77211923207bb2a38f09100b5f057eb6')"
     ]
   }
 }

@@ -13,6 +13,13 @@ platform :android do
     )
   end 
 
+  lane :update_app_version do |values|
+    new_version = values[:new_version]
+
+    android_set_version_name(version_name: new_version)
+    android_set_version_code(version_code: Time.now.to_i.to_s)
+  end 
+
   lane :instrumentation_tests do |values|
     build_android_app(
       task: 'assemble',
@@ -39,10 +46,11 @@ platform :android do
   
   # We are only deploying to 'beta' track because we will manually deploy to production from the console. We will also update the metadata through the console. 
   lane :deploy do |values|
-    app_version = values[:new_version]
+    new_version = values[:new_version]
 
-    android_set_version_name(version_name: app_version)
-    android_set_version_code(version_code: Time.now.to_i.to_s)
+    update_app_version(
+      new_version: new_version
+    )
 
     build_android_app(
       task: 'bundle',
