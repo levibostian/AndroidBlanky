@@ -14,14 +14,13 @@
         android:label="@string/app_name">
         <meta-data android:name="android.max_aspect" android:value="2.1" />
         <activity
-            android:exported="true"
-            android:name=".view.ui.activity.LaunchActivity">
+            android:name=".view.ui.activity.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ui.activity.MainActivity"/>
     </application>
 
 </manifest>

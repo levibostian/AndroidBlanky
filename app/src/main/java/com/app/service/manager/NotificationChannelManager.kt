@@ -6,10 +6,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.os.Build
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
-class NotificationChannelManager @Inject constructor(@ApplicationContext private val context: Context) {
+class NotificationChannelManager(private val context: Context) {
 
     companion object {
 

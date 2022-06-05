@@ -4,14 +4,13 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.app.extensions.*
 import java.util.*
-import javax.inject.Inject
 
 enum class KeyValueStorageKey {
     LOGGED_IN_USER_ID,
     LOGGED_IN_USER_AUTH_TOKEN;
 }
 
-class KeyValueStorage @Inject constructor(private val sharedPreferences: SharedPreferences) {
+class KeyValueStorage(private val sharedPreferences: SharedPreferences) {
 
     fun bool(key: KeyValueStorageKey): Boolean = sharedPreferences.getBoolean(key.name, false)
 

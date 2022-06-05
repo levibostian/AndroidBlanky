@@ -1,0 +1,7 @@
+pre-commit:
+  commands:    
+    ktlint:
+      glob: "*.kt"
+      run: ktlint --android --format {all_files}
+    add-modified:
+      run: git add {staged_files}

@@ -3,12 +3,11 @@ package com.app.service.util
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import javax.inject.Inject
 
 /**
  * Class used to determine the network connection status of the app. We use this to determine if the device is connected to the Internet or not to know if a HTTP request should be attempted.
  */
-class ConnectivityUtil @Inject constructor(private val connectivityManager: ConnectivityManager) {
+class ConnectivityUtil(private val connectivityManager: ConnectivityManager) {
 
     // Help from: https://stackoverflow.com/a/53532456/1486374
     @Suppress("DEPRECATION")
